@@ -1,0 +1,207 @@
+# Copyright (c) Cosmo Tech.
+# Licensed under the MIT license.
+
+#
+# Default values for cosmotech-api.
+#
+
+# -- number of pods replicas
+replicaCount: 3
+
+image:
+  # -- container image to use for deployment
+  repository: ghcr.io/cosmo-tech/cosmotech-api
+  # -- [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) for pulling the image
+  pullPolicy: Always
+  # -- container image tag. Defaults to the Chart `appVersion` if empty or missing
+  tag: ""
+
+#imagePullSecrets: []
+
+# Set image pull secrets (in case you're using a private container registry).
+imageCredentials:
+  # -- container registry to use for pulling the Deployment image. Useful if you are using a private registry
+  registry: ""
+  # -- username for the container registry to use for pulling the Deployment image. Useful if you are using a private registry
+  username: ""
+  # -- password for registry to use for pulling the Deployment image. Useful if you are using a private registry
+  password: ""
+
+# -- value overriding the name of the Chart. Defaults to the Chart name.
+# Truncated at 63 chars because some Kubernetes name fields are limited to this.
+nameOverride: ""
+# -- value overriding the full name of the Chart. If not set, the value is computed from `nameOverride`.
+# Truncated at 63 chars because some Kubernetes name fields are limited to this.
+fullnameOverride: ""
+
+serviceAccount:
+  # -- whether a service account should be created
+  create: true
+  # -- annotations to add to the service account
+  annotations: {}
+  # -- the name of the service account to use.
+  # If not set and `serviceAccount.create` is `true`, a name is generated using the `fullname` template
+  name: ""
+
+# -- Deployment strategy
+deploymentStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    # -- maximum number of Pods that can be created over the desired number of Pods
+    maxSurge: 1
+    # -- maximum number of Pods that can be unavailable during the update process
+    maxUnavailable: 50%
+
+# -- annotations to set the Deployment pod
+podAnnotations: {}
+
+# -- the pod security context, i.e. applicable to all containers part of the pod
+podSecurityContext:
+  runAsNonRoot: true
+
+# -- the security context at the pod container level
+securityContext:
+  # capabilities:
+  #   drop:
+  #   - ALL
+  readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  # -- service type. See [this page](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) for the possible values
+  type: ClusterIP
+  # -- service port
+  port: 8080
+  # -- service management port
+  managementPort: 8081
+
+api:
+  # A Cosmo Tech Helm Release (e.g., latest, vX) is linked to an API Version;
+  # so it must define its own path rules here.
+  # This corresponds to the path under which this service is exposed, if behind a reverse proxy or
+  # load balancer
+  servletContextPath: /
+  # Examples: latest, v1, v2
+  version: latest
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+      - path: /
+        pathType: Prefix # For Kubernetes >= 1.19.0
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+# -- resources limits and requests for the pod placement
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+# -- default behavior is a pod anti-affinity, which prevents pods from co-locating on a same node
+affinity: {}
+
+argo:
+  # Set image pull secrets for Argo Workflows (in case you're using a private container registry).
+  imageCredentials:
+    # -- container registry to use for pulling the Workflow images. Useful if you are using a private registry
+    registry: ""
+    # -- username for the container registry to use for pulling the Workflow images. Useful if you are using a private registry
+    username: ""
+    # -- password for registry to use for pulling the Workflow images. Useful if you are using a private registry
+    password: ""
+  storage:
+    # -- storage class used by Workflows submitted to Argo
+    class:
+      # -- whether to install the storage class
+      install: true
+      # -- volume plugin used for provisioning Persistent Volumes
+      provisioner: kubernetes.io/azure-file
+      # -- mount options, depending on the volume plugin configured. If the volume plugin does not support mount options but mount options are specified, provisioning will fail.
+      mountOptions:
+        - dir_mode=0777
+        - file_mode=0777
+        - uid=0
+        - gid=0
+        - mfsymlinks
+        - cache=strict
+        - actimeo=30
+      # -- Parameters describe volumes belonging to the storage class. Different parameters may be accepted depending on the provisioner.
+      parameters:
+        skuName: Premium_LRS
+
+config:
+  csm:
+    platform:
+      vendor: azure
+      argo:
+        base-uri: "http://argo-server:2746"
+        workflows:
+          # -- Name of the storage class for Workflows volumes.
+          # Useful if you want to use a different storage class, installed and managed externally.
+          # In this case, you should set argo.storage.class.install to false.
+          storage-class: null
+          access-modes:
+            # -- Any in the following list: ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod (K8s 1.22+).
+            # ReadWriteMany is recommended, as we are likely to have parallel pods accessing the volume
+            - ReadWriteMany
+          requests:
+            # Azure file storage minimal claim is 100Gi for Premium classes
+            storage: 100Gi
+      authorization:
+        allowed-tenants: []
+      azure:
+        credentials:
+          # -- Core App Registration Tenant ID. Deprecated. Use `config.csm.platform.azure.credentials.core.tenantId` instead
+          tenantId: "changeme"
+          # -- Core App Registration Client ID. Deprecated. Use `config.csm.platform.azure.credentials.core.clientId` instead
+          clientId: "changeme"
+          # -- Core App Registration Client Secret. Deprecated. Use `config.csm.platform.azure.credentials.core.clientSecret` instead
+          clientSecret: "changeme"
+          customer:
+            # -- Customer-provided App Registration Tenant ID. Workaround for connecting to Azure Digital Twins in the context of a Managed App
+            tenantId: "changeme"
+            # -- Customer-provided App Registration Client ID. Workaround for connecting to Azure Digital Twins in the context of a Managed App
+            clientId: "changeme"
+            # -- Customer-provided App Registration Client Secret. Workaround for connecting to Azure Digital Twins in the context of a Managed App
+            clientSecret: "changeme"
+        cosmos:
+          # -- Cosmos DB Database URI. Can be retrieved from the Azure portal
+          uri: "changeme"
+          # -- Cosmos DB Database Key. Can be retrieved from the Azure portal
+          key: "changeme"
+        dataWarehouseCluster:
+          baseUri: "changeme"
+          options:
+            ingestionUri: "changeme"
+        eventBus:
+          baseUri: "changeme"
+        storage:
+          # -- Azure storage account name. Length should be between 3 and 24 and use numbers and lower-case letters only
+          account-name: "changeme"
+          # -- Azure storage account access key. Can be retrieved from the Azure portal
+          account-key: "changeme"
+        containerRegistries:
+          solutions: ""
