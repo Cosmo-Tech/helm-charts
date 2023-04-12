@@ -1,16 +1,40 @@
+# Copyright (c) Cosmo Tech.
+# Licensed under the MIT license.
+
+#
 # Default values for cosmotech-gateway.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+#
 
 replicaCount: 1
 
+# -- Deployment strategy
+deploymentStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    # -- maximum number of Pods that can be created over the desired number of Pods
+    maxSurge: 1
+    # -- maximum number of Pods that can be unavailable during the update process
+    maxUnavailable: 50%
+
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- container image to use for deployment
+  repository: ghcr.io/cosmo-tech/cosmotech-gateway
+  # -- [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) for pulling the image
+  pullPolicy: Always
+  # -- container image tag. Defaults to the Chart `appVersion` if empty or missing
   tag: ""
 
-imagePullSecrets: []
+#imagePullSecrets: []
+
+# Set image pull secrets (in case you're using a private container registry).
+imageCredentials:
+  # -- container registry to use for pulling the Deployment image. Useful if you are using a private registry
+  registry: ""
+  # -- username for the container registry to use for pulling the Deployment image. Useful if you are using a private registry
+  username: ""
+  # -- password for registry to use for pulling the Deployment image. Useful if you are using a private registry
+  password: ""
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -37,8 +61,12 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
+  # -- service type. See [this page](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) for the possible values
   type: ClusterIP
-  port: 80
+  # -- service port
+  port: 8080
+  # -- service management port
+  managementPort: 8081
 
 ingress:
   enabled: false
@@ -50,7 +78,7 @@ ingress:
     - host: chart-example.local
       paths:
         - path: /
-          pathType: ImplementationSpecific
+          pathType: Prefix # For Kubernetes >= 1.19.0
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -73,10 +101,31 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
+
+gateway:
+  # A Cosmo Tech Helm Release (e.g., latest, vX) is linked to an API Version;
+  # so it must define its own path rules here.
+  # This corresponds to the path under which this service is exposed, if behind a reverse proxy or
+  # load balancer
+  servletContextPath: /
+  # Examples: latest, v1, v2
+  version: latest
+
+config:
+  csm:
+    platform:
+      identityProvider:
+        code: keycloak
+        fullname: csm-keycloak
+        namespace: default
+        port: 8080
+        defaultScopes:
+          openid: "OpenId Scope"
+

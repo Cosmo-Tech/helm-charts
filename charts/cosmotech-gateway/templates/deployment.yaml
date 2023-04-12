@@ -2,11 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "cosmotech-gateway.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "cosmotech-gateway.labels" . | nindent 4 }}
+  annotations:
+    email: "platform@cosmotech.com"
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  strategy:
+  {{- with .Values.deploymentStrategy }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   selector:
     matchLabels:
@@ -18,42 +25,102 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
+        networking/traffic-allowed: "yes"
         {{- include "cosmotech-gateway.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- if .Values.imageCredentials.registry }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+        - name: {{ include "cosmotech-gateway.fullname" . }}-registry
       {{- end }}
       serviceAccountName: {{ include "cosmotech-gateway.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: tmp-dir
+          emptyDir: { }
+        - name: helm-config
+          secret:
+            secretName: {{ include "cosmotech-gateway.fullname" . }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            #
+            # Some env vars here are properties that affect the way the Spring Application Context
+            # is configured.
+            # They need to be set here *before* the Application Context starts
+            #
+            {{- with .Values.config.csm.platform.identityProvider.code }}
+            - name: IDENTITY_PROVIDER
+              # Used to include a specific '{{ .  | default "keycloak" }}' Spring profile
+              value: {{ . | quote }}
+            {{end}}
+            - name: SPRING_PROFILES_INCLUDE
+              # The properties file for the 'helm' profile is mounted as a Volume in the Container,
+              # using a configured Kubernetes Secret containing all the 'config.*' properties
+              value: "helm"
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp-dir
+              readOnly: false
+            - mountPath: /config
+              name: helm-config
+              readOnly: true
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
+            - name: http-management
+              containerPort: 8081
+              protocol: TCP
+          startupProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 60
+            tcpSocket:
+              port: http
           livenessProbe:
+            timeoutSeconds: 5
+            periodSeconds: 5
+            failureThreshold: 2
             httpGet:
-              path: /
-              port: http
+              path: /actuator/health/liveness
+              port: http-management
           readinessProbe:
+            timeoutSeconds: 5
             httpGet:
-              path: /
-              port: http
+              path: /actuator/health/readiness
+              port: http-management
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
       affinity:
+      {{- if .Values.affinity}}
+      {{- with .Values.affinity }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- else }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: "app.kubernetes.io/name"
+                      operator: In
+                      values:
+                        - {{ include "cosmotech-gateway.name" . }}
+                    - key: "app.kubernetes.io/instance"
+                      operator: In
+                      values:
+                        - {{ .Release.Name }}
+                topologyKey: "kubernetes.io/hostname"
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
