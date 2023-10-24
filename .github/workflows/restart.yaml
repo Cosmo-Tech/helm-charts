@@ -1,0 +1,33 @@
+name: Restart Modeling API
+
+on:
+  registry_package:
+    types:
+      - updated
+
+jobs:
+  deploy:
+    if: ${{ contains(["continuous", "nightly"], github.event.registry_package.package_version.tag_name) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: azure/login@v1
+        with:
+          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+
+      - uses: azure/aks-set-context@v3.2
+        with:
+          cluster-name: "${{ vars.CLUSTER_NAME }}"
+          resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
+
+      - name: Restart deployment
+        run: |
+          kubectl rollout restart \
+            --namespace ${{ vars.CLUSTER_NAMESPACE }} \
+            deployment/cosmotech-modeling-api-${{ github.event.registry_package.package_version.tag_name }}
+
+      - name: Wait for restart to finish
+        run: |
+          kubectl rollout status \
+            --namespace ${{ vars.CLUSTER_NAMESPACE }} \
+            --timeout=5m \
+            deployment/cosmotech-modeling-api-${{ github.event.registry_package.package_version.tag_name }}

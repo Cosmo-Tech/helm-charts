@@ -1,0 +1,46 @@
+name: Deploy Modeling API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        imageTag:
+          - continuous
+          - nightly
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: azure/setup-helm@v3
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - uses: azure/login@v1
+        with:
+          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+
+      - uses: azure/aks-set-context@v3.2
+        with:
+          cluster-name: "${{ vars.CLUSTER_NAME }}"
+          resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
+
+      - name: Helm upgrade/install
+        working-directory: helm-chart
+        run: |
+          helm upgrade --install \
+            --wait \
+            --namespace ${{ vars.CLUSTER_NAMESPACE }} \
+            --values values-dev.yaml \
+            --set image.tag="${{ matrix.imageTag }}" \
+            --set image.credentials.username="${{ secrets.GHCR_CREDENTIALS_USERNAME }}" \
+            --set image.credentials.password="${{ secrets.GHCR_CREDENTIALS_PASSWORD }}" \
+            cosmotech-modeling-api-${{ matrix.imageTag }} .
+
+      - name: Helm test
+        run: |
+          helm test --namespace ${{ vars.CLUSTER_NAMESPACE }} cosmotech-modeling-api-${{ matrix.imageTag }}

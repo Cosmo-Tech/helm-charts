@@ -1,0 +1,41 @@
+nameOverride: ""
+fullNameOverride: ""
+
+image:
+  repository: ghcr.io/cosmo-tech/csm-sdk
+  tag: "latest"
+  pullPolicy: Always
+  credentials:
+    registry: ""
+    username: ""
+    password: ""
+
+service:
+  type: ClusterIP
+  port: 8080
+
+serviceMonitor:
+  enabled: true
+  namespace: cosmotech-monitoring
+  port: 9100
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  apiSettings: {}
+  argoSettings: {}
+  s3:
+    user: {}
+    password: {}

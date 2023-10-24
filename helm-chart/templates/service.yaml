@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cosmotech-modeling-api.fullname" . }}
+  labels:
+    {{- include "cosmotech-modeling-api.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      protocol: TCP
+      targetPort: http
+    {{- if .Values.serviceMonitor.enabled }}
+    - name: metrics
+      port: {{ .Values.serviceMonitor.port }}
+      protocol: TCP
+      targetPort: metrics
+    {{- end }}
+  selector:
+    {{- include "cosmotech-modeling-api.selectorLabels" . | nindent 4 }}

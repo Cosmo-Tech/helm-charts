@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cosmotech-modeling-api.fullname" . }}
+  labels:
+    {{- include "cosmotech-modeling-api.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "cosmotech-modeling-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cosmotech-modeling-api.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.image.credentials.registry }}
+      imagePullSecrets:
+        - name: {{ include "cosmotech-modeling-api.fullname" . }}-registry
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ include "cosmotech-modeling-api.appVersion" . }}"
+          command: ["csm-modeling-server"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: metrics
+              containerPort: 9100
+              protocol: TCP
+          env:
+            - name: CSM_IMAGE_REGISTRY # TODO: Rename to CSM_BUILDIMAGE_REPOSITORY
+              value: {{ .Values.image.repository }}
+            - name: CSM_IMAGE_PULLSECRET # TODO: Rename to CSM_BUILDIMAGE_PULLSECRET
+              value: {{ include "cosmotech-modeling-api.fullname" . }}-registry
+            {{- with .Values.config.apiSettings }}
+            - name: CSM_COSMOTECHAPI_SETTINGS
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.config.argoSettings }}
+            - name: CSM_ARGOWORKFLOWS_SETTINGS
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.config.s3.user }}
+            - name: AWS_ACCESS_KEY_ID
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.config.s3.password }}
+            - name: AWS_SECRET_ACCESS_KEY
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resource | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
