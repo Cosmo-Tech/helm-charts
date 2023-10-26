@@ -28,14 +28,14 @@ jobs:
           kubectl version
 
       - name: Restart deployment
-        if: ${{ steps.cluster_availability.outcome == "success" }}
+        if: ${{ steps.cluster_availability.outcome == 'success' }}
         run: |
           kubectl rollout restart \
             --namespace ${{ vars.CLUSTER_NAMESPACE }} \
             deployment/cosmotech-modeling-api-${{ github.event.registry_package.package_version.tag_name }}
 
       - name: Wait for restart to finish
-        if: ${{ steps.cluster_availability.outcome == "success" }}
+        if: ${{ steps.cluster_availability.outcome == 'success' }}
         run: |
           kubectl rollout status \
             --namespace ${{ vars.CLUSTER_NAMESPACE }} \
