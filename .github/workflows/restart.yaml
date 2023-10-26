@@ -1,13 +1,15 @@
 name: Restart Modeling API
 
 on:
-  registry_package:
-    types:
-      - updated
+  workflow_dispatch:
+    inputs:
+      imageTag:
+        description: "Docker image tag that was updated"
+        required: true
+        type: string
 
 jobs:
   deploy:
-    if: ${{ contains(["continuous", "nightly"], github.event.registry_package.package_version.tag_name) }}
     runs-on: ubuntu-latest
     steps:
       - uses: azure/login@v1
