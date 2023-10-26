@@ -9,7 +9,7 @@ on:
         type: string
 
 jobs:
-  deploy:
+  restart:
     runs-on: ubuntu-latest
     steps:
       - uses: azure/login@v1
@@ -32,7 +32,7 @@ jobs:
         run: |
           kubectl rollout restart \
             --namespace ${{ vars.CLUSTER_NAMESPACE }} \
-            deployment/cosmotech-modeling-api-${{ github.event.registry_package.package_version.tag_name }}
+            deployment/cosmotech-modeling-api-${{ inputs.imageTag }}
 
       - name: Wait for restart to finish
         if: ${{ steps.cluster_availability.outcome == 'success' }}
@@ -40,4 +40,4 @@ jobs:
           kubectl rollout status \
             --namespace ${{ vars.CLUSTER_NAMESPACE }} \
             --timeout=5m \
-            deployment/cosmotech-modeling-api-${{ github.event.registry_package.package_version.tag_name }}
+            deployment/cosmotech-modeling-api-${{ inputs.imageTag }}
