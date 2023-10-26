@@ -21,13 +21,21 @@ jobs:
           cluster-name: "${{ vars.CLUSTER_NAME }}"
           resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
 
+      - name: Check cluster availability
+        id: cluster_availability
+        continue-on-error: true
+        run: |
+          kubectl version
+
       - name: Restart deployment
+        if: ${{ steps.cluster_availability.outcome == "success" }}
         run: |
           kubectl rollout restart \
             --namespace ${{ vars.CLUSTER_NAMESPACE }} \
             deployment/cosmotech-modeling-api-${{ github.event.registry_package.package_version.tag_name }}
 
       - name: Wait for restart to finish
+        if: ${{ steps.cluster_availability.outcome == "success" }}
         run: |
           kubectl rollout status \
             --namespace ${{ vars.CLUSTER_NAMESPACE }} \
