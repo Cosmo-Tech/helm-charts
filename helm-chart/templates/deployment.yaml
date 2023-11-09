@@ -39,9 +39,9 @@ spec:
               containerPort: 9100
               protocol: TCP
           env:
-            - name: CSM_IMAGE_REGISTRY # TODO: Rename to CSM_BUILDIMAGE_REPOSITORY
+            - name: CSM_BUILDIMAGE_REPOSITORY
               value: {{ .Values.image.repository }}
-            - name: CSM_IMAGE_PULLSECRET # TODO: Rename to CSM_BUILDIMAGE_PULLSECRET
+            - name: CSM_BUILDIMAGE_PULLSECRET
               value: {{ include "cosmotech-modeling-api.fullname" . }}-registry
             {{- with .Values.config.apiSettings }}
             - name: CSM_COSMOTECHAPI_SETTINGS
