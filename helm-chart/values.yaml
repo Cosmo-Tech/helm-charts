@@ -2,7 +2,7 @@ nameOverride: ""
 fullNameOverride: ""
 
 image:
-  repository: ghcr.io/cosmo-tech/csm-sdk
+  repository: ghcr.io/cosmo-tech/cosmotech-modeling-api
   tag: "latest"
   pullPolicy: Always
   credentials:
