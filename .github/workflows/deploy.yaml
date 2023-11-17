@@ -10,8 +10,40 @@ on:
       - "helm-chart/**"
 
 jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: azure/setup-helm@v3
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Compute chart version
+        run: |
+          echo "CHART_VERSION=0.0-main" >> "$GITHUB_ENV"
+
+      - name: Login to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | \
+            helm registry login ghcr.io \
+              --username "${{ github.actor }}" \
+              --password-stdin
+
+      - name: Helm package
+        working-directory: helm-chart
+        run: |
+          helm package --version $CHART_VERSION .
+
+      - name: Helm push
+        working-directory: helm-chart
+        run: |
+          helm push cosmotech-modeling-api-chart-$CHART_VERSION.tgz oci://ghcr.io/cosmo-tech
+
   deploy:
     runs-on: ubuntu-latest
+    needs:
+      - package
     strategy:
       fail-fast: false
       matrix:
@@ -34,6 +66,17 @@ jobs:
           cluster-name: "${{ vars.CLUSTER_NAME }}"
           resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
 
+      - name: Compute chart version
+        run: |
+          echo "CHART_VERSION=0.0-main" >> "$GITHUB_ENV"
+
+      - name: Login to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | \
+            helm registry login ghcr.io \
+              --username "${{ github.actor }}" \
+              --password-stdin
+
       - name: Helm upgrade/install
         working-directory: helm-chart
         run: |
@@ -44,7 +87,9 @@ jobs:
             --set image.tag="${{ matrix.imageTag }}" \
             --set image.credentials.username="${{ secrets.GHCR_CREDENTIALS_USERNAME }}" \
             --set image.credentials.password="${{ secrets.GHCR_CREDENTIALS_PASSWORD }}" \
-            cosmotech-modeling-api-${{ matrix.imageTag }} .
+            cosmotech-modeling-api-${{ matrix.imageTag }} \
+            oci://ghcr.io/cosmo-tech/cosmotech-modeling-api-chart \
+            --version $CHART_VERSION
 
       - name: Helm test
         run: |

@@ -1,6 +1,3 @@
-nameOverride: ""
-fullNameOverride: ""
-
 image:
   credentials:
     registry: "ghcr.io"

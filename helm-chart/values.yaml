@@ -1,4 +1,4 @@
-nameOverride: ""
+nameOverride: cosmotech-modeling-api
 fullNameOverride: ""
 
 image:
