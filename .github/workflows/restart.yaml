@@ -1,4 +1,4 @@
-name: Restart Modeling API
+name: Restart deployments
 
 on:
   workflow_dispatch:

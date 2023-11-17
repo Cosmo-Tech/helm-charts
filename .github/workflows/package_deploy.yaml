@@ -1,4 +1,4 @@
-name: Deploy Modeling API
+name: Package chart and deploy
 
 on:
   workflow_dispatch:
