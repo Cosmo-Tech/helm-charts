@@ -39,5 +39,5 @@ jobs:
         run: |
           kubectl rollout status \
             --namespace ${{ vars.CLUSTER_NAMESPACE }} \
-            --timeout=5m \
+            --timeout=10m \
             deployment/cosmotech-modeling-api-${{ inputs.imageTag }}
