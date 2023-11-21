@@ -30,17 +30,17 @@ jobs:
         run: |
           echo "CHART_VERSION=${{ github.ref_type == 'branch' && '0.0-' || '' }}${{ github.ref_name }}" >> "$GITHUB_ENV"
 
+      - name: Helm package
+        working-directory: helm-chart
+        run: |
+          helm package --version $CHART_VERSION .
+
       - name: Login to GitHub Container Registry
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | \
             helm registry login ghcr.io \
               --username "${{ github.actor }}" \
               --password-stdin
-
-      - name: Helm package
-        working-directory: helm-chart
-        run: |
-          helm package --version $CHART_VERSION .
 
       - name: Helm push
         working-directory: helm-chart
