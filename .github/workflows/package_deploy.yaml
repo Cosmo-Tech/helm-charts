@@ -3,6 +3,8 @@ name: Package chart and deploy
 on:
   workflow_dispatch:
   push:
+    tags:
+      - '*'
     branches:
       - main
     paths:
@@ -21,7 +23,7 @@ jobs:
 
       - name: Compute chart version
         run: |
-          echo "CHART_VERSION=0.0-main" >> "$GITHUB_ENV"
+          echo "CHART_VERSION="${{ github.ref_type == 'branch' && '0.0-' || '' }}${{ github.ref_name }}" >> "$GITHUB_ENV"
 
       - name: Login to GitHub Container Registry
         run: |
@@ -42,6 +44,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.ref == "refs/heads/main" }}
     needs:
       - package
     strategy:
