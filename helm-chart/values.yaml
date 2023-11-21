@@ -3,7 +3,7 @@ fullNameOverride: ""
 
 image:
   repository: ghcr.io/cosmo-tech/cosmotech-modeling-api
-  tag: "latest"
+  tag: null
   pullPolicy: Always
   credentials:
     registry: ""

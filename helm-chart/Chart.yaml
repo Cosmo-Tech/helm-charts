@@ -3,3 +3,4 @@ name: cosmotech-modeling-api-chart
 description: Helm chart for Cosmo Tech Modeling API
 type: application
 version: 0.1.0
+appVersion: "latest"
