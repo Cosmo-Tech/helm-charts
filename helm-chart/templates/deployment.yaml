@@ -28,7 +28,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ include "cosmotech-modeling-api.appImageTag" . }}"
+          image: "{{ .Values.image.repository }}:{{ include "cosmotech-modeling-api.appVersion" . }}"
           command: ["csm-modeling-server"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

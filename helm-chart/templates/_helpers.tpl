@@ -33,7 +33,7 @@ Create chart name and version as used by the chart label.
 {{/*
 App version
 */}}
-{{- define "cosmotech-modeling-api.appImageTag" -}}
+{{- define "cosmotech-modeling-api.appVersion" -}}
 {{- .Values.image.tag | default .Chart.AppVersion }}
 {{- end }}
 
@@ -43,7 +43,7 @@ Common labels
 {{- define "cosmotech-modeling-api.labels" -}}
 helm.sh/chart: {{ include "cosmotech-modeling-api.chart" . }}
 {{ include "cosmotech-modeling-api.selectorLabels" . }}
-app.kubernetes.io/version: {{ include "cosmotech-modeling-api.appImageTag" . | quote }}
+app.kubernetes.io/version: {{ include "cosmotech-modeling-api.appVersion" . | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
