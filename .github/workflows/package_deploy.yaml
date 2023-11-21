@@ -23,7 +23,7 @@ jobs:
 
       - name: Compute chart version
         run: |
-          echo "CHART_VERSION="${{ github.ref_type == 'branch' && '0.0-' || '' }}${{ github.ref_name }}" >> "$GITHUB_ENV"
+          echo "CHART_VERSION=${{ github.ref_type == 'branch' && '0.0-' || '' }}${{ github.ref_name }}" >> "$GITHUB_ENV"
 
       - name: Login to GitHub Container Registry
         run: |
