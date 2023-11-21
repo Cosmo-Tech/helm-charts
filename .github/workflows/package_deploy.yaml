@@ -21,6 +21,11 @@ jobs:
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
 
+      - name: Helm lint
+        working-directory: helm-chart
+        run: |
+          helm lint --strict .
+
       - name: Compute chart version
         run: |
           echo "CHART_VERSION=${{ github.ref_type == 'branch' && '0.0-' || '' }}${{ github.ref_name }}" >> "$GITHUB_ENV"
