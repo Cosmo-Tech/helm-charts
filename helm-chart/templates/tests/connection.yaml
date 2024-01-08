@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Copyright (C) 2023-2024 Cosmo Tech
+# SPDX-License-Identifier: LicenseRef-CosmoTech
 apiVersion: v1
 kind: Pod
 metadata:

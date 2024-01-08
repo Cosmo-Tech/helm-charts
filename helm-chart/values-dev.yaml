@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Copyright (C) 2023-2024 Cosmo Tech
+# SPDX-License-Identifier: LicenseRef-CosmoTech
 image:
   credentials:
     registry: "ghcr.io"
