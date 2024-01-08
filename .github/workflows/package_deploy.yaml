@@ -23,10 +23,19 @@ jobs:
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
 
+      - name: Install packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y reuse
+
       - name: Helm lint
         working-directory: helm-chart
         run: |
           helm lint --strict .
+
+      - name: Reuse lint
+        run: |
+          reuse lint
 
       - name: Compute chart version
         run: |
