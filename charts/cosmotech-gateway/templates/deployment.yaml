@@ -53,7 +53,7 @@ spec:
             # is configured.
             # They need to be set here *before* the Application Context starts
             #
-            {{- with .Values.config.csm.platform.identityProvider.code }}
+            {{- with .Values.config.csm.gateway.identityProvider.code }}
             - name: IDENTITY_PROVIDER
               # Used to include a specific '{{ .  | default "keycloak" }}' Spring profile
               value: {{ . | quote }}

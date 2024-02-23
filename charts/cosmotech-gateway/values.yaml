@@ -120,7 +120,7 @@ gateway:
 
 config:
   csm:
-    platform:
+    gateway:
       identityProvider:
         code: keycloak
         fullname: csm-keycloak
