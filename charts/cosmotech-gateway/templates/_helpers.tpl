@@ -83,14 +83,14 @@ Create Docker secrets for pulling images from a private container registry.
 Construct authorizationURL from identity provider information
 */}}
 {{- define "cosmotech-gateway.authorizationUrl" -}}
-{{- printf "http://%s.%s.svc.cluster.local:%s/realms/cosmotech/protocol/openid-connect/auth" .Values.config.csm.platform.identityProvider.fullname .Values.config.csm.platform.identityProvider.namespace .Values.config.csm.platform.identityProvider.port }}
+{{- printf "http://%s.%s.svc.cluster.local:%s/realms/cosmotech/protocol/openid-connect/auth" .Values.config.csm.gateway.identityProvider.fullname .Values.config.csm.gateway.identityProvider.namespace .Values.config.csm.gateway.identityProvider.port }}
 {{- end }}
 
 {{/*
 Construct tokenURL from identity provider information
 */}}
 {{- define "cosmotech-gateway.tokenUrl" -}}
-{{- printf "http://%s.%s.svc.cluster.local:%s/realms/cosmotech/protocol/openid-connect/token" .Values.config.csm.platform.identityProvider.fullname .Values.config.csm.platform.identityProvider.namespace .Values.config.csm.platform.identityProvider.port }}
+{{- printf "http://%s.%s.svc.cluster.local:%s/realms/cosmotech/protocol/openid-connect/token" .Values.config.csm.gateway.identityProvider.fullname .Values.config.csm.gateway.identityProvider.namespace .Values.config.csm.gateway.identityProvider.port }}
 {{- end }}
 
 {{/*
@@ -124,16 +124,16 @@ management:
           include: "readinessState"
 
 csm:
-  platform:
+  gateway:
     identityProvider:
-      code: {{- .Values.config.csm.platform.identityProvider.code | default "keycloak" }}
-      {{- if .Values.config.csm.platform.identityProvider.authorizationUrl }}
-      authorizationUrl: {{ .Values.config.csm.platform.identityProvider.authorizationUrl }}
+      code: {{- .Values.config.csm.gateway.identityProvider.code | default "keycloak" }}
+      {{- if .Values.config.csm.gateway.identityProvider.authorizationUrl }}
+      authorizationUrl: {{ .Values.config.csm.gateway.identityProvider.authorizationUrl }}
       {{- else }}
       authorizationUrl: {{ include "cosmotech-gateway.authorizationUrl" . }}
       {{- end }}
-      {{- if .Values.config.csm.platform.identityProvider.tokenUrl }}
-      tokenUrl: {{ .Values.config.csm.platform.identityProvider.tokenUrl }}
+      {{- if .Values.config.csm.gateway.identityProvider.tokenUrl }}
+      tokenUrl: {{ .Values.config.csm.gateway.identityProvider.tokenUrl }}
       {{- else }}
       tokenUrl: {{ include "cosmotech-gateway.tokenUrl" . }}
       {{- end }}
