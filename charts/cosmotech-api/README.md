@@ -403,7 +403,7 @@ EOF
 If you haven't already added the Helm repository for Cosmo Tech API, execute the following command:
 
 ```bash
-helm repo add cosmotech https://cosmotech.github.io/helm-charts
+helm repo add cosmotech https://cosmo-tech.github.io/helm-charts
 helm repo update
 ```
 
