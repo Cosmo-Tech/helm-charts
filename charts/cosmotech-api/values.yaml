@@ -84,6 +84,23 @@ api:
   servletContextPath: /
   # Examples: latest, v1, v2
   version: latest
+  # Whether or not the API is multi-tenant and should expose the tenant in the URL
+  multiTenant: true
+  # Configure probes failure thresholds to higher values if you are in debug mode to avoid pod restart
+  probes:
+    startup:
+      initialDelaySeconds: 60
+      failureThreshold: 50
+    liveness:
+      timeoutSeconds: 10
+      failureThreshold: 5
+    readiness:
+      timeoutSeconds: 10
+      failureThreshold: 5
+  serviceMonitor:
+    enabled: true
+    namespace: "cosmotech-monitoring"
+    additionalLabels: {}
 
 ingress:
   enabled: false
@@ -187,11 +204,6 @@ config:
             clientId: "changeme"
             # -- Customer-provided App Registration Client Secret. Workaround for connecting to Azure Digital Twins in the context of a Managed App
             clientSecret: "changeme"
-        cosmos:
-          # -- Cosmos DB Database URI. Can be retrieved from the Azure portal
-          uri: "changeme"
-          # -- Cosmos DB Database Key. Can be retrieved from the Azure portal
-          key: "changeme"
         dataWarehouseCluster:
           baseUri: "changeme"
           options:
