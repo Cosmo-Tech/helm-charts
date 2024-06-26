@@ -5,6 +5,9 @@
 Cosmo Tech Platform API
 
 
+# Kubernetes deployment schema
+![kubernetes deployment schema](media/schema.png)
+
 # How to Deploy the Cosmo Tech Platform on a Kubernetes Cluster
 
 This guide provides instructions to deploy the Cosmo Tech platform on a Kubernetes cluster using Helm charts. The deployment includes several services in the following order: Minio, PostgreSQL, Argo Workflows, RabbitMQ, Redis, and finally, the Cosmo Tech API.
@@ -19,6 +22,8 @@ Before starting the deployment, ensure you have the following:
 - A Kubernetes namespace for this deployment
 
 ## 1. Deploy Minio
+
+[Artifact hub doc](https://artifacthub.io/packages/helm/bitnami/minio/12.1.3)
 
 Deploy Minio using the Bitnami Helm chart:
 
@@ -62,6 +67,8 @@ EOF
 ```
 
 ## 2. Deploy PostgreSQL
+
+[Artifact hub doc](https://artifacthub.io/packages/helm/bitnami/postgresql/11.6.2)
 
 Deploy PostgreSQL using the Bitnami Helm chart:
 
@@ -111,6 +118,8 @@ EOF
 ```
 
 ## 3. Deploy Argo Workflows
+
+[Artifact hub doc](https://artifacthub.io/packages/helm/argo/argo-workflows/0.16.6)
 
 Deploy Argo Workflows using the Argo Helm chart:
 
@@ -232,6 +241,8 @@ EOF
 
 ## 4. Deploy RabbitMQ
 
+[Artifact hub doc](https://artifacthub.io/packages/helm/bitnami/rabbitmq/13.0.3)
+
 Deploy RabbitMQ using the Bitnami Helm chart:
 
 ```bash
@@ -318,6 +329,8 @@ EOF
 
 ## 5. Deploy Redis
 
+[Artifact hub doc](https://artifacthub.io/packages/helm/bitnami/redis/17.8.0)
+
 Deploy Redis using the Bitnami Helm chart:
 
 ```bash
@@ -397,6 +410,7 @@ EOF
 
 ## 6. Deploy Cosmo Tech API
 
+[Artifact hub doc](https://artifacthub.io/packages/helm/cosmotech-api/cosmotech-api/3.2.6)
 
 ### Step 1: Add Helm Repository
 
