@@ -403,7 +403,7 @@ EOF
 If you haven't already added the Helm repository for Cosmo Tech API, execute the following command:
 
 ```bash
-helm repo add cosmotech https://cosmotech.github.io/helm-charts
+helm repo add cosmotech https://cosmo-tech.github.io/helm-charts
 helm repo update
 ```
 
@@ -569,6 +569,9 @@ You have successfully deployed the Cosmo Tech API on Kubernetes using Helm chart
 
 This markdown guide provides a comprehensive walkthrough for deploying the Cosmo Tech API using Helm charts, ensuring clarity and completeness in the deployment process. Adjust the placeholders (${...}) with your actual values before executing the commands.
 
+## Schema
+
+![Cosmo Tech AI Simulation Platform 4.0.0-onprem kubernetes deployment schema.](platform_4.0.0-onprem_kubernetes_deployment_schema.png)
 
 
 ## Values
