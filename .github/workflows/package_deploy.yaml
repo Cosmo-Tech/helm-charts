@@ -17,9 +17,9 @@ jobs:
   package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: azure/setup-helm@v3
+      - uses: azure/setup-helm@v4
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
 
@@ -70,17 +70,17 @@ jobs:
           - continuous
           - nightly
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: azure/setup-helm@v3
+      - uses: azure/setup-helm@v4
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
 
-      - uses: azure/login@v1
+      - uses: azure/login@v2
         with:
           creds: "${{ secrets.AZURE_CREDENTIALS }}"
 
-      - uses: azure/aks-set-context@v3.2
+      - uses: azure/aks-set-context@v4
         with:
           cluster-name: "${{ vars.CLUSTER_NAME }}"
           resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
