@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 3.2.6](https://img.shields.io/badge/Version-3.2.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.2.6](https://img.shields.io/badge/AppVersion-3.2.6-informational?style=flat-square)
+![Version: 4.0.0-onprem](https://img.shields.io/badge/Version-4.0.0--onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0.0-onprem](https://img.shields.io/badge/AppVersion-4.0.0--onprem-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -412,7 +412,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "3.2.6" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "4.0.0-onprem" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
@@ -445,13 +445,19 @@ config:
       containerRegistry:
         # Add your container registry configuration here
       identityProvider:
-        code: azure
-        authorizationUrl: "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize"
-        tokenUrl: "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token"
+        code: keycloak
+        authorizationUrl: ${AUTHORIZATION_URL}
+        tokenUrl: ${TOKEN_URL}
         defaultScopes:
-          "[${APP_ID_URI}/platform]": "${TENANT_RESOURCE_GROUP} scope"
+          openid: ${OPENID_SCOPE}
         containerScopes:
-          "[${APP_ID_URI}/.default]": "${TENANT_RESOURCE_GROUP} scope"
+          changeme: ${CONTAINER_SCOPE}
+        serverBaseUrl: ${SERVER_BASE_URL}
+        audience: ${AUDIENCE}
+        identity:
+          clientId: ${CLIENT_ID}
+          clientSecret: ${CLIENT_SECRET}
+          tenantId: ${TENANT_ID}
       namespace: ${NAMESPACE}
       loki:
         baseUrl: http://loki.${MONITORING_NAMESPACE}.svc.cluster.local:3100
