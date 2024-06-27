@@ -14,11 +14,11 @@ jobs:
   restart:
     runs-on: ubuntu-latest
     steps:
-      - uses: azure/login@v1
+      - uses: azure/login@v2
         with:
           creds: "${{ secrets.AZURE_CREDENTIALS }}"
 
-      - uses: azure/aks-set-context@v3.2
+      - uses: azure/aks-set-context@v4
         with:
           cluster-name: "${{ vars.CLUSTER_NAME }}"
           resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
