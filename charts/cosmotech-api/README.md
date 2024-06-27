@@ -5,6 +5,9 @@
 Cosmo Tech Platform API
 
 
+# Kubernetes deployment schema
+![kubernetes deployment schema](../../media/schema.png)
+
 # How to Deploy the Cosmo Tech Platform on a Kubernetes Cluster
 
 This guide provides instructions to deploy the Cosmo Tech platform on a Kubernetes cluster using Helm charts. The deployment includes several services in the following order: Minio, PostgreSQL, Argo Workflows, RabbitMQ, Redis, and finally, the Cosmo Tech API.
