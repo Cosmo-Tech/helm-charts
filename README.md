@@ -47,13 +47,6 @@ service:
   type: ClusterIP
 podLabels:
   networking/traffic-allowed: "yes"
-tolerations:
-- key: "vendor"
-  operator: "Equal"
-  value: "cosmotech"
-  effect: "NoSchedule"
-nodeSelector:
-  "cosmotech.com/tier": "services"
 auth:
   rootUser: ${ARGO_MINIO_ACCESS_KEY}
   rootPassword: ${ARGO_MINIO_SECRET_KEY}
@@ -85,13 +78,6 @@ auth:
 primary:
   podLabels:
     "networking/traffic-allowed": "yes"
-  tolerations:
-  - key: "vendor"
-    operator: "Equal"
-    value: "cosmotech"
-    effect: "NoSchedule"
-  nodeSelector:
-    "cosmotech.com/tier": "db"
   persistence:
     enabled: true
     size: ${PERSISTENCE_SIZE}
@@ -166,13 +152,6 @@ server:
   secure: false
   podLabels:
     networking/traffic-allowed: "yes"
-  tolerations:
-  - key: "vendor"
-    operator: "Equal"
-    value: "cosmotech"
-    effect: "NoSchedule"
-  nodeSelector:
-    "cosmotech.com/tier": "services"
   resources:
     requests:
       memory: "256Mi"
@@ -194,13 +173,6 @@ controller:
   serviceMonitor:
     enabled: true
     namespace: ${MONITORING_NAMESPACE}
-  tolerations:
-  - key: "vendor"
-    operator: "Equal"
-    value: "cosmotech"
-    effect: "NoSchedule"
-  nodeSelector:
-    "cosmotech.com/tier": "services"
   resources:
     requests:
       memory: "256Mi"
@@ -247,13 +219,6 @@ Deploy RabbitMQ using the Bitnami Helm chart:
 
 ```bash
 helm install --namespace ${NAMESPACE} ${RABBITMQ_RELEASE_NAME} bitnami/rabbitmq --version "13.0.3" --values - <<EOF
-nodeSelector:
-  cosmotech.com/tier: services
-tolerations:
-  - key: vendor
-    operator: Equal
-    value: cosmotech
-    effect: NoSchedule
 auth:
   existingPasswordSecret: ${INSTANCE_NAME}-secret
   existingSecretPasswordKey: admin-password
@@ -363,13 +328,6 @@ master:
     existingClaim: ${REDIS_MASTER_NAME_PVC}
   podLabels:
     networking/traffic-allowed: "yes"
-  tolerations:
-  - key: "vendor"
-    operator: "Equal"
-    value: "cosmotech"
-    effect: "NoSchedule"
-  nodeSelector:
-    cosmotech.com/tier: "db"
   resources:
     requests:
       cpu: 500m
@@ -385,13 +343,6 @@ replica:
     enabled: true
     size: ${REDIS_DISK_SIZE}
     existingClaim: ${REDIS_REPLICA_NAME_PVC}
-  tolerations:
-  - key: "vendor"
-    operator: "Equal"
-    value: "cosmotech"
-    effect: "NoSchedule"
-  nodeSelector:
-    "cosmotech.com/tier": "db"
   resources:
     requests:
       cpu: 500m
@@ -554,13 +505,6 @@ resources:
     memory: 2048Mi
   requests:
     memory: 1024Mi
-tolerations:
-- key: "vendor"
-  operator: "Equal"
-  value: "cosmotech"
-  effect: "NoSchedule"
-nodeSelector:
-  "cosmotech.com/tier": "services"
 EOF
 ```
 
