@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cosmotech-api-test
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/Cosmo-Tech/cosmotech-api'
+    path: api/kubernetes/helm-chart
+    targetRevision: ndon/argocd
+    helm:
+      valueFiles:
+        - values-test.yaml
+  destination:
+    namespace: warspace-dev
+    server: 'https://kubernetes.default.svc'
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
