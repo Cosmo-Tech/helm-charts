@@ -500,6 +500,8 @@ resources:
     memory: 2048Mi
   requests:
     memory: 1024Mi
+networkPolicy:
+  enabled: true
 EOF
 ```
 
