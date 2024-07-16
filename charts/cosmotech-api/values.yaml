@@ -6,7 +6,7 @@
 #
 
 # -- number of pods replicas
-replicaCount: 3
+replicaCount: 1
 
 image:
   # -- container image to use for deployment
@@ -76,6 +76,9 @@ service:
   # -- service management port
   managementPort: 8081
 
+networkPolicy:
+  enabled: true
+
 api:
   # A Cosmo Tech Helm Release (e.g., latest, vX) is linked to an API Version;
   # so it must define its own path rules here.
@@ -126,6 +129,14 @@ resources:
     cpu: 500m
     memory: 512Mi
 
+persistence:
+  # -- Enable the data storage persistence
+  enabled: true
+  # -- PVC storage request for the data volume
+  size: 8Gi
+  # -- PVC storage class for the data volume, currently requires a ReadWriteMany capability
+  storageClass: ""
+
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -161,16 +172,10 @@ config:
           storage-class: null
           access-modes:
             # -- Any in the following list: ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod (K8s 1.22+).
-            # ReadWriteMany is recommended, as we are likely to have parallel pods accessing the volume
-            - ReadWriteMany
+            - ReadWriteOnce
           requests:
             # File storage minimal claim is 100Gi for Premium classes
             storage: 100Gi
-      s3:
-        endpointUrl: "http://s3-server:9000"
-        bucketName: "changeme"
-        accessKeyId: "changeme"
-        secretAccessKey: "changeme"
       authorization:
         allowed-tenants: []
       identityProvider:
