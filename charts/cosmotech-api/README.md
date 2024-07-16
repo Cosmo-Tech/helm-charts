@@ -10,7 +10,7 @@ Cosmo Tech Platform API
 
 # How to Deploy the Cosmo Tech Platform on a Kubernetes Cluster
 
-This guide provides instructions to deploy the Cosmo Tech platform on a Kubernetes cluster using Helm charts. The deployment includes several services in the following order: Minio, PostgreSQL, Argo Workflows, RabbitMQ, Redis, and finally, the Cosmo Tech API.
+This guide provides instructions to deploy the Cosmo Tech platform on a Kubernetes cluster using Helm charts. The deployment includes several services in the following order: PostgreSQL, Argo Workflows, RabbitMQ, Redis, and finally, the Cosmo Tech API.
 
 ## Prerequisites
 
@@ -21,43 +21,7 @@ Before starting the deployment, ensure you have the following:
 - Required environment variables set up
 - A Kubernetes namespace for this deployment
 
-## 1. Deploy Minio
-
-Deploy Minio using the Bitnami Helm chart:
-
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install --namespace ${NAMESPACE} ${MINIO_RELEASE_NAME} bitnami/minio --version "12.1.3" --values - <<EOF
-fullnameOverride: ${MINIO_RELEASE_NAME}
-defaultBuckets: "${BUCKET_NAMES}"
-persistence:
-  enabled: true
-  size: ${ARGO_MINIO_PERSISTENCE_SIZE}
-  existingClaim: ${MINIO_PVC_NAME}
-resources:
-  requests:
-    memory: ${ARGO_MINIO_REQUESTS_MEMORY}
-    cpu: "100m"
-  limits:
-    memory: ${ARGO_MINIO_REQUESTS_MEMORY}
-    cpu: "1"
-service:
-  type: ClusterIP
-podLabels:
-  networking/traffic-allowed: "yes"
-auth:
-  rootUser: ${ARGO_MINIO_ACCESS_KEY}
-  rootPassword: ${ARGO_MINIO_SECRET_KEY}
-metrics:
-  serviceMonitor:
-    enabled: true
-    namespace: ${MONITORING_NAMESPACE}
-    interval: 30s
-    scrapeTimeout: 10s
-EOF
-```
-
-## 2. Deploy PostgreSQL
+## 1. Deploy PostgreSQL
 
 Deploy PostgreSQL using the Bitnami Helm chart:
 
@@ -99,7 +63,7 @@ metrics:
 EOF
 ```
 
-## 3. Deploy Argo Workflows
+## 2. Deploy Argo Workflows
 
 Deploy Argo Workflows using the Argo Helm chart:
 
@@ -125,19 +89,6 @@ executor:
     value: 1s
   - name: WAIT_CONTAINER_STATUS_CHECK_INTERVAL
     value: 1s
-useDefaultArtifactRepo: true
-artifactRepository:
-  archiveLogs: true
-  s3:
-    bucket: ${ARGO_BUCKET_NAME}
-    endpoint: ${MINIO_RELEASE_NAME}.${NAMESPACE}.svc.cluster.local:9000
-    insecure: true
-    accessKeySecret:
-      name: ${MINIO_RELEASE_NAME}
-      key: root-user
-    secretKeySecret:
-      name: ${MINIO_RELEASE_NAME}
-      key: root-password
 server:
   clusterWorkflowTemplates:
     enabled: false
@@ -205,7 +156,7 @@ mainContainer:
 EOF
 ```
 
-## 4. Deploy RabbitMQ
+## 3. Deploy RabbitMQ
 
 Deploy RabbitMQ using the Bitnami Helm chart:
 
@@ -284,7 +235,7 @@ metrics:
 EOF
 ```
 
-## 5. Deploy Redis
+## 4. Deploy Redis
 
 Deploy Redis using the Bitnami Helm chart:
 
@@ -349,7 +300,7 @@ EOF
 ```
 
 
-## 6. Deploy Cosmo Tech API
+## 5. Deploy Cosmo Tech API
 
 
 ### Step 1: Add Helm Repository
@@ -366,7 +317,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "4.0.0-onprem" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "4.0.2-onprem" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
@@ -420,11 +371,6 @@ config:
         workflows:
           namespace: ${NAMESPACE}
           service-account-name: ${ARGO_SERVICE_ACCOUNT}
-      s3:
-        endpointUrl: ${S3_ENDPOINT_URL}
-        bucketName: ${S3_BUCKET_NAME}
-        accessKeyId: ${S3_ACCESS_KEY_ID}
-        secretAccessKey: ${S3_SECRET_ACCESS_KEY}
       authorization:
         allowedApiKeyConsumers: ${ALLOWED_API_KEY_CONSUMERS}
         allowed-tenants: ${TENANT_ID}
@@ -502,6 +448,13 @@ resources:
     memory: 1024Mi
 networkPolicy:
   enabled: true
+persistence:
+  # -- Enable the data storage persistence
+  enabled: true
+  # -- PVC storage request for the data volume
+  size: 8Gi
+  # -- PVC storage class for the data volume, currently requires a ReadWriteMany capability
+  storageClass: ""
 EOF
 ```
 
