@@ -6,7 +6,7 @@ Cosmo Tech Platform API
 
 
 # Kubernetes deployment schema
-![kubernetes deployment schema](../../media/schema.png)
+![kubernetes deployment schema](media/schema.png)
 
 # How to Deploy the Cosmo Tech Platform on a Kubernetes Cluster
 
