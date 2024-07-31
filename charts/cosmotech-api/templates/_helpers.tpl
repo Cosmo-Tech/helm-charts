@@ -115,6 +115,14 @@ Location of the persistence data
 "/var/lib/cosmotech-api/data"
 {{- end }}
 
+{{- define "cosmotech-api.custom-rootca-path" -}}
+"/mnt/cosmotech/certificates/{{ .Values.api.tlsTruststore.fileName }}"
+{{- end }}
+
+{{- define "cosmotech-api.custom-rootca-bundle" -}}
+"custom-rootca"
+{{- end }}
+
 {{- define "cosmotech-api.baseConfig" -}}
 spring:
   application:
@@ -122,6 +130,32 @@ spring:
   output:
     ansi:
       enabled: never
+{{/*
+ssl bundle must be set here because it is searched even if empty
+*/}}
+{{- if and .Values.api.tlsTruststore.enabled }}
+  data:
+    redis:
+      ssl:
+        bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
+{{- end }}
+{{- if and .Values.api.tlsTruststore.enabled (eq .Values.api.tlsTruststore.type "pem") }}
+  ssl:
+    bundle:
+      pem:
+        {{ include "cosmotech-api.custom-rootca-bundle" . }}:
+          truststore:
+            certificate: {{ include "cosmotech-api.custom-rootca-path" . }}
+{{- end }}
+{{- if and .Values.api.tlsTruststore.enabled (eq .Values.api.tlsTruststore.type "jks") }}
+  ssl:
+    bundle:
+      jks:
+        {{ include "cosmotech-api.custom-rootca-bundle" . }}:
+          truststore:
+            location: {{ include "cosmotech-api.custom-rootca-path" . }}
+            password: {{ .Values.api.tlsTruststore.jksPassword }}
+{{- end }}
 
 api:
   version: "{{ .Values.api.version }}"
@@ -162,4 +196,9 @@ csm:
       {{- end }}
     blobPersistence:
       path: {{ include "cosmotech-api.blobPersistencePath" . }}
+    {{- if and .Values.api.tlsTruststore.enabled .Values.config.csm.platform.twincache.tls.enabled }}
+    twinCache:
+      tls:
+        bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
+    {{- end }}
 {{- end }}
