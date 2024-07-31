@@ -1,12 +1,12 @@
 # cosmotech-api
 
-![Version: 4.0.2-onprem](https://img.shields.io/badge/Version-4.0.2-onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0.2-onprem](https://img.shields.io/badge/AppVersion-4.0.2-onprem-informational?style=flat-square)
+![Version: 4.0.3-onprem](https://img.shields.io/badge/Version-4.0.3--onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0.3-onprem](https://img.shields.io/badge/AppVersion-4.0.3--onprem-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
 
 # Kubernetes deployment schema
-![kubernetes deployment schema](media/schema.png)
+![kubernetes deployment schema](../../media/schema.png)
 
 # How to Deploy the Cosmo Tech Platform on a Kubernetes Cluster
 
@@ -22,8 +22,6 @@ Before starting the deployment, ensure you have the following:
 - A Kubernetes namespace for this deployment
 
 ## 1. Deploy PostgreSQL
-
-[Artifact hub doc](https://artifacthub.io/packages/helm/bitnami/postgresql/11.6.2)
 
 Deploy PostgreSQL using the Bitnami Helm chart:
 
@@ -66,8 +64,6 @@ EOF
 ```
 
 ## 2. Deploy Argo Workflows
-
-[Artifact hub doc](https://artifacthub.io/packages/helm/argo/argo-workflows/0.16.6)
 
 Deploy Argo Workflows using the Argo Helm chart:
 
@@ -162,8 +158,6 @@ EOF
 
 ## 3. Deploy RabbitMQ
 
-[Artifact hub doc](https://artifacthub.io/packages/helm/bitnami/rabbitmq/13.0.3)
-
 Deploy RabbitMQ using the Bitnami Helm chart:
 
 ```bash
@@ -243,8 +237,6 @@ EOF
 
 ## 4. Deploy Redis
 
-[Artifact hub doc](https://artifacthub.io/packages/helm/bitnami/redis/17.8.0)
-
 Deploy Redis using the Bitnami Helm chart:
 
 ```bash
@@ -310,14 +302,13 @@ EOF
 
 ## 5. Deploy Cosmo Tech API
 
-[Artifact hub doc](https://artifacthub.io/packages/helm/cosmotech-api/cosmotech-api/4.0.0-onprem)
 
 ### Step 1: Add Helm Repository
 
 If you haven't already added the Helm repository for Cosmo Tech API, execute the following command:
 
 ```bash
-helm repo add cosmotech https://cosmotech.github.io/helm-charts
+helm repo add cosmotech https://cosmo-tech.github.io/helm-charts
 helm repo update
 ```
 
@@ -326,7 +317,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "4.0.2-onprem" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "4.0.3-onprem" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
@@ -359,13 +350,19 @@ config:
       containerRegistry:
         # Add your container registry configuration here
       identityProvider:
-        code: azure
-        authorizationUrl: "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize"
-        tokenUrl: "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token"
+        code: keycloak
+        authorizationUrl: ${AUTHORIZATION_URL}
+        tokenUrl: ${TOKEN_URL}
         defaultScopes:
-          "[${APP_ID_URI}/platform]": "${TENANT_RESOURCE_GROUP} scope"
+          openid: ${OPENID_SCOPE}
         containerScopes:
-          "[${APP_ID_URI}/.default]": "${TENANT_RESOURCE_GROUP} scope"
+          changeme: ${CONTAINER_SCOPE}
+        serverBaseUrl: ${SERVER_BASE_URL}
+        audience: ${AUDIENCE}
+        identity:
+          clientId: ${CLIENT_ID}
+          clientSecret: ${CLIENT_SECRET}
+          tenantId: ${TENANT_ID}
       namespace: ${NAMESPACE}
       loki:
         baseUrl: http://loki.${MONITORING_NAMESPACE}.svc.cluster.local:3100
@@ -473,13 +470,100 @@ kubectl get pods -n ${NAMESPACE}
 
 Once deployed, access the Cosmo Tech API using the configured ingress hostname (${COSMOTECH_API_DNS_NAME}).
 
+### Optional: Configure TLS client access to Redis
+If you want to access a Redis with SSL / TLS you need to configure the following values:
+``` yaml
+config:
+  csm:
+    platform:
+      twincache:
+        tls:
+          enabled: true
+```
+#### Define a custom root Certificate Authority
+If you secured your Redis with a PKI infrastructure and your own root Certificate Authority and certificates chain, you need to define this certificates to the Cosmo Tech API.
+
+You still need to define the previous settings for twincache.
+
+You can define this root certificate either with CRT/PEM format or with a Java Key Store / JKS.
+
+To do so you need first to create a kubernetes secret with your certificate file, then you must to define the values in api.tlsTruststore.
+
+##### Example: Redis TLS with PEM custom root CA
+Create a kubernetes secret:
+``` bash
+kubectl -n mynamespace create secret generic redis-certificates-tls-secret --from-file=./rootCA.crt
+```
+And configure the helm chart values:
+``` yaml
+api:
+  tlsTruststore:
+    enabled: true
+    secretName: redis-certificates-tls-secret
+    fileName: rootCA.crt
+    type: pem
+```
+
+##### Example: Redis TLS with JKS custom root CA
+Create a kubernetes secret:
+``` bash
+kubectl -n mynamespace create secret generic redis-jks-secret --from-file=./rootCA.jks
+```
+And configure the helm chart values:
+``` yaml
+api:
+  multiTenant: true
+  servletContextPath: /cosmotech-api
+  version: dev
+  tlsTruststore:
+    enabled: true
+    secretName: redis-jks-secret
+    fileName: rootCA.jks
+    type: jks
+    jksPassword: mypassword
+```
+
+### Optional: Configure an API key
+A quick test can also be done by using the API key parameter at this step, to check if the Cosmo Tech API is working correctly.
+
+How to configure the API key
+
+Set these values :
+
+* name : purely informative name of the API key
+* apiKey : value to be authorized by the API
+* associatedRole : role associated to the API key value (default value : Organization.User)
+
+To do so, modify the Cosmo Tech API values file by adding this part :
+``` yaml
+csm:
+  platform:
+    authorization:
+      allowedApiKeyConsumers:
+        - name: "API key name 1"
+          apiKey: "API_KEY_1"
+          associatedRole: "Platform.Admin"
+          securedUris:
+            - "/organizations"
+            - "/organizations/.*/workspaces"
+            - "/connectors/name/.*"
+        - name: "API key name 2"
+          apiKey: "API_KEY_2"
+          apiKeyHeaderName: "X-CSM-CUSTOM-API-KEY"
+```
+The API key headers can be configured in your preferred HTTP Client / CLI, here in below is an example with curl:
+``` bash
+curl --location --request GET 'http://localhost:8080/organizations' \
+--header 'X-CSM-API-KEY: API_KEY_1' \
+--header 'Content-Type: application/json'
+```
+
 ## Conclusion
 
 You have successfully deployed the Cosmo Tech API on Kubernetes using Helm charts. Ensure all environment variables are correctly set and adjust configurations as needed for your environment.
 
 
 This markdown guide provides a comprehensive walkthrough for deploying the Cosmo Tech API using Helm charts, ensuring clarity and completeness in the deployment process. Adjust the placeholders (${...}) with your actual values before executing the commands.
-
 
 
 ## Values
@@ -498,40 +582,40 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | api.serviceMonitor.enabled | bool | `true` |  |
 | api.serviceMonitor.namespace | string | `"cosmotech-monitoring"` |  |
 | api.servletContextPath | string | `"/"` |  |
+| api.tlsTruststore.enabled | bool | `false` |  |
+| api.tlsTruststore.fileName | string | `""` |  |
+| api.tlsTruststore.jksPassword | string | `""` |  |
+| api.tlsTruststore.secretName | string | `""` |  |
+| api.tlsTruststore.type | string | `"pem"` |  |
 | api.version | string | `"latest"` |  |
 | argo.imageCredentials.password | string | `""` | password for registry to use for pulling the Workflow images. Useful if you are using a private registry |
 | argo.imageCredentials.registry | string | `""` | container registry to use for pulling the Workflow images. Useful if you are using a private registry |
 | argo.imageCredentials.username | string | `""` | username for the container registry to use for pulling the Workflow images. Useful if you are using a private registry |
-| argo.storage.class | object | `{"install":true,"mountOptions":["dir_mode=0777","file_mode=0777","uid=0","gid=0","mfsymlinks","cache=strict","actimeo=30"],"parameters":{"skuName":"Premium_LRS"},"provisioner":"kubernetes.io/azure-file"}` | storage class used by Workflows submitted to Argo |
-| argo.storage.class.install | bool | `true` | whether to install the storage class |
-| argo.storage.class.mountOptions | list | `["dir_mode=0777","file_mode=0777","uid=0","gid=0","mfsymlinks","cache=strict","actimeo=30"]` | mount options, depending on the volume plugin configured. If the volume plugin does not support mount options but mount options are specified, provisioning will fail. |
-| argo.storage.class.parameters | object | `{"skuName":"Premium_LRS"}` | Parameters describe volumes belonging to the storage class. Different parameters may be accepted depending on the provisioner. |
-| argo.storage.class.provisioner | string | `"kubernetes.io/azure-file"` | volume plugin used for provisioning Persistent Volumes |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
 | config.csm.platform.argo.base-uri | string | `"http://argo-server:2746"` |  |
-| config.csm.platform.argo.workflows.access-modes[0] | string | `"ReadWriteMany"` | Any in the following list: ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod (K8s 1.22+). ReadWriteMany is recommended, as we are likely to have parallel pods accessing the volume |
+| config.csm.platform.argo.workflows.access-modes[0] | string | `"ReadWriteOnce"` | Any in the following list: ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod (K8s 1.22+). |
 | config.csm.platform.argo.workflows.requests.storage | string | `"100Gi"` |  |
-| config.csm.platform.argo.workflows.storage-class | string | `nil` | Name of the storage class for Workflows volumes. Useful if you want to use a different storage class, installed and managed externally. In this case, you should set argo.storage.class.install to false. |
+| config.csm.platform.argo.workflows.storage-class | string | `nil` | Name of the storage class for Workflows volumes. Useful if you want to use a different storage class managed externally |
 | config.csm.platform.authorization.allowed-tenants | list | `[]` |  |
-| config.csm.platform.azure.containerRegistries.solutions | string | `""` |  |
-| config.csm.platform.azure.credentials.clientId | string | `"changeme"` | Core App Registration Client ID. Deprecated. Use `config.csm.platform.azure.credentials.core.clientId` instead |
-| config.csm.platform.azure.credentials.clientSecret | string | `"changeme"` | Core App Registration Client Secret. Deprecated. Use `config.csm.platform.azure.credentials.core.clientSecret` instead |
-| config.csm.platform.azure.credentials.customer.clientId | string | `"changeme"` | Customer-provided App Registration Client ID. Workaround for connecting to Azure Digital Twins in the context of a Managed App |
-| config.csm.platform.azure.credentials.customer.clientSecret | string | `"changeme"` | Customer-provided App Registration Client Secret. Workaround for connecting to Azure Digital Twins in the context of a Managed App |
-| config.csm.platform.azure.credentials.customer.tenantId | string | `"changeme"` | Customer-provided App Registration Tenant ID. Workaround for connecting to Azure Digital Twins in the context of a Managed App |
-| config.csm.platform.azure.credentials.tenantId | string | `"changeme"` | Core App Registration Tenant ID. Deprecated. Use `config.csm.platform.azure.credentials.core.tenantId` instead |
-| config.csm.platform.azure.dataWarehouseCluster.baseUri | string | `"changeme"` |  |
-| config.csm.platform.azure.dataWarehouseCluster.options.ingestionUri | string | `"changeme"` |  |
-| config.csm.platform.azure.eventBus.baseUri | string | `"changeme"` |  |
-| config.csm.platform.s3.accessKeyId | string | `"changeme"` |  |
-| config.csm.platform.s3.bucketName | string | `"changeme"` |  |
-| config.csm.platform.s3.endpointUrl | string | `"http://s3-server:9000"` |  |
-| config.csm.platform.s3.secretAccessKey | string | `"changeme"` |  |
-| config.csm.platform.vendor | string | `"azure"` |  |
+| config.csm.platform.identityProvider.audience | string | `"changeme"` |  |
+| config.csm.platform.identityProvider.authorizationUrl | string | `"changeme"` |  |
+| config.csm.platform.identityProvider.code | string | `"keycloak"` |  |
+| config.csm.platform.identityProvider.containerScopes.changeme | string | `"changeme"` |  |
+| config.csm.platform.identityProvider.defaultScopes.openid | string | `"OpenId Scope"` |  |
+| config.csm.platform.identityProvider.identity.clientId | string | `"changeme"` |  |
+| config.csm.platform.identityProvider.identity.clientSecret | string | `"changeme"` |  |
+| config.csm.platform.identityProvider.identity.tenantId | string | `"changeme"` |  |
+| config.csm.platform.identityProvider.serverBaseUrl | string | `"changeme"` |  |
+| config.csm.platform.identityProvider.tokenUrl | string | `"changeme"` |  |
+| config.csm.platform.twincache.host | string | `"redis.host.changeme"` |  |
+| config.csm.platform.twincache.password | string | `"changeme"` |  |
+| config.csm.platform.twincache.port | int | `6379` |  |
+| config.csm.platform.twincache.tls.enabled | bool | `false` |  |
+| config.csm.platform.twincache.username | string | `"default"` |  |
 | deploymentStrategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":"50%"},"type":"RollingUpdate"}` | Deployment strategy |
 | deploymentStrategy.rollingUpdate.maxSurge | int | `1` | maximum number of Pods that can be created over the desired number of Pods |
 | deploymentStrategy.rollingUpdate.maxUnavailable | string | `"50%"` | maximum number of Pods that can be unavailable during the update process |
@@ -549,10 +633,14 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | ingress.hosts[0].paths[0].pathType | string | `"Prefix"` |  |
 | ingress.tls | list | `[]` |  |
 | nameOverride | string | `""` | value overriding the name of the Chart. Defaults to the Chart name. Truncated at 63 chars because some Kubernetes name fields are limited to this. |
+| networkPolicy.enabled | bool | `true` |  |
 | nodeSelector | object | `{}` |  |
+| persistence.enabled | bool | `true` | Enable the data storage persistence |
+| persistence.size | string | `"8Gi"` | PVC storage request for the data volume |
+| persistence.storageClass | string | `""` | PVC storage class for the data volume, currently requires a ReadWriteMany capability |
 | podAnnotations | object | `{}` | annotations to set the Deployment pod |
 | podSecurityContext | object | `{"runAsNonRoot":true}` | the pod security context, i.e. applicable to all containers part of the pod |
-| replicaCount | int | `3` | number of pods replicas |
+| replicaCount | int | `1` | number of pods replicas |
 | resources | object | `{"limits":{"cpu":"1000m","memory":"1024Mi"},"requests":{"cpu":"500m","memory":"512Mi"}}` | resources limits and requests for the pod placement |
 | securityContext | object | `{"readOnlyRootFilesystem":true}` | the security context at the pod container level |
 | service.managementPort | int | `8081` | service management port |
@@ -564,4 +652,5 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | tolerations | list | `[]` |  |
 
 ----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.5.0](https://github.com/norwoodj/helm-docs/releases/v1.5.0)
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
+
