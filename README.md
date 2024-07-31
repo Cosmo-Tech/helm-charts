@@ -512,9 +512,6 @@ kubectl -n mynamespace create secret generic redis-jks-secret --from-file=./root
 And configure the helm chart values:
 ``` yaml
 api:
-  multiTenant: true
-  servletContextPath: /cosmotech-api
-  version: dev
   tlsTruststore:
     enabled: true
     secretName: redis-jks-secret
