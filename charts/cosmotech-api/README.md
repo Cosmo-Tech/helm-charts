@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 4.0.3-onprem](https://img.shields.io/badge/Version-4.0.3--onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0.3-onprem](https://img.shields.io/badge/AppVersion-4.0.3--onprem-informational?style=flat-square)
+![Version: 4.0.4-onprem](https://img.shields.io/badge/Version-4.0.4--onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0.4-onprem](https://img.shields.io/badge/AppVersion-4.0.4--onprem-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -317,7 +317,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "4.0.3-onprem" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "4.0.4-onprem" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
