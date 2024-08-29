@@ -116,7 +116,7 @@ Location of the persistence data
 {{- end }}
 
 {{- define "cosmotech-api.custom-rootca-path" -}}
-"/mnt/cosmotech/certificates/{{ .Values.api.tlsTruststore.fileName }}"
+/mnt/cosmotech/certificates
 {{- end }}
 
 {{- define "cosmotech-api.custom-rootca-bundle" -}}
@@ -133,7 +133,10 @@ spring:
 {{/*
 ssl bundle must be set here because it is searched even if empty
 */}}
-{{- if and .Values.api.tlsTruststore.enabled }}
+{{- if .Values.api.tlsTruststore.enabled }}
+  rabbitmq:
+    ssl:
+      bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
   data:
     redis:
       ssl:
@@ -145,7 +148,7 @@ ssl bundle must be set here because it is searched even if empty
       pem:
         {{ include "cosmotech-api.custom-rootca-bundle" . }}:
           truststore:
-            certificate: {{ include "cosmotech-api.custom-rootca-path" . }}
+            certificate: {{ printf "%s/%s" (include "cosmotech-api.custom-rootca-path" .) .Values.api.tlsTruststore.fileName }}
 {{- end }}
 {{- if and .Values.api.tlsTruststore.enabled (eq .Values.api.tlsTruststore.type "jks") }}
   ssl:
@@ -153,7 +156,7 @@ ssl bundle must be set here because it is searched even if empty
       jks:
         {{ include "cosmotech-api.custom-rootca-bundle" . }}:
           truststore:
-            location: {{ include "cosmotech-api.custom-rootca-path" . }}
+            location: {{ printf "%s/%s" (include "cosmotech-api.custom-rootca-path" .) .Values.api.tlsTruststore.fileName }}
             password: {{ .Values.api.tlsTruststore.jksPassword }}
 {{- end }}
 
@@ -196,9 +199,17 @@ csm:
       {{- end }}
     blobPersistence:
       path: {{ include "cosmotech-api.blobPersistencePath" . }}
-    {{- if and .Values.api.tlsTruststore.enabled .Values.config.csm.platform.twincache.tls.enabled }}
-    twinCache:
+    identityProvider:
       tls:
+        enabled: {{ .Values.api.tlsTruststore.enabled }}
         bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
-    {{- end }}
+    twincache:
+      tls:
+        enabled: {{ .Values.api.tlsTruststore.enabled }}
+        bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
+    internalResultServices:
+      eventBus:
+        tls:
+          enabled: {{ .Values.api.tlsTruststore.enabled }}
+          bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
 {{- end }}
