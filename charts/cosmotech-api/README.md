@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 4.0.0-onprem.7](https://img.shields.io/badge/Version-4.0.0--onprem.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0.0-onprem.7](https://img.shields.io/badge/AppVersion-4.0.0--onprem.7-informational?style=flat-square)
+![Version: 4.0.0-onprem.9](https://img.shields.io/badge/Version-4.0.0--onprem.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0.0-onprem.9](https://img.shields.io/badge/AppVersion-4.0.0--onprem.9-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -668,7 +668,7 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | config.csm.platform.internalResultServices.eventBus.port | int | `5672` |  |
 | config.csm.platform.internalResultServices.eventBus.sender.password | string | `"changeme"` |  |
 | config.csm.platform.internalResultServices.eventBus.sender.username | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.tls.bundle | string | `""` |  |
+| config.csm.platform.internalResultServices.eventBus.tls.bundle | string | `"changeme"` |  |
 | config.csm.platform.internalResultServices.eventBus.tls.enabled | bool | `false` |  |
 | config.csm.platform.internalResultServices.storage.admin.password | string | `"changeme"` |  |
 | config.csm.platform.internalResultServices.storage.admin.username | string | `"changeme"` |  |
@@ -681,7 +681,7 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | config.csm.platform.twincache.host | string | `"redis.host.changeme"` |  |
 | config.csm.platform.twincache.password | string | `"changeme"` |  |
 | config.csm.platform.twincache.port | int | `6379` |  |
-| config.csm.platform.twincache.tls.bundle | string | `""` |  |
+| config.csm.platform.twincache.tls.bundle | string | `"changeme"` |  |
 | config.csm.platform.twincache.tls.enabled | bool | `false` |  |
 | config.csm.platform.twincache.username | string | `"default"` |  |
 | deploymentStrategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":"50%"},"type":"RollingUpdate"}` | Deployment strategy |
