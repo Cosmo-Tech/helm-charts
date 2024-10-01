@@ -26,7 +26,7 @@ config:
   apiSettings:
     valueFrom:
       secretKeyRef:
-        name: cosmotech-api-latest
+        name: cosmotech-api-latest-cosmotech-api-chart
         key: application-helm.yml
   argoSettings:
     valueFrom:
