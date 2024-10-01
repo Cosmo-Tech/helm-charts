@@ -35,6 +35,14 @@ tolerations: []
 
 affinity: {}
 
+persistence:
+  # -- Enable the data storage persistence
+  enabled: true
+  # -- PVC size request
+  size: 8Gi
+  # -- PVC storage class
+  storageClass: ""
+
 config:
   apiSettings: {}
   argoSettings: {}

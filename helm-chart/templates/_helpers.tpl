@@ -64,3 +64,10 @@ Create docker secret for pulling the image
 {{- define "cosmotech-modeling-api.imagePullSecret" -}}
 {{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .Values.image.credentials.registry (printf "%s:%s" .Values.image.credentials.username .Values.image.credentials.password | b64enc) | b64enc }}
 {{- end }}
+
+{{/*
+Location of the persistence data
+*/}}
+{{- define "cosmotech-modeling-api.dataPersistencePath" -}}
+"/var/lib/cosmotech-modeling-api/data"
+{{- end }}

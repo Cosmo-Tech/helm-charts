@@ -26,8 +26,14 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.persistence.enabled }}
+      volumes:
+        - name: data-storage
+          persistentVolumeClaim:
+            claimName: {{ include "cosmotech-modeling-api.fullname" . }}-data-storage
+      {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: cosmotech-modeling-api
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ include "cosmotech-modeling-api.appVersion" . }}"
@@ -45,6 +51,8 @@ spec:
               value: {{ .Values.image.repository }}
             - name: CSM_BUILDIMAGE_PULLSECRET
               value: {{ include "cosmotech-modeling-api.fullname" . }}-registry
+            - name: CSM_DATA_PATH
+              value: {{ include "cosmotech-modeling-api.dataPersistencePath" . }}
             {{- with .Values.config.apiSettings }}
             - name: CSM_COSMOTECHAPI_SETTINGS
               {{- toYaml . | nindent 14 }}
@@ -61,6 +69,12 @@ spec:
             - name: AWS_SECRET_ACCESS_KEY
               {{- toYaml . | nindent 14 }}
             {{- end }}
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: data-storage
+              mountPath: {{ include "cosmotech-modeling-api.dataPersistencePath" . }}
+              readOnly: false
+          {{- end }}
           resources:
             {{- toYaml .Values.resource | nindent 12 }}
       {{- with .Values.nodeSelector }}
