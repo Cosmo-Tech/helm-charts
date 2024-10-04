@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 4.0.0-onprem.9](https://img.shields.io/badge/Version-4.0.0--onprem.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0.0-onprem.9](https://img.shields.io/badge/AppVersion-4.0.0--onprem.9-informational?style=flat-square)
+![Version: 4.0.0-onprem.11](https://img.shields.io/badge/Version-4.0.0--onprem.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.0.0-onprem.11](https://img.shields.io/badge/AppVersion-4.0.0--onprem.11-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -683,6 +683,7 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | config.csm.platform.twincache.port | int | `6379` |  |
 | config.csm.platform.twincache.tls.bundle | string | `"changeme"` |  |
 | config.csm.platform.twincache.tls.enabled | bool | `false` |  |
+| config.csm.platform.twincache.useGraphModule | bool | `true` |  |
 | config.csm.platform.twincache.username | string | `"default"` |  |
 | deploymentStrategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":"50%"},"type":"RollingUpdate"}` | Deployment strategy |
 | deploymentStrategy.rollingUpdate.maxSurge | int | `1` | maximum number of Pods that can be created over the desired number of Pods |
