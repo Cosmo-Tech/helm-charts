@@ -299,6 +299,76 @@ commonConfiguration: |-
 EOF
 ```
 
+## 6. Deploy logging
+
+```bash
+helm install loki bitnami/grafana-loki -n ${NAMESPACE} --values - <<EOF
+deploymentMode: SingleBinary
+commonLabels:
+  networking/traffic-allowed: "yes"
+promtail:
+  enabled: false
+memcached:
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+    runAsUser: 1003
+memcachedExporter:
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    runAsUser: 1003
+    seccompProfile:
+      type: RuntimeDefault
+gateway:
+  networkPolicy:
+    enabled: false
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+    runAsUser: 1003
+loki:
+  auth_enabled: false
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: 'filesystem'
+  schemaConfig:
+    configs:
+    - from: "2024-01-01"
+      store: tsdb
+      index:
+        prefix: loki_index_
+        period: 24h
+      object_store: filesystem # we're storing on filesystem so there's no real persistence here.
+      schema: v13
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
+singleBinary:
+  replicas: 1
+read:
+  replicas: 0
+backend:
+  replicas: 0
+write:
+  replicas: 0
+EOF
+```
 
 ## 5. Deploy Cosmo Tech API
 
@@ -365,7 +435,7 @@ config:
           tenantId: ${TENANT_ID}
       namespace: ${NAMESPACE}
       loki:
-        baseUrl: http://loki.${MONITORING_NAMESPACE}.svc.cluster.local:3100
+        baseUrl: http://loki-grafana-loki-querier.${MONITORING_NAMESPACE}.svc.cluster.local:3100
       argo:
         base-uri: "http://${ARGO_RELEASE_NAME}-argo-workflows-server.${NAMESPACE}.svc.cluster.local:2746"
         workflows:
