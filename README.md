@@ -299,7 +299,7 @@ commonConfiguration: |-
 EOF
 ```
 
-## 6. Deploy logging
+## 5. Deploy logging
 
 ```bash
 helm install loki bitnami/grafana-loki -n ${NAMESPACE} --values - <<EOF
@@ -370,7 +370,7 @@ write:
 EOF
 ```
 
-## 5. Deploy Cosmo Tech API
+## 6. Deploy Cosmo Tech API
 
 
 ### Step 1: Add Helm Repository
