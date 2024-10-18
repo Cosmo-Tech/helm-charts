@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (C) 2023-2024 Cosmo Tech
+# SPDX-License-Identifier: LicenseRef-CosmoTech
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cosmotech-modeling-api.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "cosmotech-modeling-api.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    {{- toYaml .Values.config | nindent 4 }}

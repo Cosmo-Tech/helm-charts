@@ -59,15 +59,30 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create docker secret for pulling the image
+Name of the image registry pull secret
 */}}
-{{- define "cosmotech-modeling-api.imagePullSecret" -}}
-{{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .Values.image.credentials.registry (printf "%s:%s" .Values.image.credentials.username .Values.image.credentials.password | b64enc) | b64enc }}
+{{- define "cosmotech-modeling-api.imagePullSecretName" -}}
+{{- if .Values.image.credentials.pullSecret }}
+{{- .Values.image.credentials.pullSecret }}
+{{- else }}
+{{- include "cosmotech-modeling-api.fullname" . }}-image-registry
+{{- end }}
+{{- end }}
+
+{{/*
+Name of the simulator image registry push secret
+*/}}
+{{- define "cosmotech-modeling-api.simulatorRegistryPushSecretName" -}}
+{{- if (((.Values.config.csm).modelingApi).simulatorRegistry).pushSecret }}
+{{- .Values.config.csm.modelingApi.simulatorRegistry.pushSecret }}
+{{- else }}
+{{- include "cosmotech-modeling-api.fullname" . }}-simulator-registry
+{{- end }}
 {{- end }}
 
 {{/*
 Location of the persistence data
 */}}
 {{- define "cosmotech-modeling-api.dataPersistencePath" -}}
-"/var/lib/cosmotech-modeling-api/data"
+/var/lib/cosmotech-modeling-api/data
 {{- end }}

@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "cosmotech-modeling-api.fullname" . }}-data-storage
+  name: {{ include "cosmotech-modeling-api.fullname" . }}-data
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "cosmotech-modeling-api.labels" . | nindent 4 }}

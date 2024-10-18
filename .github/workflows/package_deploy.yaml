@@ -92,16 +92,41 @@ jobs:
               --username "${{ github.actor }}" \
               --password-stdin
 
+      - name: Setup image pull secret
+        run: |
+          kubectl delete secret \
+            --namespace ${{ vars.CLUSTER_NAMESPACE }} \
+            cosmotech-modeling-api-image-secret-${{ matrix.imageTag }} \
+          && \
+          kubectl create secret docker-registry \
+            --namespace ${{ vars.CLUSTER_NAMESPACE }} \
+            cosmotech-modeling-api-image-secret-${{ matrix.imageTag }} \
+            --docker-server ghcr.io \
+            --docker-username ${{ secrets.GHCR_CREDENTIALS_USERNAME }} \
+            --docker-password ${{ secrets.GHCR_CREDENTIALS_PASSWORD }}
+
+      - name: Setup simulator push secret
+        run: |
+          kubectl delete secret \
+            --namespace ${{ vars.CLUSTER_NAMESPACE }} \
+            cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }} \
+          && \
+          kubectl create secret docker-registry \
+            --namespace ${{ vars.CLUSTER_NAMESPACE }} \
+            cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }} \
+            --docker-server csmenginesdev.azurecr.io \
+            --docker-username ${{ secrets.ACR_CREDENTIALS_USERNAME }} \
+            --docker-password ${{ secrets.ACR_CREDENTIALS_PASSWORD }}
+
       - name: Helm upgrade/install
-        working-directory: helm-chart
         run: |
           helm upgrade --install \
             --wait \
             --namespace ${{ vars.CLUSTER_NAMESPACE }} \
-            --values values-dev.yaml \
+            --values deploy_values/phoenixdev.yaml \
             --set image.tag="${{ matrix.imageTag }}" \
-            --set image.credentials.username="${{ secrets.GHCR_CREDENTIALS_USERNAME }}" \
-            --set image.credentials.password="${{ secrets.GHCR_CREDENTIALS_PASSWORD }}" \
+            --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }} \
+            --set config.csm.modelingApi.simulatorRegistry.pushSecret=cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }} \
             cosmotech-modeling-api-${{ matrix.imageTag }} \
             oci://ghcr.io/cosmo-tech/cosmotech-modeling-api-chart \
             --version $CHART_VERSION

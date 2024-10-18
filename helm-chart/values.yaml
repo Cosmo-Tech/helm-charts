@@ -8,6 +8,7 @@ image:
   tag: "latest"
   pullPolicy: Always
   credentials:
+    pullSecret: ""
     registry: ""
     username: ""
     password: ""
@@ -27,7 +28,13 @@ podSecurityContext: {}
 
 securityContext: {}
 
-resources: {}
+resources:
+  limits:
+    cpu: "1"
+    memory: 256Mi
+  requests:
+    cpu: "1"
+    memory: 256Mi
 
 nodeSelector: {}
 
@@ -43,9 +50,13 @@ persistence:
   # -- PVC storage class
   storageClass: ""
 
-config:
-  apiSettings: {}
-  argoSettings: {}
-  s3:
-    user: {}
-    password: {}
+extraEnv:
+  env: []
+  envFrom: []
+
+simulatorRegistryCredentials:
+  registry: ""
+  username: ""
+  password: ""
+
+config: {}

@@ -20,24 +20,38 @@ spec:
       labels:
         {{- include "cosmotech-modeling-api.selectorLabels" . | nindent 8 }}
     spec:
-      {{- if .Values.image.credentials.registry }}
       imagePullSecrets:
-        - name: {{ include "cosmotech-modeling-api.fullname" . }}-registry
-      {{- end }}
+        - name: {{ include "cosmotech-modeling-api.imagePullSecretName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if .Values.persistence.enabled }}
       volumes:
-        - name: data-storage
+        - name: config
+          configMap:
+            name: {{ include "cosmotech-modeling-api.fullname" . }}-config
+      {{- if .Values.persistence.enabled }}
+        - name: data
           persistentVolumeClaim:
-            claimName: {{ include "cosmotech-modeling-api.fullname" . }}-data-storage
+            claimName: {{ include "cosmotech-modeling-api.fullname" . }}-data
       {{- end }}
       containers:
         - name: cosmotech-modeling-api
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ include "cosmotech-modeling-api.appVersion" . }}"
-          command: ["csm-modeling-server"]
+          command:
+            - csm-modeling-server
+            - --property
+            - csm.modelingapi.data.path={{ include "cosmotech-modeling-api.dataPersistencePath" . }}
+            - --property
+            - csm.modelingapi.buildimage.repository={{ .Values.image.repository }}
+            - --property
+            - csm.modelingapi.buildimage.pullsecret={{ include "cosmotech-modeling-api.imagePullSecretName" . }}
+            {{- if empty (((.Values.config.csm).modelingApi).simulatorRegistry).pushSecret }}
+            - --property
+            - csm.modelingapi.simulatorregistry.pushsecret={{ include "cosmotech-modeling-api.simulatorRegistryPushSecretName" . }}
+            {{- end }}
+            - --property-file
+            - /etc/csm-modeling-server/config.yaml
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -46,32 +60,20 @@ spec:
             - name: metrics
               containerPort: 9100
               protocol: TCP
+          {{- with .Values.extraEnv.env }}
           env:
-            - name: CSM_BUILDIMAGE_REPOSITORY
-              value: {{ .Values.image.repository }}
-            - name: CSM_BUILDIMAGE_PULLSECRET
-              value: {{ include "cosmotech-modeling-api.fullname" . }}-registry
-            - name: CSM_DATA_PATH
-              value: {{ include "cosmotech-modeling-api.dataPersistencePath" . }}
-            {{- with .Values.config.apiSettings }}
-            - name: CSM_COSMOTECHAPI_SETTINGS
-              {{- toYaml . | nindent 14 }}
-            {{- end }}
-            {{- with .Values.config.argoSettings }}
-            - name: CSM_ARGOWORKFLOWS_SETTINGS
-              {{- toYaml . | nindent 14 }}
-            {{- end }}
-            {{- with .Values.config.s3.user }}
-            - name: AWS_ACCESS_KEY_ID
-              {{- toYaml . | nindent 14 }}
-            {{- end }}
-            {{- with .Values.config.s3.password }}
-            - name: AWS_SECRET_ACCESS_KEY
-              {{- toYaml . | nindent 14 }}
-            {{- end }}
-          {{- if .Values.persistence.enabled }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.extraEnv.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
-            - name: data-storage
+            - name: config
+              mountPath: /etc/csm-modeling-server
+              readOnly: true
+          {{- if .Values.persistence.enabled }}
+            - name: data
               mountPath: {{ include "cosmotech-modeling-api.dataPersistencePath" . }}
               readOnly: false
           {{- end }}
