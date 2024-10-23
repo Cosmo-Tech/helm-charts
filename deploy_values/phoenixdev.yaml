@@ -11,13 +11,15 @@ tolerations:
 extraEnv:
   env:
     - name: CSM_MODELINGAPI_S3_USERNAME
-      secretKeyRef:
-        name: miniocsmv2
-        key: root-user
+      valueFrom:
+        secretKeyRef:
+          name: miniocsmv2
+          key: root-user
     - name: CSM_MODELINGAPI_S3_PASSWORD
-      secretKeyRef:
-        name: miniocsmv2
-        key: root-password
+      valueFrom:
+        secretKeyRef:
+          name: miniocsmv2
+          key: root-password
 
 config:
   csm:
