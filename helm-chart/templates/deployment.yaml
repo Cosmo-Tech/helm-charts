@@ -78,7 +78,7 @@ spec:
               readOnly: false
           {{- end }}
           resources:
-            {{- toYaml .Values.resource | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
