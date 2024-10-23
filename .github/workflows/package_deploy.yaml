@@ -90,7 +90,7 @@ jobs:
               --password-stdin
 
       - name: Setup image pull secret
-        uses: azure/k8s-create-secret@v4
+        uses: azure/k8s-create-secret@v5
         with:
           namespace: ${{ vars.CLUSTER_NAMESPACE }}
           secret-name: cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
@@ -99,7 +99,7 @@ jobs:
           container-registry-password: ${{ secrets.GHCR_CREDENTIALS_PASSWORD }}
 
       - name: Setup simulator push secret
-        uses: azure/k8s-create-secret@v4
+        uses: azure/k8s-create-secret@v5
         with:
           namespace: ${{ vars.CLUSTER_NAMESPACE }}
           secret-name: cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }}
