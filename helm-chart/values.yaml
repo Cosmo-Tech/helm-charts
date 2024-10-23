@@ -24,9 +24,25 @@ serviceMonitor:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  fsGroupChangePolicy: Always
+  sysctls: []
+  supplementalGroups: []
+  fsGroup: 1001
 
-securityContext: {}
+containerSecurityContext:
+  runAsGroup: 1001
+  runAsNonRoot: true
+  runAsUser: 1001
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+  seLinuxOptions: {}
+  seccompProfile:
+    type: RuntimeDefault
 
 resources:
   limits:
