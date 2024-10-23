@@ -8,6 +8,10 @@ tolerations:
     value: cosmotech
     effect: NoSchedule
 
+serviceMonitor:
+  enabled: true
+  namespace: "cosmotech-monitoring"
+
 extraEnv:
   env:
     - name: CSM_MODELINGAPI_S3_USERNAME
