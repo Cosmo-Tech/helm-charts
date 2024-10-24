@@ -12,6 +12,9 @@ serviceMonitor:
   enabled: true
   namespace: "cosmotech-monitoring"
 
+persistence:
+  storageClass: "azurefile-csi"
+
 extraEnv:
   env:
     - name: CSM_MODELINGAPI_S3_USERNAME
