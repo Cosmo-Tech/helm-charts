@@ -10,7 +10,7 @@ metadata:
     {{- include "cosmotech-modeling-api.labels" . | nindent 4 }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   volumeMode: Filesystem
   resources:
     requests:
