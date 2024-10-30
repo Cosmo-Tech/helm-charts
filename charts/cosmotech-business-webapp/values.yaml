@@ -15,6 +15,8 @@ webapp:
   publicUrl: ""
   server:
     image:
+      # -- name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry)
+      pullSecret: ""
       # -- container image to use as webapp server (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-server)
       repository: ""
       # -- container image tag
@@ -23,6 +25,8 @@ webapp:
       pullPolicy: Always
   functions:
     image:
+      # -- name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry)
+      pullSecret: ""
       # -- container image to use for webapp functions (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-functions)
       repository: ""
       # -- container image tag
