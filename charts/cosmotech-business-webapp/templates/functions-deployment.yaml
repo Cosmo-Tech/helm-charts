@@ -23,6 +23,10 @@ spec:
       volumes:
       - emptyDir: {}
         name: tmpvolume
+      {{- if .Values.webapp.functions.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.webapp.functions.image.pullSecret }}
+      {{- end }}
       containers:
       - name: cosmotech-business-webapp
         volumeMounts:

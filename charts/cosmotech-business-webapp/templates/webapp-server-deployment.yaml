@@ -20,6 +20,10 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      {{- if .Values.webapp.server.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.webapp.server.image.pullSecret }}
+      {{- end }}
       containers:
       - name: cosmotech-business-webapp
         securityContext:

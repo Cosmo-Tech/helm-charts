@@ -1,6 +1,6 @@
 # cosmotech-business-webapp
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Cosmo Tech Businesss Web Application
 
@@ -17,10 +17,12 @@ Cosmo Tech Businesss Web Application
 | resources | object | `{"limits":{"cpu":"1000m","memory":"256Mi"},"requests":{"cpu":"200m","memory":"128Mi"}}` | resource limits for the webapp server pod |
 | webapp.domainName | string | `""` | domain name to use to host the webapp server (e.g. mytenant.cosmotech.com) |
 | webapp.functions.image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image |
+| webapp.functions.image.pullSecret | string | `""` | name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry) |
 | webapp.functions.image.repository | string | `""` | container image to use for webapp functions (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-functions) |
 | webapp.functions.image.tag | string | `"latest"` | container image tag |
 | webapp.publicUrl | string | `""` | URL path to use as root of the webapp (e.g. /cosmotech-webapp/brewery) |
 | webapp.server.image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image |
+| webapp.server.image.pullSecret | string | `""` | name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry) |
 | webapp.server.image.repository | string | `""` | container image to use as webapp server (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-server) |
 | webapp.server.image.tag | string | `"latest"` | container image tag |
 
