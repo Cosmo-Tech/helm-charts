@@ -338,27 +338,34 @@ gateway:
       type: RuntimeDefault
     runAsUser: 1003
 loki:
+  overrideConfiguration:
+    storage_config:
+      aws:
+        bucketnames: <BUCKET NAME>
+        endpoint: <S3 ENDPOINT URL>
+        access_key_id: <ACCESS KEY>
+        secret_access_key: <SECRET>
+        s3forcepathstyle: true
+    schema_config:
+      configs:
+      - from: "2024-01-01"
+        store: tsdb
+        index:
+          prefix: loki_index_
+          period: 24h
+        object_store: 'aws'
+        schema: v13
+  storage:
+    type: 'aws'
   auth_enabled: false
   commonConfig:
     replication_factor: 1
-  storage:
-    type: 'filesystem'
-  schemaConfig:
-    configs:
-    - from: "2024-01-01"
-      store: tsdb
-      index:
-        prefix: loki_index_
-        period: 24h
-      object_store: filesystem # we're storing on filesystem so there's no real persistence here.
-      schema: v13
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
   containerSecurityContext:
     seccompProfile:
       type: RuntimeDefault
-
 singleBinary:
   replicas: 1
 read:
