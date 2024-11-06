@@ -524,7 +524,7 @@ resources:
   requests:
     memory: 1024Mi
 networkPolicy:
-  enabled: true
+  enabled: false
 persistence:
   # -- Enable the data storage persistence
   enabled: true
