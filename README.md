@@ -377,7 +377,74 @@ write:
 EOF
 ```
 
-## 6. Deploy Cosmo Tech API
+## 6. Deploy keycloak
+
+Create a file for the secrets
+
+```bash
+keycloak_admin_user=<keycloak_admin_user>
+keycloak_admin_password=<keycloak_admin_password>
+keycloak_postgres_user=<postgres_user>
+keycloak_postgres_password=<postgres_user_password>
+keycloak_postgres_admin_password=<postgres_admin_password>
+```
+
+Create a kubernetes secret from the contents of the created file
+
+```bash
+kubectl create secret generic keycloak_config --namespace <namespace> --from-env-file=<secret_env_file>
+```
+
+Install the PostgreSQL helm chart
+
+```bash
+helm install postgresql bitnami/postgresql --namespace <namespace> --version 15.5.1 --values - <<EOF
+global:
+  postgresql:
+    auth:
+      database: "keycloak_db"
+      username: ${POSTGRES_USER}
+      existingSecret: ${SECRET}
+      secretKeys:
+        userPasswordKey: ${POSTGRES_PASSWORD_SECRET_KEY}
+        adminPasswordKey: ${POSTGRES_ADMIN_PASSWORD_SECRET_KEY}
+primary:
+  persistence:
+    enabled: true
+    storageClass: ${STORAGE_CLASS}
+EOF
+
+# Install Keycloak helm chart
+helm install keycloak bitnami/keycloak --namespace <namespace> --version 21.3.1 --values - <<EOF
+proxy: "edge"
+httpRelativePath: "/keycloak/"
+auth:
+  existingSecret: ${SECRET}
+  adminUser: ${ADMIN_USER}
+  passwordSecretKey: ${ADMIN_PASSWORD_SECRET_KEY}
+ingress:
+  enabled: true
+  servicePort: "http"
+  hostname: ${INGRESS_HOSTNAME}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
+    nginx.org/client-max-body-size: "0"
+postgresql:
+  enabled: false
+externalDatabase:
+  database: "keycloak_db"
+  host: "keycloak-postgresql.${NAMESPACE}.svc.cluster.local"
+  user: ${POSTGRES_USER}
+  existingSecret: ${SECRET}
+  existingSecretPasswordKey: ${POSTGRES_PASSWORD_SECRET_KEY}
+EOF
+```
+
+## 7. Deploy Cosmo Tech API
 
 
 ### Step 1: Add Helm Repository
