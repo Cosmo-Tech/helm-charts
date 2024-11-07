@@ -41,3 +41,48 @@ spec:
             protocol: TCP
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+        - name: {{ include "cosmotech-business-webapp.server-name" . }}-tmp-volume
+          mountPath: /tmp/webapp
+        - name: {{ include "cosmotech-business-webapp.server-name" . }}-patch-config-volume
+          mountPath: /webapp/patch_config
+      volumes:
+        - name: {{ include "cosmotech-business-webapp.server-name" . }}-tmp-volume
+          emptyDir: {}
+        - name: {{ include "cosmotech-business-webapp.server-name" . }}-patch-config-volume
+          projected:
+            sources:
+            - configMap:
+                name: {{ include "cosmotech-business-webapp.server-name" . }}-configmap-assets
+                optional: true
+                items:
+                - key: favicon.ico
+                  path: assets/favicon.ico
+                - key: authDark.png
+                  path: assets/authDark.png
+                - key: authLight.png
+                  path: assets/authLight.png
+                - key: cosmotech_dark_logo.png
+                  path: assets/cosmotech_dark_logo.png
+                - key: cosmotech_light_logo.png
+                  path: assets/cosmotech_light_logo.png
+            - configMap:
+                name: {{ include "cosmotech-business-webapp.server-name" . }}-configmap-config
+                optional: true
+                items:
+                - key: AssetCopyMapping.json
+                  path: config/AssetCopyMapping.json
+                - key: ContentSecurityPolicy.json
+                  path: config/ContentSecurityPolicy.json
+                - key: GlobalConfiguration.json
+                  path: config/GlobalConfiguration.json
+                - key: HelpMenuConfiguration.json
+                  path: config/HelpMenuConfiguration.json
+            - configMap:
+                name: {{ include "cosmotech-business-webapp.server-name" . }}-configmap-translations
+                optional: true
+                items:
+                - key: en.json
+                  path: translations/en.json
+                - key: fr.json
+                  path: translations/fr.json
