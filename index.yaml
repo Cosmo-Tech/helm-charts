@@ -181,4 +181,14 @@ entries:
     urls:
     - https://github.com/Cosmo-Tech/helm-chart/releases/download/cosmotech-api-0.0.1/cosmotech-api-0.0.1.tgz
     version: 0.0.1
-generated: "2024-10-04T12:47:46.114997911Z"
+  cosmotech-business-webapp:
+  - apiVersion: v1
+    created: "2024-11-12T09:34:58.910004994Z"
+    description: Cosmo Tech Businesss Web Application
+    digest: e5765321efdab44fe62ee18e6dbb91e14d496cd9b22c57336df99c4485945036
+    name: cosmotech-business-webapp
+    type: application
+    urls:
+    - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-business-webapp-0.2.0/cosmotech-business-webapp-0.2.0.tgz
+    version: 0.2.0
+generated: "2024-11-12T09:34:58.910070566Z"
