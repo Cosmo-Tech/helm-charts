@@ -60,3 +60,12 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Default Network policy
+*/}}
+{{- define "tekton-pipelines.defaultNetworkPolicy" -}}
+{{- if .Values.networkPolicy.enabled }}
+networking/traffic-allowed: "yes"
+{{- end }}
+{{- end }}
