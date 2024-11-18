@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tekton-dashboard.fullname" . }}-tekton-dashboard
+  labels:
+    app: tekton-dashboard
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/part-of: tekton-dashboard
+    dashboard.tekton.dev/release: v0.52.0
+    version: v0.52.0
+  {{- include "tekton-dashboard.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.tektonDashboard.type }}
+  selector:
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/name: dashboard
+    app.kubernetes.io/part-of: tekton-dashboard
+  {{- include "tekton-dashboard.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.tektonDashboard.ports | toYaml | nindent 2 }}

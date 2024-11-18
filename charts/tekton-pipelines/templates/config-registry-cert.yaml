@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "tekton-pipelines.fullname" . }}-config-registry-cert
+  labels:
+    app.kubernetes.io/part-of: tekton-pipelines
+  {{- include "tekton-pipelines.labels" . | nindent 4 }}

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: resolvers-feature-flags
+  labels:
+    app.kubernetes.io/component: resolvers
+    app.kubernetes.io/part-of: tekton-pipelines
+  {{- include "tekton-pipelines.labels" . | nindent 4 }}
+data:
+  enable-bundles-resolver: {{ .Values.resolversFeatureFlags.enableBundlesResolver
+    | quote }}
+  enable-cluster-resolver: {{ .Values.resolversFeatureFlags.enableClusterResolver
+    | quote }}
+  enable-git-resolver: {{ .Values.resolversFeatureFlags.enableGitResolver | quote
+    }}
+  enable-hub-resolver: {{ .Values.resolversFeatureFlags.enableHubResolver | quote
+    }}

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashboard-info
+  labels:
+    app.kubernetes.io/part-of: tekton-dashboard
+  {{- include "tekton-dashboard.labels" . | nindent 4 }}
+data:
+  version: {{ .Values.dashboardInfo.version | quote }}

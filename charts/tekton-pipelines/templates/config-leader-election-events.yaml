@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-leader-election-events
+  labels:
+    app.kubernetes.io/part-of: tekton-pipelines
+  {{- include "tekton-pipelines.labels" . | nindent 4 }}
+data:
+  _example: {{ .Values.configLeaderElectionEvents.Example | toYaml | indent 1 }}

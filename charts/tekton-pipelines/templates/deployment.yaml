@@ -1,0 +1,429 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tekton-pipelines.fullname" . }}-controller
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/part-of: tekton-pipelines
+    pipeline.tekton.dev/release: v0.65.0
+    version: v0.65.0
+  {{- include "tekton-pipelines.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.controller.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: default
+      app.kubernetes.io/name: controller
+      app.kubernetes.io/part-of: tekton-pipelines
+    {{- include "tekton-pipelines.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: tekton-pipelines-controller
+        app.kubernetes.io/component: controller
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: controller
+        app.kubernetes.io/part-of: tekton-pipelines
+        app.kubernetes.io/version: v0.65.0
+        pipeline.tekton.dev/release: v0.65.0
+        version: v0.65.0
+      {{- include "tekton-pipelines.selectorLabels" . | nindent 8 }}
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: NotIn
+                values:
+                - windows
+      containers:
+      - args: {{- toYaml .Values.controller.tektonPipelinesController.args | nindent 8
+          }}
+        env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_DEFAULTS_NAME
+          value: {{ quote .Values.controller.tektonPipelinesController.env.configDefaultsName
+            }}
+        - name: CONFIG_LOGGING_NAME
+          value: {{ quote .Values.controller.tektonPipelinesController.env.configLoggingName
+            }}
+        - name: CONFIG_OBSERVABILITY_NAME
+          value: {{ quote .Values.controller.tektonPipelinesController.env.configObservabilityName
+            }}
+        - name: CONFIG_FEATURE_FLAGS_NAME
+          value: {{ quote .Values.controller.tektonPipelinesController.env.configFeatureFlagsName
+            }}
+        - name: CONFIG_LEADERELECTION_NAME
+          value: {{ quote .Values.controller.tektonPipelinesController.env.configLeaderelectionName
+            }}
+        - name: CONFIG_SPIRE
+          value: {{ quote .Values.controller.tektonPipelinesController.env.configSpire
+            }}
+        - name: SSL_CERT_FILE
+          value: {{ quote .Values.controller.tektonPipelinesController.env.sslCertFile
+            }}
+        - name: SSL_CERT_DIR
+          value: {{ quote .Values.controller.tektonPipelinesController.env.sslCertDir }}
+        - name: METRICS_DOMAIN
+          value: {{ quote .Values.controller.tektonPipelinesController.env.metricsDomain
+            }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.controller.tektonPipelinesController.image.repository }}:{{ .Values.controller.tektonPipelinesController.image.tag
+          | default .Chart.AppVersion }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: probes
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        name: tekton-pipelines-controller
+        ports:
+        - containerPort: 9090
+          name: metrics
+        - containerPort: 8008
+          name: profiling
+        - containerPort: 8080
+          name: probes
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: probes
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources: {}
+        securityContext: {{- toYaml .Values.controller.tektonPipelinesController.containerSecurityContext
+          | nindent 10 }}
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+        - mountPath: /etc/config-registry-cert
+          name: config-registry-cert
+      serviceAccountName: {{ include "tekton-pipelines.fullname" . }}-controller
+      volumes:
+      - configMap:
+          name: {{ include "tekton-pipelines.fullname" . }}-config-logging
+        name: config-logging
+      - configMap:
+          name: {{ include "tekton-pipelines.fullname" . }}-config-registry-cert
+        name: config-registry-cert
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tekton-pipelines.fullname" . }}-tekton-events-controller
+  labels:
+    app.kubernetes.io/component: events
+    app.kubernetes.io/part-of: tekton-pipelines
+    pipeline.tekton.dev/release: v0.65.0
+    version: v0.65.0
+  {{- include "tekton-pipelines.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.tektonEventsController.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: events
+      app.kubernetes.io/instance: default
+      app.kubernetes.io/name: events
+      app.kubernetes.io/part-of: tekton-pipelines
+    {{- include "tekton-pipelines.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: tekton-events-controller
+        app.kubernetes.io/component: events
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: events
+        app.kubernetes.io/part-of: tekton-pipelines
+        app.kubernetes.io/version: v0.65.0
+        pipeline.tekton.dev/release: v0.65.0
+        version: v0.65.0
+      {{- include "tekton-pipelines.selectorLabels" . | nindent 8 }}
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: NotIn
+                values:
+                - windows
+      containers:
+      - env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_DEFAULTS_NAME
+          value: {{ quote .Values.tektonEventsController.tektonEventsController.env.configDefaultsName
+            }}
+        - name: CONFIG_LOGGING_NAME
+          value: {{ quote .Values.tektonEventsController.tektonEventsController.env.configLoggingName
+            }}
+        - name: CONFIG_OBSERVABILITY_NAME
+          value: {{ quote .Values.tektonEventsController.tektonEventsController.env.configObservabilityName
+            }}
+        - name: CONFIG_LEADERELECTION_NAME
+          value: {{ quote .Values.tektonEventsController.tektonEventsController.env.configLeaderelectionName
+            }}
+        - name: SSL_CERT_FILE
+          value: {{ quote .Values.tektonEventsController.tektonEventsController.env.sslCertFile
+            }}
+        - name: SSL_CERT_DIR
+          value: {{ quote .Values.tektonEventsController.tektonEventsController.env.sslCertDir
+            }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.tektonEventsController.tektonEventsController.image.repository
+          }}:{{ .Values.tektonEventsController.tektonEventsController.image.tag | default
+          .Chart.AppVersion }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: probes
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        name: tekton-events-controller
+        ports:
+        - containerPort: 9090
+          name: metrics
+        - containerPort: 8008
+          name: profiling
+        - containerPort: 8080
+          name: probes
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: probes
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources: {}
+        securityContext: {{- toYaml .Values.tektonEventsController.tektonEventsController.containerSecurityContext
+          | nindent 10 }}
+        volumeMounts:
+        - mountPath: /etc/config-logging
+          name: config-logging
+        - mountPath: /etc/config-registry-cert
+          name: config-registry-cert
+      serviceAccountName: {{ include "tekton-pipelines.fullname" . }}-tekton-events-controller
+      volumes:
+      - configMap:
+          name: {{ include "tekton-pipelines.fullname" . }}-config-logging
+        name: config-logging
+      - configMap:
+          name: {{ include "tekton-pipelines.fullname" . }}-config-registry-cert
+        name: config-registry-cert
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tekton-pipelines.fullname" . }}-remote-resolvers
+  labels:
+    app.kubernetes.io/component: resolvers
+    app.kubernetes.io/part-of: tekton-pipelines
+    pipeline.tekton.dev/release: v0.65.0
+    version: v0.65.0
+  {{- include "tekton-pipelines.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.remoteResolvers.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: resolvers
+      app.kubernetes.io/instance: default
+      app.kubernetes.io/name: resolvers
+      app.kubernetes.io/part-of: tekton-pipelines
+    {{- include "tekton-pipelines.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: tekton-pipelines-resolvers
+        app.kubernetes.io/component: resolvers
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: resolvers
+        app.kubernetes.io/part-of: tekton-pipelines
+        app.kubernetes.io/version: v0.65.0
+        pipeline.tekton.dev/release: v0.65.0
+        version: v0.65.0
+      {{- include "tekton-pipelines.selectorLabels" . | nindent 8 }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: resolvers
+                  app.kubernetes.io/instance: default
+                  app.kubernetes.io/name: resolvers
+                  app.kubernetes.io/part-of: tekton-pipelines
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_LOGGING_NAME
+          value: {{ quote .Values.remoteResolvers.controller.env.configLoggingName }}
+        - name: CONFIG_OBSERVABILITY_NAME
+          value: {{ quote .Values.remoteResolvers.controller.env.configObservabilityName
+            }}
+        - name: CONFIG_FEATURE_FLAGS_NAME
+          value: {{ quote .Values.remoteResolvers.controller.env.configFeatureFlagsName
+            }}
+        - name: CONFIG_LEADERELECTION_NAME
+          value: {{ quote .Values.remoteResolvers.controller.env.configLeaderelectionName
+            }}
+        - name: METRICS_DOMAIN
+          value: {{ quote .Values.remoteResolvers.controller.env.metricsDomain }}
+        - name: PROBES_PORT
+          value: {{ quote .Values.remoteResolvers.controller.env.probesPort }}
+        - name: ARTIFACT_HUB_API
+          value: {{ quote .Values.remoteResolvers.controller.env.artifactHubApi }}
+        - name: TEKTON_HUB_API
+          value: {{ quote .Values.remoteResolvers.controller.env.tektonHubApi }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.remoteResolvers.controller.image.repository }}:{{ .Values.remoteResolvers.controller.image.tag
+          | default .Chart.AppVersion }}
+        name: controller
+        ports:
+        - containerPort: 9090
+          name: metrics
+        - containerPort: 8008
+          name: profiling
+        - containerPort: 8080
+          name: probes
+        resources: {{- toYaml .Values.remoteResolvers.controller.resources | nindent 10
+          }}
+        securityContext: {{- toYaml .Values.remoteResolvers.controller.containerSecurityContext
+          | nindent 10 }}
+      serviceAccountName: {{ include "tekton-pipelines.fullname" . }}-resolvers
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tekton-pipelines.fullname" . }}-webhook
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/part-of: tekton-pipelines
+    pipeline.tekton.dev/release: v0.65.0
+    version: v0.65.0
+  {{- include "tekton-pipelines.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: webhook
+      app.kubernetes.io/instance: default
+      app.kubernetes.io/name: webhook
+      app.kubernetes.io/part-of: tekton-pipelines
+    {{- include "tekton-pipelines.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: tekton-pipelines-webhook
+        app.kubernetes.io/component: webhook
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: webhook
+        app.kubernetes.io/part-of: tekton-pipelines
+        app.kubernetes.io/version: v0.65.0
+        pipeline.tekton.dev/release: v0.65.0
+        version: v0.65.0
+      {{- include "tekton-pipelines.selectorLabels" . | nindent 8 }}
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: NotIn
+                values:
+                - windows
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: webhook
+                  app.kubernetes.io/instance: default
+                  app.kubernetes.io/name: webhook
+                  app.kubernetes.io/part-of: tekton-pipelines
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - env:
+        - name: SYSTEM_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: CONFIG_LOGGING_NAME
+          value: {{ quote .Values.webhook.webhook.env.configLoggingName }}
+        - name: CONFIG_OBSERVABILITY_NAME
+          value: {{ quote .Values.webhook.webhook.env.configObservabilityName }}
+        - name: CONFIG_LEADERELECTION_NAME
+          value: {{ quote .Values.webhook.webhook.env.configLeaderelectionName }}
+        - name: CONFIG_FEATURE_FLAGS_NAME
+          value: {{ quote .Values.webhook.webhook.env.configFeatureFlagsName }}
+        - name: PROBES_PORT
+          value: {{ quote .Values.webhook.webhook.env.probesPort }}
+        - name: WEBHOOK_PORT
+          value: {{ quote .Values.webhook.webhook.env.webhookPort }}
+        - name: WEBHOOK_ADMISSION_CONTROLLER_NAME
+          value: {{ quote .Values.webhook.webhook.env.webhookAdmissionControllerName }}
+        - name: WEBHOOK_SERVICE_NAME
+          value: {{ quote .Values.webhook.webhook.env.webhookServiceName }}
+        - name: WEBHOOK_SECRET_NAME
+          value: {{ quote .Values.webhook.webhook.env.webhookSecretName }}
+        - name: METRICS_DOMAIN
+          value: {{ quote .Values.webhook.webhook.env.metricsDomain }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.webhook.webhook.image.repository }}:{{ .Values.webhook.webhook.image.tag
+          | default .Chart.AppVersion }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: probes
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        name: webhook
+        ports:
+        - containerPort: 9090
+          name: metrics
+        - containerPort: 8008
+          name: profiling
+        - containerPort: 8443
+          name: https-webhook
+        - containerPort: 8080
+          name: probes
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: probes
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources: {{- toYaml .Values.webhook.webhook.resources | nindent 10 }}
+        securityContext: {{- toYaml .Values.webhook.webhook.containerSecurityContext |
+          nindent 10 }}
+      serviceAccountName: {{ include "tekton-pipelines.fullname" . }}-webhook

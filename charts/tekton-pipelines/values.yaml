@@ -1,0 +1,615 @@
+bundleresolverConfig:
+  defaultKind: task
+  defaultServiceAccount: default
+clusterResolverConfig:
+  allowedNamespaces: ""
+  blockedNamespaces: ""
+  defaultKind: task
+  defaultNamespace: ""
+configDefaults:
+  Example: |-
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+    # default-timeout-minutes contains the default number of
+    # minutes to use for TaskRun and PipelineRun, if none is specified.
+    default-timeout-minutes: "60"  # 60 minutes
+    # default-service-account contains the default service account name
+    # to use for TaskRun and PipelineRun, if none is specified.
+    default-service-account: "default"
+    # default-managed-by-label-value contains the default value given to the
+    # "app.kubernetes.io/managed-by" label applied to all Pods created for
+    # TaskRuns. If a user's requested TaskRun specifies another value for this
+    # label, the user's request supercedes.
+    default-managed-by-label-value: "tekton-pipelines"
+    # default-pod-template contains the default pod template to use for
+    # TaskRun and PipelineRun. If a pod template is specified on the
+    # PipelineRun, the default-pod-template is merged with that one.
+    # default-pod-template:
+    # default-affinity-assistant-pod-template contains the default pod template
+    # to use for affinity assistant pods. If a pod template is specified on the
+    # PipelineRun, the default-affinity-assistant-pod-template is merged with
+    # that one.
+    # default-affinity-assistant-pod-template:
+    # default-cloud-events-sink contains the default CloudEvents sink to be
+    # used for TaskRun and PipelineRun, when no sink is specified.
+    # Note that right now it is still not possible to set a PipelineRun or
+    # TaskRun specific sink, so the default is the only option available.
+    # If no sink is specified, no CloudEvent is generated
+    # default-cloud-events-sink:
+    # default-task-run-workspace-binding contains the default workspace
+    # configuration provided for any Workspaces that a Task declares
+    # but that a TaskRun does not explicitly provide.
+    # default-task-run-workspace-binding: |
+    #   emptyDir: {}
+    # default-max-matrix-combinations-count contains the default maximum number
+    # of combinations from a Matrix, if none is specified.
+    default-max-matrix-combinations-count: "256"
+    # default-forbidden-env contains comma seperated environment variables that cannot be
+    # overridden by podTemplate.
+    default-forbidden-env:
+    # default-resolver-type contains the default resolver type to be used in the cluster,
+    # no default-resolver-type is specified by default
+    default-resolver-type:
+    # default-imagepullbackoff-timeout contains the default duration to wait
+    # before requeuing the TaskRun to retry, specifying 0 here is equivalent to fail fast
+    # possible values could be 1m, 5m, 10s, 1h, etc
+    # default-imagepullbackoff-timeout: "5m"
+    # default-container-resource-requirements allow users to update default resource requirements
+    # to a init-containers and containers of a pods create by the controller
+    # Onet: All the resource requirements are applied to init-containers and containers
+    # only if the existing resource requirements are empty.
+    # default-container-resource-requirements: |
+    #   place-scripts: # updates resource requirements of a 'place-scripts' container
+    #     requests:
+    #       memory: "64Mi"
+    #       cpu: "250m"
+    #     limits:
+    #       memory: "128Mi"
+    #       cpu: "500m"
+    #
+    #   prepare: # updates resource requirements of a 'prepare' container
+    #     requests:
+    #       memory: "64Mi"
+    #       cpu: "250m"
+    #     limits:
+    #       memory: "256Mi"
+    #       cpu: "500m"
+    #
+    #   working-dir-initializer: # updates resource requirements of a 'working-dir-initializer' container
+    #     requests:
+    #       memory: "64Mi"
+    #       cpu: "250m"
+    #     limits:
+    #       memory: "512Mi"
+    #       cpu: "500m"
+    #
+    #   prefix-scripts: # updates resource requirements of containers which starts with 'scripts-'
+    #     requests:
+    #       memory: "64Mi"
+    #       cpu: "250m"
+    #     limits:
+    #       memory: "128Mi"
+    #       cpu: "500m"
+    #
+    #   prefix-sidecar-scripts: # updates resource requirements of containers which starts with 'sidecar-scripts-'
+    #     requests:
+    #       memory: "64Mi"
+    #       cpu: "250m"
+    #     limits:
+    #       memory: "128Mi"
+    #       cpu: "500m"
+    #
+    #   default: # updates resource requirements of init-containers and containers which has empty resource resource requirements
+    #     requests:
+    #       memory: "64Mi"
+    #       cpu: "250m"
+    #     limits:
+    #       memory: "256Mi"
+    #       cpu: "500m"
+configEvents:
+  Example: |-
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+    # formats contains a comma seperated list of event formats to be used
+    # the only format supported today is "tektonv1". An empty string is not
+    # a valid configuration. To disable events, do not specify the sink.
+    formats: "tektonv1"
+    # sink contains the event sink to be used for TaskRun, PipelineRun and
+    # CustomRun. If no sink is specified, no CloudEvent is generated.
+    # This setting supercedes the "default-cloud-events-sink" from the
+    # "config-defaults" config map
+    sink: "https://events.sink/cdevents"
+configLeaderElectionController:
+  Example: |-
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+    # lease-duration is how long non-leaders will wait to try to acquire the
+    # lock; 15 seconds is the value used by core kubernetes controllers.
+    lease-duration: "60s"
+    # renew-deadline is how long a leader will try to renew the lease before
+    # giving up; 10 seconds is the value used by core kubernetes controllers.
+    renew-deadline: "40s"
+    # retry-period is how long the leader election client waits between tries of
+    # actions; 2 seconds is the value used by core kubernetes controllers.
+    retry-period: "10s"
+    # buckets is the number of buckets used to partition key space of each
+    # Reconciler. If this number is M and the replica number of the controller
+    # is N, the N replicas will compete for the M buckets. The owner of a
+    # bucket will take care of the reconciling for the keys partitioned into
+    # that bucket.
+    buckets: "1"
+configLeaderElectionEvents:
+  Example: |-
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+    # lease-duration is how long non-leaders will wait to try to acquire the
+    # lock; 15 seconds is the value used by core kubernetes controllers.
+    lease-duration: "60s"
+    # renew-deadline is how long a leader will try to renew the lease before
+    # giving up; 10 seconds is the value used by core kubernetes controllers.
+    renew-deadline: "40s"
+    # retry-period is how long the leader election client waits between tries of
+    # actions; 2 seconds is the value used by core kubernetes controllers.
+    retry-period: "10s"
+    # buckets is the number of buckets used to partition key space of each
+    # Reconciler. If this number is M and the replica number of the controller
+    # is N, the N replicas will compete for the M buckets. The owner of a
+    # bucket will take care of the reconciling for the keys partitioned into
+    # that bucket.
+    buckets: "1"
+configLeaderElectionResolvers:
+  Example: |-
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+    # lease-duration is how long non-leaders will wait to try to acquire the
+    # lock; 15 seconds is the value used by core kubernetes controllers.
+    lease-duration: "60s"
+    # renew-deadline is how long a leader will try to renew the lease before
+    # giving up; 10 seconds is the value used by core kubernetes controllers.
+    renew-deadline: "40s"
+    # retry-period is how long the leader election client waits between tries of
+    # actions; 2 seconds is the value used by core kubernetes controllers.
+    retry-period: "10s"
+    # buckets is the number of buckets used to partition key space of each
+    # Reconciler. If this number is M and the replica number of the controller
+    # is N, the N replicas will compete for the M buckets. The owner of a
+    # bucket will take care of the reconciling for the keys partitioned into
+    # that bucket.
+    buckets: "1"
+configLeaderElectionWebhook:
+  Example: |-
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+    # lease-duration is how long non-leaders will wait to try to acquire the
+    # lock; 15 seconds is the value used by core kubernetes controllers.
+    lease-duration: "60s"
+    # renew-deadline is how long a leader will try to renew the lease before
+    # giving up; 10 seconds is the value used by core kubernetes controllers.
+    renew-deadline: "40s"
+    # retry-period is how long the leader election client waits between tries of
+    # actions; 2 seconds is the value used by core kubernetes controllers.
+    retry-period: "10s"
+    # buckets is the number of buckets used to partition key space of each
+    # Reconciler. If this number is M and the replica number of the controller
+    # is N, the N replicas will compete for the M buckets. The owner of a
+    # bucket will take care of the reconciling for the keys partitioned into
+    # that bucket.
+    buckets: "1"
+configLogging:
+  loglevelController: info
+  loglevelWebhook: info
+  zapLoggerConfig: |-
+    {
+      "level": "info",
+      "development": false,
+      "sampling": {
+        "initial": 100,
+        "thereafter": 100
+      },
+      "outputPaths": ["stdout"],
+      "errorOutputPaths": ["stderr"],
+      "encoding": "json",
+      "encoderConfig": {
+        "timeKey": "timestamp",
+        "levelKey": "severity",
+        "nameKey": "logger",
+        "callerKey": "caller",
+        "messageKey": "message",
+        "stacktraceKey": "stacktrace",
+        "lineEnding": "",
+        "levelEncoder": "",
+        "timeEncoder": "iso8601",
+        "durationEncoder": "",
+        "callerEncoder": ""
+      }
+    }
+configObservability:
+  Example: |-
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+    # metrics.backend-destination field specifies the system metrics destination.
+    # It supports either prometheus (the default) or stackdriver.
+    # Note: Using Stackdriver will incur additional charges.
+    metrics.backend-destination: prometheus
+    # metrics.stackdriver-project-id field specifies the Stackdriver project ID. This
+    # field is optional. When running on GCE, application default credentials will be
+    # used and metrics will be sent to the cluster's project if this field is
+    # not provided.
+    metrics.stackdriver-project-id: "<your stackdriver project id>"
+    # metrics.allow-stackdriver-custom-metrics indicates whether it is allowed
+    # to send metrics to Stackdriver using "global" resource type and custom
+    # metric type. Setting this flag to "true" could cause extra Stackdriver
+    # charge.  If metrics.backend-destination is not Stackdriver, this is
+    # ignored.
+    metrics.allow-stackdriver-custom-metrics: "false"
+    metrics.taskrun.level: "task"
+    metrics.taskrun.duration-type: "histogram"
+    metrics.pipelinerun.level: "pipeline"
+    metrics.pipelinerun.duration-type: "histogram"
+    metrics.count.enable-reason: "false"
+    metrics.running-pipelinerun.level: ""
+configSpire:
+  Example: |-
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+    #
+    # spire-trust-domain specifies the SPIRE trust domain to use.
+    # spire-trust-domain: "example.org"
+    #
+    # spire-socket-path specifies the SPIRE agent socket for SPIFFE workload API.
+    # spire-socket-path: "unix:///spiffe-workload-api/spire-agent.sock"
+    #
+    # spire-server-addr specifies the SPIRE server address for workload/node registration.
+    # spire-server-addr: "spire-server.spire.svc.cluster.local:8081"
+    #
+    # spire-node-alias-prefix specifies the SPIRE node alias prefix to use.
+    # spire-node-alias-prefix: "/tekton-node/"
+configTracing:
+  Example: |-
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+    #
+    # Enable sending traces to defined endpoint by setting this to true
+    enabled: "true"
+    #
+    # API endpoint to send the traces to
+    # (optional): The default value is given below
+    endpoint: "http://jaeger-collector.jaeger.svc.cluster.local:14268/api/traces"
+    # (optional) Name of the k8s secret which contains basic auth credentials
+    credentialsSecret: "jaeger-creds"
+controller:
+  ports:
+  - name: http-metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  - name: http-profiling
+    port: 8008
+    targetPort: 8008
+  - name: probes
+    port: 8080
+    targetPort: 0
+  replicas: 1
+  serviceAccount:
+    annotations: {}
+  tektonPipelinesController:
+    args:
+    - -entrypoint-image
+    - ghcr.io/tektoncd/pipeline/entrypoint-bff0a22da108bc2f16c818c97641a296:v0.65.0@sha256:7b53db05ce43e10e08affddc41d8298fdd20a4ae9954f8f69f21319b1264aea1
+    - -nop-image
+    - ghcr.io/tektoncd/pipeline/nop-8eac7c133edad5df719dc37b36b62482:v0.65.0@sha256:3d7788764e58c78401c8f6bff18d8df22724446108c659baf4b14901b38030d3
+    - -sidecarlogresults-image
+    - ghcr.io/tektoncd/pipeline/sidecarlogresults-7501c6a20d741631510a448b48ab098f:v0.65.0@sha256:23db7cc51a918437d84c59946b60e95306e5157f50ba79ed927d953fd35a6534
+    - -workingdirinit-image
+    - ghcr.io/tektoncd/pipeline/workingdirinit-0c558922ec6a1b739e550e349f2d5fc1:v0.65.0@sha256:fc8af4ec91b0a6bd4da56d74f46d3d8740e2b8372f5d991bae478d98830d1332
+    - -shell-image
+    - cgr.dev/chainguard/busybox@sha256:19f02276bf8dbdd62f069b922f10c65262cc34b710eea26ff928129a736be791
+    - -shell-image-win
+    - mcr.microsoft.com/powershell:nanoserver@sha256:b6d5ff841b78bdf2dfed7550000fd4f3437385b8fa686ec0f010be24777654d6
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsGroup: 65532
+      runAsNonRoot: true
+      runAsUser: 65532
+      seccompProfile:
+        type: RuntimeDefault
+    env:
+      configDefaultsName: config-defaults
+      configFeatureFlagsName: feature-flags
+      configLeaderelectionName: config-leader-election-controller
+      configLoggingName: config-logging
+      configObservabilityName: config-observability
+      configSpire: config-spire
+      metricsDomain: tekton.dev/pipeline
+      sslCertDir: /etc/ssl/certs
+      sslCertFile: /etc/config-registry-cert/cert
+    image:
+      repository: ghcr.io/tektoncd/pipeline/controller-10a3e32792f33651396d02b6855a6e36
+      tag: v0.65.0@sha256:96cfed37cd749a696a2acbcc782b2b4cba5c0f7531b620ac52761af3d8e7d13b
+  type: ClusterIP
+featureFlags:
+  awaitSidecarReadiness: "true"
+  coschedule: workspaces
+  disableAffinityAssistant: "false"
+  disableCredsInit: "false"
+  disableInlineSpec: ""
+  enableApiFields: beta
+  enableArtifacts: "false"
+  enableCelInWhenexpression: "false"
+  enableConciseResolverSyntax: "false"
+  enableKubernetesSidecar: "false"
+  enableParamEnum: "false"
+  enableProvenanceInStatus: "true"
+  enableStepActions: "false"
+  enableTektonOciBundles: "false"
+  enforceNonfalsifiability: none
+  keepPodOnCancel: "false"
+  requireGitSshSecretKnownHosts: "false"
+  resultsFrom: termination-message
+  runningInEnvironmentWithInjectedSidecars: "true"
+  sendCloudeventsForRuns: "false"
+  setSecurityContext: "false"
+  trustedResourcesVerificationNoMatchPolicy: ignore
+gitResolverConfig:
+  apiTokenSecretKey: ""
+  apiTokenSecretName: ""
+  apiTokenSecretNamespace: default
+  defaultOrg: ""
+  defaultRevision: main
+  defaultUrl: https://github.com/tektoncd/catalog.git
+  fetchTimeout: 1m
+  scmType: github
+  serverUrl: ""
+httpResolverConfig:
+  fetchTimeout: 1m
+hubresolverConfig:
+  defaultArtifactHubPipelineCatalog: tekton-catalog-pipelines
+  defaultArtifactHubTaskCatalog: tekton-catalog-tasks
+  defaultKind: task
+  defaultTektonHubCatalog: Tekton
+  defaultType: artifact
+kubernetesClusterDomain: cluster.local
+pipelinesInfo:
+  version: v0.65.0
+remoteResolvers:
+  controller:
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    env:
+      artifactHubApi: https://artifacthub.io/
+      configFeatureFlagsName: feature-flags
+      configLeaderelectionName: config-leader-election-resolvers
+      configLoggingName: config-logging
+      configObservabilityName: config-observability
+      metricsDomain: tekton.dev/resolution
+      probesPort: "8080"
+      tektonHubApi: https://api.hub.tekton.dev/
+    image:
+      repository: ghcr.io/tektoncd/pipeline/resolvers-ff86b24f130c42b88983d3c13993056d
+      tag: v0.65.0@sha256:45e3c00d345a487622353b7703f7aaeafde57a9a5135c0be3eca477af23eaff1
+    resources:
+      limits:
+        cpu: "1"
+        memory: 4Gi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+  ports:
+  - name: http-metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  - name: http-profiling
+    port: 8008
+    targetPort: 8008
+  - name: probes
+    port: 8080
+    targetPort: 0
+  replicas: 1
+  type: ClusterIP
+resolvers:
+  serviceAccount:
+    annotations: {}
+resolversFeatureFlags:
+  enableBundlesResolver: "true"
+  enableClusterResolver: "true"
+  enableGitResolver: "true"
+  enableHubResolver: "true"
+tektonEventsController:
+  ports:
+  - name: http-metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  - name: http-profiling
+    port: 8008
+    targetPort: 8008
+  - name: probes
+    port: 8080
+    targetPort: 0
+  replicas: 1
+  serviceAccount:
+    annotations: {}
+  tektonEventsController:
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsGroup: 65532
+      runAsNonRoot: true
+      runAsUser: 65532
+      seccompProfile:
+        type: RuntimeDefault
+    env:
+      configDefaultsName: config-defaults
+      configLeaderelectionName: config-leader-election-events
+      configLoggingName: config-logging
+      configObservabilityName: config-observability
+      sslCertDir: /etc/ssl/certs
+      sslCertFile: /etc/config-registry-cert/cert
+    image:
+      repository: ghcr.io/tektoncd/pipeline/events-a9042f7efb0cbade2a868a1ee5ddd52c
+      tag: v0.65.0@sha256:923a20abe3f21c44dac6ff4ebf6a54c711153676c6c8e88e80850c7b4491cc5d
+  type: ClusterIP
+webhook:
+  ports:
+  - name: http-metrics
+    port: 9090
+    targetPort: metrics
+  - name: http-profiling
+    port: 8008
+    targetPort: profiling
+  - name: https-webhook
+    port: 443
+    targetPort: https-webhook
+  - name: probes
+    port: 8080
+    targetPort: probes
+  serviceAccount:
+    annotations: {}
+  type: ClusterIP
+  webhook:
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsGroup: 65532
+      runAsNonRoot: true
+      runAsUser: 65532
+      seccompProfile:
+        type: RuntimeDefault
+    env:
+      configFeatureFlagsName: feature-flags
+      configLeaderelectionName: config-leader-election-webhook
+      configLoggingName: config-logging
+      configObservabilityName: config-observability
+      metricsDomain: tekton.dev/pipeline
+      probesPort: "8080"
+      webhookAdmissionControllerName: webhook.pipeline.tekton.dev
+      webhookPort: "8443"
+      webhookSecretName: webhook-certs
+      webhookServiceName: tekton-pipelines-webhook
+    image:
+      repository: ghcr.io/tektoncd/pipeline/webhook-d4749e605405422fd87700164e31b2d1
+      tag: v0.65.0@sha256:268ccf3ec8b3f861313ab0e422b85012b734099e7135611935e92567dfd55b04
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi

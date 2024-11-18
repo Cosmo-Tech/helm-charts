@@ -1,0 +1,41 @@
+dashboardInfo:
+  version: v0.52.0
+kubernetesClusterDomain: cluster.local
+tektonDashboard:
+  nodeSelector:
+    kubernetes.io/os: linux
+  ports:
+  - name: http
+    port: 9097
+    protocol: TCP
+    targetPort: 9097
+  replicas: 1
+  serviceAccount:
+    annotations: {}
+  tektonDashboard:
+    args:
+    - --port=9097
+    - --logout-url=
+    - --pipelines-namespace=tekton-pipelines
+    - --triggers-namespace=tekton-pipelines
+    - --read-only=false
+    - --log-level=info
+    - --log-format=json
+    - --default-namespace=
+    - --namespaces=
+    - --stream-logs=true
+    - --external-logs=
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      runAsGroup: 65532
+      runAsNonRoot: true
+      runAsUser: 65532
+      seccompProfile:
+        type: RuntimeDefault
+    image:
+      repository: ghcr.io/tektoncd/dashboard/dashboard-9623576a202fe86c8b7d1bc489905f86
+      tag: v0.52.0@sha256:c01298c714fc9fa4ab8813469f15e94b4924328a749e178f984be0b70f78face
+  type: ClusterIP

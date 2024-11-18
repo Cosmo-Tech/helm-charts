@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-leader-election-resolvers
+  labels:
+    app.kubernetes.io/component: resolvers
+    app.kubernetes.io/part-of: tekton-pipelines
+  {{- include "tekton-pipelines.labels" . | nindent 4 }}
+data:
+  _example: {{ .Values.configLeaderElectionResolvers.Example | toYaml | indent 1
+    }}

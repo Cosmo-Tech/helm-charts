@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-resolver-config
+  labels:
+    app.kubernetes.io/component: resolvers
+    app.kubernetes.io/part-of: tekton-pipelines
+  {{- include "tekton-pipelines.labels" . | nindent 4 }}
+data:
+  allowed-namespaces: {{ .Values.clusterResolverConfig.allowedNamespaces | quote
+    }}
+  blocked-namespaces: {{ .Values.clusterResolverConfig.blockedNamespaces | quote
+    }}
+  default-kind: {{ .Values.clusterResolverConfig.defaultKind | quote }}
+  default-namespace: {{ .Values.clusterResolverConfig.defaultNamespace | quote }}

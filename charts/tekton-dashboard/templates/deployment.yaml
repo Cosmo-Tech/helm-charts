@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tekton-dashboard.fullname" . }}-tekton-dashboard
+  labels:
+    app: tekton-dashboard
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/part-of: tekton-dashboard
+    dashboard.tekton.dev/release: v0.52.0
+    version: v0.52.0
+  {{- include "tekton-dashboard.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.tektonDashboard.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: dashboard
+      app.kubernetes.io/instance: default
+      app.kubernetes.io/name: dashboard
+      app.kubernetes.io/part-of: tekton-dashboard
+    {{- include "tekton-dashboard.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: tekton-dashboard
+        app.kubernetes.io/component: dashboard
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: dashboard
+        app.kubernetes.io/part-of: tekton-dashboard
+        app.kubernetes.io/version: v0.52.0
+      {{- include "tekton-dashboard.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - args: {{- toYaml .Values.tektonDashboard.tektonDashboard.args | nindent 8 }}
+        env:
+        - name: INSTALLED_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.tektonDashboard.tektonDashboard.image.repository }}:{{ .Values.tektonDashboard.tektonDashboard.image.tag
+          | default .Chart.AppVersion }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9097
+        name: tekton-dashboard
+        ports:
+        - containerPort: 9097
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 9097
+        resources: {}
+        securityContext: {{- toYaml .Values.tektonDashboard.tektonDashboard.containerSecurityContext
+          | nindent 10 }}
+      nodeSelector: {{- toYaml .Values.tektonDashboard.nodeSelector | nindent 8 }}
+      serviceAccountName: {{ include "tekton-dashboard.fullname" . }}-tekton-dashboard

@@ -1,0 +1,98 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "tekton-dashboard.fullname" . }}-tenant
+  labels:
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/part-of: tekton-dashboard
+  {{- include "tekton-dashboard.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - dashboard.tekton.dev
+  resources:
+  - extensions
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  - namespaces
+  - pods
+  - pods/log
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - tekton.dev
+  resources:
+  - stepactions
+  - tasks
+  - taskruns
+  - pipelines
+  - pipelineruns
+  - customruns
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - triggers.tekton.dev
+  resources:
+  - eventlisteners
+  - interceptors
+  - triggerbindings
+  - triggers
+  - triggertemplates
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - tekton.dev
+  resources:
+  - stepactions
+  - tasks
+  - taskruns
+  - pipelines
+  - pipelineruns
+  - customruns
+  verbs:
+  - create
+  - update
+  - delete
+  - patch
+- apiGroups:
+  - triggers.tekton.dev
+  resources:
+  - eventlisteners
+  - interceptors
+  - triggerbindings
+  - triggers
+  - triggertemplates
+  verbs:
+  - create
+  - update
+  - delete
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "tekton-dashboard.fullname" . }}-tenant
+  labels:
+    app.kubernetes.io/component: dashboard
+    app.kubernetes.io/part-of: tekton-dashboard
+    rbac.dashboard.tekton.dev/subject: tekton-dashboard
+  {{- include "tekton-dashboard.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: '{{ include "tekton-dashboard.fullname" . }}-tenant'
+subjects:
+- kind: ServiceAccount
+  name: '{{ include "tekton-dashboard.fullname" . }}-tekton-dashboard'
+  namespace: '{{ .Release.Namespace }}'
