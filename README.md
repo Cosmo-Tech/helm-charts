@@ -16,13 +16,13 @@ The Cosmo Tech Business Webapp chart is located in the [charts/cosmotech-busines
 
 Add the helm repository and update:
 ```bash
-helm repo add cosmotech-api https://cosmo-tech.github.io/helm-charts/
+helm repo add cosmotech https://cosmo-tech.github.io/helm-charts/
 helm repo update
 ```
 
 Deploy chart:
 ```bash
-helm install mychartname cosmotech-api/chartname --version X.Y.Z
+helm install mychartname cosmotech/chartname --version X.Y.Z
 ```
 
 ## License
