@@ -35,9 +35,9 @@ spec:
         {{- end }}
       resources:
         limits:
-          cpu: 100m
-          memory: 10Mi
+          cpu: 1000m
+          memory: 20Mi
         requests:
           cpu: 100m
-          memory: 1Mi
+          memory: 10Mi
   restartPolicy: Never
