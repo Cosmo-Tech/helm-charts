@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 4.1.0-onprem](https://img.shields.io/badge/Version-4.1.0--onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.1.0-onprem](https://img.shields.io/badge/AppVersion-4.1.0--onprem-informational?style=flat-square)
+![Version: 4.1.1-onprem](https://img.shields.io/badge/Version-4.1.1--onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.1.1-onprem](https://img.shields.io/badge/AppVersion-4.1.1--onprem-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -754,7 +754,6 @@ You have successfully deployed the Cosmo Tech API on Kubernetes using Helm chart
 
 
 This markdown guide provides a comprehensive walkthrough for deploying the Cosmo Tech API using Helm charts, ensuring clarity and completeness in the deployment process. Adjust the placeholders (${...}) with your actual values before executing the commands.
-
 
 ## Values
 
