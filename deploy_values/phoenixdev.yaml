@@ -35,8 +35,6 @@ config:
         host: http://argocsmv2-argo-workflows-server.phoenix.svc.cluster.local:2746
         namespace: phoenix
         serviceAccountName: workflowcsmv2
-      loki:
-        host: http://loki.phoenix.svc.cluster.local:3100
       s3:
         host: http://miniocsmv2.phoenix.svc.cluster.local:9000
         bucket: argo-workflows
