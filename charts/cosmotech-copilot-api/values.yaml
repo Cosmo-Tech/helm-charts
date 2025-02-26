@@ -1,0 +1,76 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/cosmo-tech/cosmotech-copilot-api
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: ""
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
+    nginx.org/client-max-body-size: "0"
+  hosts:
+    - host: 
+      paths:
+        - path: 
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+      secretName: 
+
+envConfig:
+  modeSettings:
+    MODE: ""
+    PORT: ""
+    AI_PROVIDER: ""
+  adxSettings:
+    AAD_TENANT_ID: ""
+    KUSTO_CLUSTER_URL: ""
+    KUSTO_DATABASE: ""
+    ADX_AAD_APP_ID: ""
+    ADX_AAD_SECRET: ""
+    ADX_RETRIEVED_ROW_NB: ""
+  vectorStore:
+    IS_VECTOR_STORE_LOCAL: ""
+    CONTEXT_FILE_PATH: ""
+  searchSettings:
+    SEARCH_ENDPOINT_URL: ""
+    SEARCH_API_KEY: ""
+    INDEX_NAME: ""
+    RETRIEVED_DOCUMENT_NB: "5"
+    CHUNK_SIZE: ""
+    CHUNK_OVERLAP: ""
+  openAiSettings:
+    AZURE_OPEN_AI_ENDPOINT: ""
+    AZURE_OPEN_AI_API_KEY: ""
+    AZURE_OPEN_AI_API_TYPE: ""
+    AZURE_OPEN_AI_API_VERSION: ""
+    LLM_DEPLOYMENT_NAME: ""
+    EMBEDDINGS_DEPLOYEMENT_NAME: ""
+    TEMPERATURE: ""
+    MAX_TOKEN: ""
+    STREAMING: ""
+  botSettings:
+    AZURE_BOT_APP_ID: ""
+    AZURE_BOT_PASSWORD: ""
+    AZURE_BOT_DIRECTLINE_SECRET: ""
+  cosmotechApi:
+    COMOSTECH_API_HOST: ""
+    COSMOTECH_API_SCOPE: ""
+    COMOSTECH_API_TENANT_ID: ""
+    COSMOTECH_API_CLIENT_ID: ""
+    COSMOTECH_API_CLIENT_SECRET: ""
+    ORGANIZATION: ""
+    WORKSPACE: ""

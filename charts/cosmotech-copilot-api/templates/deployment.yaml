@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cosmotech-copilot-api.fullname" . }}
+  labels:
+    app: {{ include "cosmotech-copilot-api.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "cosmotech-copilot-api.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "cosmotech-copilot-api.name" . }}
+    spec:
+      containers:
+      - name: {{ include "cosmotech-copilot-api.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - containerPort: {{ .Values.service.port }}
+        env:
+        {{- if .Values.env }}
+        {{- range $key, $val := .Values.env }}
+        - name: {{ $key | quote }}
+          value: {{ $val | quote }}
+        {{- end }}
+        {{- end }}
