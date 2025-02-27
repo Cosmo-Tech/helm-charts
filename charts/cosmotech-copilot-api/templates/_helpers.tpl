@@ -60,3 +60,17 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Context path:
+This path will follow the pattern /{rootName}/{namespace|tenantId}/{apiVersion}
+E.g:
+- /myTenant/v1
+*/}}
+{{- define "cosmotech-api.contextPath" -}}
+{{- if eq (index .Values "cosmotech-api" "multiTenant") "true" }}
+{{- printf "/%s/%s" .Release.Namespace (index .Values "cosmotech-api" "version") }}
+{{- else }}
+{{- printf "/%s" (index .Values "cosmotech-api" "version") }}
+{{- end }}
+{{- end }}

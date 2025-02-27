@@ -1,6 +1,11 @@
 # Number of API replicas to deploy.
 replicaCount: 1
 
+# Cosmotech API values for path
+cosmotech-api:
+  version: "v3-1"
+  multiTenant: "true"
+
 # Docker image settings for the Cosmotech Copilot API.
 image:
   # Repository for the API image.
@@ -21,34 +26,12 @@ service:
 ingress:
   # Enable or disable Ingress.
   enabled: true
-  # Specify the Ingress class to use (e.g., nginx).
-  ingressClassName: nginx
-  # Ingress annotations for additional configuration.
-  annotations:
-    cert-manager.io/cluster-issuer: "" 
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: "/$2"
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
-    nginx.org/client-max-body-size: "0"
-  hosts:
-    - 
-      # Domain name for the API (e.g., dev.api.cosmotech.com).
-      host: ""
-      paths:
-        - 
-          # Ingress path to route to the API.
-          path: ""
-          pathType: ImplementationSpecific
-  tls:
-    - 
-      # List of hosts for TLS termination.
-      hosts:
-        - ""
-      # Name of the TLS secret for the Ingress.
-      secretName: ""
+  host: example.api.cosmotech.com
+  name: cosmotech-copilot-api
+  serviceName: cosmotech-copilot-api
+  tlsSecretName: letsencrypt-prod
+  certManagerClusterIssuer: letsencrypt-prod
+  email: platform@cosmotech.com
 
 # Structured environment variables grouped by category.
 envConfig:
