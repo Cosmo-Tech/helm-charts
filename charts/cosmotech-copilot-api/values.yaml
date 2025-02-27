@@ -3,7 +3,7 @@ replicaCount: 1
 
 # Cosmotech API values for path
 cosmotech-api:
-  version: "v3-1"
+  version: 
   multiTenant: "true"
 
 # Docker image settings for the Cosmotech Copilot API.
