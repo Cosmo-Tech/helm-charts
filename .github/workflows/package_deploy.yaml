@@ -40,9 +40,9 @@ jobs:
       - name: Login to GitHub Container Registry
         run: >
           echo "${{ secrets.GITHUB_TOKEN }}" |
-            helm registry login ghcr.io
-              --username "${{ github.actor }}"
-              --password-stdin
+          helm registry login ghcr.io
+          --username "${{ github.actor }}"
+          --password-stdin
 
       - name: Helm push
         working-directory: helm-chart
@@ -81,9 +81,9 @@ jobs:
       - name: Login to GitHub Container Registry
         run: >
           echo "${{ secrets.GITHUB_TOKEN }}" |
-            helm registry login ghcr.io
-              --username "${{ github.actor }}"
-              --password-stdin
+          helm registry login ghcr.io
+          --username "${{ github.actor }}"
+          --password-stdin
 
       - name: Setup image pull secret
         uses: azure/k8s-create-secret@v5
@@ -105,17 +105,18 @@ jobs:
 
       - name: Helm upgrade/install
         run: >
-          helm upgrade --install
-            --wait
-            --namespace ${{ vars.CLUSTER_NAMESPACE }}
-            --reset-values
-            --values deploy_values/phoenixdev.yaml
-            --set image.tag="${{ matrix.imageTag }}"
-            --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
-            --set config.csm.modelingApi.simulatorRegistry.pushSecret=cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }}
-            cosmotech-modeling-api-${{ matrix.imageTag }}
-            oci://ghcr.io/cosmo-tech/cosmotech-modeling-api-chart
-            --version $CHART_VERSION
+          helm upgrade
+          --install
+          --wait
+          --namespace ${{ vars.CLUSTER_NAMESPACE }}
+          --reset-values
+          --values deploy_values/phoenixdev.yaml
+          --set image.tag="${{ matrix.imageTag }}"
+          --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
+          --set config.csm.modelingApi.simulatorRegistry.pushSecret=cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }}
+          cosmotech-modeling-api-${{ matrix.imageTag }}
+          oci://ghcr.io/cosmo-tech/cosmotech-modeling-api-chart
+          --version $CHART_VERSION
 
       - name: Helm test
         run: |
