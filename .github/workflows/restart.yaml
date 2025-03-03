@@ -31,15 +31,15 @@ jobs:
 
       - name: Restart deployment
         if: ${{ steps.cluster_availability.outcome == 'success' }}
-        run: |
-          kubectl rollout restart \
-            --namespace ${{ vars.CLUSTER_NAMESPACE }} \
+        run: >
+          kubectl rollout restart
+            --namespace ${{ vars.CLUSTER_NAMESPACE }}
             deployment/cosmotech-modeling-api-${{ inputs.imageTag }}
 
       - name: Wait for restart to finish
         if: ${{ steps.cluster_availability.outcome == 'success' }}
-        run: |
-          kubectl rollout status \
-            --namespace ${{ vars.CLUSTER_NAMESPACE }} \
-            --timeout=10m \
+        run: >
+          kubectl rollout status
+            --namespace ${{ vars.CLUSTER_NAMESPACE }}
+            --timeout=10m
             deployment/cosmotech-modeling-api-${{ inputs.imageTag }}
