@@ -108,6 +108,7 @@ jobs:
           helm upgrade --install \
             --wait \
             --namespace ${{ vars.CLUSTER_NAMESPACE }} \
+            --reset-values \
             --values deploy_values/phoenixdev.yaml \
             --set image.tag="${{ matrix.imageTag }}" \
             --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }} \
