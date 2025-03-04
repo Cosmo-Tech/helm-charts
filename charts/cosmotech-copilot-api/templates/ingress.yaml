@@ -28,7 +28,7 @@ spec:
             port:
               number: {{ .Values.service.port | default 80 }}
         {{- $contextPath := include "cosmotech-api.contextPath" . }}
-        path: {{ $contextPath }}/copilot(/|$)(.*)
+        path: {{ $contextPath }}(/|$)(.*)
         pathType: ImplementationSpecific
   tls:
   - hosts:

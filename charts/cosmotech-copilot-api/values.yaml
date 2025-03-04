@@ -1,10 +1,12 @@
+nameOverride: "" 
+fullnameOverride: "" 
+
 # Number of API replicas to deploy.
 replicaCount: 1
 
 # Cosmotech API values for path
 cosmotech-api:
   version: 
-  multiTenant: "true"
 
 # Docker image settings for the Cosmotech Copilot API.
 image:
@@ -32,6 +34,7 @@ ingress:
   tlsSecretName: letsencrypt-prod
   certManagerClusterIssuer: letsencrypt-prod
   email: platform@cosmotech.com
+  appPath: "copilot"
 
 # Structured environment variables grouped by category.
 envConfig:

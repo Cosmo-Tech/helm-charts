@@ -63,14 +63,10 @@ Create the name of the service account to use
 
 {{/*
 Context path:
-This path will follow the pattern /{rootName}/{namespace|tenantId}/{apiVersion}
+This path will follow the pattern /{namespace}/{apiVersion}/{appPath}
 E.g:
-- /myTenant/v1
+- /phoenix/v3-1/copilot
 */}}
 {{- define "cosmotech-api.contextPath" -}}
-{{- if eq (index .Values "cosmotech-api" "multiTenant") "true" }}
-{{- printf "/%s/%s" .Release.Namespace (index .Values "cosmotech-api" "version") }}
-{{- else }}
-{{- printf "/%s" (index .Values "cosmotech-api" "version") }}
-{{- end }}
+{{- printf "/%s/%s/%s" .Release.Namespace (index .Values "cosmotech-api" "version") .Values.ingress.appPath }}
 {{- end }}
