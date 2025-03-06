@@ -22,7 +22,7 @@ service:
   # Service type (ClusterIP for internal access).
   type: ClusterIP
   # Ports on which the service exposes the API.
-  port: 8080
+  port: 8082
   targetPort: http
 
 # Ingress configuration for external access to the API.
