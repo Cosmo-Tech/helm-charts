@@ -8,6 +8,6 @@ spec:
   ports:
     - protocol: TCP
       port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
   selector:
     cosmotech.com/service: {{ include "cosmotech-copilot-api.name" . }}

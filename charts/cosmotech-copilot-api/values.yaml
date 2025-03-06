@@ -21,8 +21,9 @@ image:
 service:
   # Service type (ClusterIP for internal access).
   type: ClusterIP
-  # Port on which the service exposes the API.
-  port: 80
+  # Ports on which the service exposes the API.
+  port: 8080
+  targetPort: 80
 
 # Ingress configuration for external access to the API.
 ingress:
