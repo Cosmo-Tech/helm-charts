@@ -1,0 +1,127 @@
+nameOverride: "" 
+fullnameOverride: "" 
+
+# Number of API replicas to deploy.
+replicaCount: 1
+
+# Cosmotech API values for path
+cosmotech-api:
+  version: 
+
+# Docker image settings for the Cosmotech Copilot API.
+image:
+  # Repository for the API image.
+  repository: ghcr.io/cosmo-tech/cosmotech-copilot-api
+  # Tag for the image.
+  tag: "latest"
+  # Pull policy for the image.
+  pullPolicy: IfNotPresent
+
+# Service settings to expose the API inside the cluster.
+service:
+  # Service type (ClusterIP for internal access).
+  type: ClusterIP
+  # Ports on which the service exposes the API.
+  port: 8082
+  targetPort: http
+
+# Ingress configuration for external access to the API.
+ingress:
+  # Enable or disable Ingress.
+  enabled: true
+  host: example.api.cosmotech.com
+  name: cosmotech-copilot-api
+  serviceName: cosmotech-copilot-api
+  tlsSecretName: letsencrypt-prod
+  certManagerClusterIssuer: letsencrypt-prod
+  email: platform@cosmotech.com
+  appPath: "copilot"
+
+# Structured environment variables grouped by category.
+envConfig:
+  # Settings for application mode.
+  modeSettings:
+    # Application mode: 'supply-chain' or 'assets'.
+    MODE: ""
+    # The port on which the API listens.
+    PORT: ""
+    # Cloud provider for the AI service.
+    AI_PROVIDER: ""
+  # Settings for Azure Data Explorer (ADX).
+  adxSettings:
+    # Azure AD tenant ID for ADX access.
+    AAD_TENANT_ID: ""
+    # URL of the Kusto (ADX) cluster.
+    KUSTO_CLUSTER_URL: ""
+    # Name of the Kusto database.
+    KUSTO_DATABASE: ""
+    # Azure AD Application ID for ADX ingestion.
+    ADX_AAD_APP_ID: ""
+    # Secret for the Azure AD Application used with ADX.
+    ADX_AAD_SECRET: ""
+    # Number of rows to retrieve from ADX.
+    ADX_RETRIEVED_ROW_NB: ""
+  # Vector store configuration.
+  vectorStore:
+    # Flag indicating whether to use a local vector store (FAISS) or Azure AI Search.
+    IS_VECTOR_STORE_LOCAL: ""
+    # File path to load local context for the vector store.
+    CONTEXT_FILE_PATH: ""
+  # Settings for Azure AI Search.
+  searchSettings:
+    # Endpoint URL for Azure AI Search.
+    SEARCH_ENDPOINT_URL: ""
+    # API key for Azure AI Search.
+    SEARCH_API_KEY: ""
+    # Name of the search index.
+    INDEX_NAME: ""
+    # Default number of documents to retrieve.
+    RETRIEVED_DOCUMENT_NB: "5"
+    # Size (in tokens) for splitting documents into chunks.
+    CHUNK_SIZE: ""
+    # Number of tokens to overlap between chunks.
+    CHUNK_OVERLAP: ""
+  # Settings for Azure Open AI.
+  openAiSettings:
+    # Endpoint URL for Azure Open AI.
+    AZURE_OPEN_AI_ENDPOINT: ""
+    # API key for Azure Open AI.
+    AZURE_OPEN_AI_API_KEY: ""
+    # API type (typically "azure").
+    AZURE_OPEN_AI_API_TYPE: "azure"
+    # API version for Azure Open AI.
+    AZURE_OPEN_AI_API_VERSION: ""
+    # Deployment name for the LLM model.
+    LLM_DEPLOYMENT_NAME: ""
+    # Deployment name for the embeddings model.
+    EMBEDDINGS_DEPLOYEMENT_NAME: ""
+    # Temperature parameter for LLM generation.
+    TEMPERATURE: ""
+    # Maximum tokens for LLM responses.
+    MAX_TOKEN: ""
+    # Flag to enable streaming responses.
+    STREAMING: ""
+  # Settings for the Azure Bot.
+  botSettings:
+    # Azure Bot Application ID.
+    AZURE_BOT_APP_ID: ""
+    # Password for the Azure Bot.
+    AZURE_BOT_PASSWORD: ""
+    # DirectLine secret for the Azure Bot.
+    AZURE_BOT_DIRECTLINE_SECRET: ""
+  # Cosmo Tech API connection credentials.
+  cosmotechApi:
+    # Host URL for the Cosmo Tech API.
+    COMOSTECH_API_HOST: ""
+    # Scope for the Cosmo Tech API.
+    COSMOTECH_API_SCOPE: ""
+    # Tenant ID for the Cosmo Tech API.
+    COMOSTECH_API_TENANT_ID: ""
+    # Client ID for the Cosmo Tech API.
+    COSMOTECH_API_CLIENT_ID: ""
+    # Client secret for the Cosmo Tech API.
+    COSMOTECH_API_CLIENT_SECRET: ""
+    # Organization ID
+    ORGANIZATION: ""
+    # Workspace ID
+    WORKSPACE: ""
