@@ -45,6 +45,15 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Default Network policy
+*/}}
+{{- define "cosmotech-copilot-api.defaultNetworkPolicy" -}}
+{{- if .Values.networkPolicy.enabled }}
+"networking/traffic-allowed": "yes"
+{{- end }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "cosmotech-copilot-api.serviceAccountName" -}}
