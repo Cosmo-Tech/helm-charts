@@ -25,6 +25,10 @@ service:
   port: 8082
   targetPort: http
 
+# Enables NetworkPolicy
+networkPolicy:
+  enabled: true
+
 # Ingress configuration for external access to the API.
 ingress:
   # Enable or disable Ingress.

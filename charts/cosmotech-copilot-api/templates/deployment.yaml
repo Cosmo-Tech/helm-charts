@@ -10,12 +10,12 @@ spec:
   selector:
     matchLabels:
       cosmotech.com/service: {{ include "cosmotech-copilot-api.name" . }}
-      networking/traffic-allowed: "yes"
+      {{- include "cosmotech-copilot-api.defaultNetworkPolicy" . | nindent 6 }}
   template:
     metadata:
       labels:
         cosmotech.com/service: {{ include "cosmotech-copilot-api.name" . }}
-        networking/traffic-allowed: "yes"
+        {{- include "cosmotech-copilot-api.defaultNetworkPolicy" . | nindent 8 }}
     spec:
       containers:
       - name: {{ include "cosmotech-copilot-api.name" . }}
