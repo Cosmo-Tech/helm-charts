@@ -10,10 +10,12 @@ spec:
   selector:
     matchLabels:
       cosmotech.com/service: {{ include "cosmotech-copilot-api.name" . }}
+      networking/traffic-allowed: "yes"
   template:
     metadata:
       labels:
         cosmotech.com/service: {{ include "cosmotech-copilot-api.name" . }}
+        networking/traffic-allowed: "yes"
     spec:
       containers:
       - name: {{ include "cosmotech-copilot-api.name" . }}
