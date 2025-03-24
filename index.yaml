@@ -198,6 +198,16 @@ entries:
   cosmotech-copilot-api:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2025-03-24T10:25:06.699121403Z"
+    description: Cosmo Tech Copilot API
+    digest: 08cda3eafdb84d3e06b54940c309717ce736b523e1abfd1a426d767356fa462b
+    name: cosmotech-copilot-api
+    type: application
+    urls:
+    - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-copilot-api-0.1.1/cosmotech-copilot-api-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2025-03-11T14:57:34.904923918Z"
     description: Cosmo Tech Copilot API
     digest: 8f4374912fd373a5cb1079bc44ea6ef9b4e0a3f8d51e36da8c478c9d48d0df4a
@@ -206,4 +216,4 @@ entries:
     urls:
     - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-copilot-api-0.1.0/cosmotech-copilot-api-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-11T14:57:34.904990993Z"
+generated: "2025-03-24T10:25:06.699193919Z"
