@@ -74,6 +74,12 @@ jobs:
           cluster-name: "${{ vars.CLUSTER_NAME }}"
           resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
 
+      - uses: azure/use-kubelogin@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          kubelogin-version: 'latest'
+
       - name: Compute chart version
         run: |
           echo "CHART_VERSION=0.0-main" >> "$GITHUB_ENV"
