@@ -73,6 +73,7 @@ jobs:
         with:
           cluster-name: "${{ vars.CLUSTER_NAME }}"
           resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
+          use-kubelogin: true
 
       - uses: azure/use-kubelogin@v1
         env:
