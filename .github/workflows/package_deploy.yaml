@@ -94,15 +94,6 @@ jobs:
           container-registry-username: ${{ secrets.GHCR_CREDENTIALS_USERNAME }}
           container-registry-password: ${{ secrets.GHCR_CREDENTIALS_PASSWORD }}
 
-      - name: Setup simulator push secret
-        uses: azure/k8s-create-secret@v5
-        with:
-          namespace: ${{ vars.CLUSTER_NAMESPACE }}
-          secret-name: cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }}
-          container-registry-url: ghcr.io
-          container-registry-username: ${{ secrets.ACR_CREDENTIALS_USERNAME }}
-          container-registry-password: ${{ secrets.ACR_CREDENTIALS_PASSWORD }}
-
       - name: Helm upgrade/install
         run: >
           helm upgrade
@@ -113,7 +104,7 @@ jobs:
           --values deploy_values/phoenixdev.yaml
           --set image.tag="${{ matrix.imageTag }}"
           --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
-          --set config.csm.modelingApi.simulatorRegistry.pushSecret=cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }}
+          --set config.csm.modelingApi.simulatorRegistry.pushSecret=acr-admin-secret
           cosmotech-modeling-api-${{ matrix.imageTag }}
           oci://ghcr.io/cosmo-tech/cosmotech-modeling-api-chart
           --version $CHART_VERSION
