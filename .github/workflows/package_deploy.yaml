@@ -69,17 +69,17 @@ jobs:
         with:
           creds: "${{ secrets.AZURE_CREDENTIALS }}"
 
-      - uses: azure/aks-set-context@v4
-        with:
-          cluster-name: "${{ vars.CLUSTER_NAME }}"
-          resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
-          use-kubelogin: true
-
       - uses: azure/use-kubelogin@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           kubelogin-version: 'latest'
+
+      - uses: azure/aks-set-context@v4
+        with:
+          cluster-name: "${{ vars.CLUSTER_NAME }}"
+          resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
+          use-kubelogin: true
 
       - name: Compute chart version
         run: |
