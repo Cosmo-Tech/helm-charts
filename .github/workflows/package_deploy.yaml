@@ -101,10 +101,9 @@ jobs:
           --wait
           --namespace ${{ vars.CLUSTER_NAMESPACE }}
           --reset-values
-          --values deploy_values/phoenixdev.yaml
+          --values deploy_values/warp.yaml
           --set image.tag="${{ matrix.imageTag }}"
           --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
-          --set config.csm.modelingApi.simulatorRegistry.pushSecret=acr-admin-secret
           cosmotech-modeling-api-${{ matrix.imageTag }}
           oci://ghcr.io/cosmo-tech/cosmotech-modeling-api-chart
           --version $CHART_VERSION

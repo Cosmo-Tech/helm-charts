@@ -20,23 +20,24 @@ extraEnv:
     - name: CSM_MODELINGAPI_S3_USERNAME
       valueFrom:
         secretKeyRef:
-          name: miniocsmv2
-          key: root-user
+          name: seaweedfs-eng-modapi-ci-s3-auth
+          key: argo-workflows-username
     - name: CSM_MODELINGAPI_S3_PASSWORD
       valueFrom:
         secretKeyRef:
-          name: miniocsmv2
-          key: root-password
+          name: seaweedfs-eng-modapi-ci-s3-auth
+          key: argo-workflows-password
 
 config:
   csm:
     modelingApi:
       argoWorkflows:
-        host: http://argocsmv2-argo-workflows-server.phoenix.svc.cluster.local:2746
-        namespace: phoenix
-        serviceAccountName: workflowcsmv2
+        host: http://argo-workflows-eng-modapi-ci-server.eng-modapi-ci.svc.cluster.local:2746
+        namespace: eng-modapi-ci
+        serviceAccountName: argo-workflows-eng-modapi-ci-service-account
       s3:
-        host: http://miniocsmv2.phoenix.svc.cluster.local:9000
+        host: http://seaweedfs-eng-modapi-ci-s3.eng-modapi-ci.svc.cluster.local:9000
         bucket: argo-workflows
       simulatorRegistry:
-        host: csmenginesdev.azurecr.io
+        host: acrengmodapiciuvpy1z.azurecr.io
+        pushSecret: acr-admin-secret
