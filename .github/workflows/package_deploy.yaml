@@ -106,7 +106,7 @@ jobs:
         with:
           namespace: ${{ vars.CLUSTER_NAMESPACE }}
           secret-name: cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }}
-          container-registry-url: ${{ secrets.GHCR_CREDENTIALS_USERNAME }}.azurecr.io
+          container-registry-url: ${{ secrets.ACR_CREDENTIALS_USERNAME }}.azurecr.io
           container-registry-username: ${{ secrets.ACR_CREDENTIALS_USERNAME }}
           container-registry-password: ${{ secrets.ACR_CREDENTIALS_PASSWORD }}
 
