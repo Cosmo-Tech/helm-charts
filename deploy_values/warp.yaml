@@ -40,4 +40,3 @@ config:
         bucket: argo-workflows
       simulatorRegistry:
         host: acrengmodapiciuvpy1z.azurecr.io
-        pushSecret: acr-admin-secret
