@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 4.1.2-onprem](https://img.shields.io/badge/Version-4.1.2--onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.1.2-onprem](https://img.shields.io/badge/AppVersion-4.1.2--onprem-informational?style=flat-square)
+![Version: 5.0.0-beta1](https://img.shields.io/badge/Version-5.0.0--beta1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0-beta1](https://img.shields.io/badge/AppVersion-5.0.0--beta1-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -63,100 +63,316 @@ metrics:
 EOF
 ```
 
-## 2. Deploy Argo Workflows
+## 2. Deploy SeaweedFS
+
+Deploy SeaweedFS using the SeaweedFS Helm chart:
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install --namespace ${NAMESPACE} ${SEAWEED_RELEASE_NAME} bitnami/seaweedfs --version 4.8.7 --values - <<EOF
+master:
+  persistence:
+    existingClaim: "${SEAWEEDFS_MASTER_PVC_EXISTING_NAME}"
+    size: "${SEAWEEDFS_MASTER_PVC_SIZE}"
+    accessModes:
+    - ${SEAWEEDFS_PVC_ACCESSMODE}
+    storageClass: "${SEAWEEDFS_STORAGECLASS_NAME}"
+  nodeSelector:
+    cosmotech.com/tier: "services"
+  tolerations:
+    - key: "vendor"
+      operator: "Equal"
+      value: "cosmotech"
+      effect: "NoSchedule"
+mariadb:
+  enabled: false
+externalDatabase:
+  enabled: true
+  store: postgresql
+  host: "${POSTGRESQL_HOST}"
+  port: ${POSTGRESQL_PORT}
+  database: "${POSTGRESQL_DATABASE}"
+  user: "${POSTGRESQL_USERNAME}"
+  existingSecret: "${POSTGRESQL_SECRET}"
+volume:
+  dataVolumes:
+  - name: data-0
+    mountPath: /data-0
+    maxVolumes: 0
+    persistence:
+      existingClaim: "${SEAWEEDFS_VOLUME_PVC_EXISTING_NAME}"
+      size: "${SEAWEEDFS_VOLUME_PVC_SIZE}"
+      accessModes:
+      - ${SEAWEEDFS_PVC_ACCESSMODE}
+      storageClass: "${SEAWEEDFS_STORAGECLASS_NAME}"
+  nodeSelector:
+    cosmotech.com/tier: "db"
+  tolerations:
+    - key: "vendor"
+      operator: "Equal"
+      value: "cosmotech"
+      effect: "NoSchedule"
+filer:
+  nodeSelector:
+    cosmotech.com/tier: "services"
+  resourcesPreset: medium
+  tolerations:
+    - key: "vendor"
+      operator: "Equal"
+      value: "cosmotech"
+      effect: "NoSchedule"
+s3:
+  enabled: true
+  nodeSelector:
+    cosmotech.com/tier: "services"
+  tolerations:
+    - key: "vendor"
+      operator: "Equal"
+      value: "cosmotech"
+      effect: "NoSchedule"
+  containerPorts:
+    http: 9000
+  auth:
+    enabled: true
+    existingSecret: "${S3_AUTH_SECRET}"
+  allowEmptyFolder: false
+extraDeploy:
+  # There are no value entries to setup initial s3-buckets/http-folders
+  # So we deploy a Job as a post-{install,upgrade} to create them through the http filer api
+  - |
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: {{ printf "%s-init-buckets" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" }}
+      namespace: {{ include "common.names.namespace" . | quote }}
+      labels:
+        {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+      annotations:
+        helm.sh/hook: post-install,post-upgrade
+        helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 8 }}
+        spec:
+          restartPolicy: OnFailure
+          {{- if .Values.filer.podSecurityContext.enabled }}
+          securityContext:
+            {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.filer.podSecurityContext "context" $) | nindent 8 }}
+          {{- end }}
+          nodeSelector:
+            cosmotech.com/tier: services
+          tolerations:
+          - key: "vendor"
+            operator: "Equal"
+            value: "cosmotech"
+            effect: "NoSchedule"
+          containers:
+            - name: init-buckets
+              image: alpine
+              {{- if .Values.filer.containerSecurityContext.enabled }}
+              securityContext:
+                {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.filer.containerSecurityContext "context" $) | nindent 12 }}
+              {{- end }}
+              command:
+                - /bin/sh
+              args:
+                - -exc
+                - |
+                  %{~ for bucket in S3_INIT_BUCKETS ~}
+                  if ! `wget --quiet -O /dev/null --spider ${FILER_ENDPOINT}/buckets/${bucket}/`
+                  then
+                    wget --quiet -O /dev/null --post-data= --header "Content-Type:" ${FILER_ENDPOINT}/buckets/${bucket}/
+                  fi
+                  %{~ endfor ~}
+EOF
+```
+
+## 3. Deploy Argo Workflows
 
 Deploy Argo Workflows using the Argo Helm chart:
 
 ```bash
-helm repo add argo https://argoproj.github.io/argo-helm
-helm install --namespace ${NAMESPACE} ${ARGO_RELEASE_NAME} argo/argo-workflows --version "0.16.6" --values - <<EOF
-singleNamespace: true
-createAggregateRoles: false
-crds:
-  install: false
-  keep: true
-images:
-  pullPolicy: IfNotPresent
-workflow:
-  serviceAccount:
-    create: true
-    name: ${ARGO_SERVICE_ACCOUNT}
-  rbac:
-    create: true
-executor:
-  env:
-  - name: RESOURCE_STATE_CHECK_INTERVAL
-    value: 1s
-  - name: WAIT_CONTAINER_STATUS_CHECK_INTERVAL
-    value: 1s
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install --namespace ${NAMESPACE} ${ARGO_RELEASE_NAME} bitnami/argo-workflows --version "12.0.0" --values - <<EOF
 server:
   clusterWorkflowTemplates:
     enabled: false
-  extraArgs:
-  - --auth-mode=server
-  secure: false
-  podLabels:
-    networking/traffic-allowed: "yes"
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "100m"
-    limits:
-      memory: "512Mi"
-      cpu: "1"
+  serviceAccount:
+    automountServiceAccountToken: true
+  nodeSelector:
+    "cosmotech.com/tier": "services"
+  tolerations:
+    - key: "vendor"
+      operator: "Equal"
+      value: "cosmotech"
+      effect: "NoSchedule"
+  service:
+    ports:
+      http: 2746
+
 controller:
-  extraArgs:
-  - "--managed-namespace"
-  - "${NAMESPACE}"
+  persistence:
+    archive:
+      enabled: true
+  config: |
+    {{- if .Values.controller.instanceID.enabled }}
+    {{- if .Values.controller.instanceID.useReleaseName }}
+    instanceID: {{ .Release.Name }}
+    {{- else }}
+    instanceID: {{ .Values.controller.instanceID.explicitID }}
+    {{- end }}
+    {{- end }}
+    parallelism:
+    namespaceParallelism:
+    {{- if or .Values.executor.resources .Values.executor.extraEnvVars .Values.executor.containerSecurityContext }}
+    executor:
+      {{- if .Values.executor.resources }}
+      resources: {{- include "common.tplvalues.render" (dict "value" .Values.executor.resources "context" $) | nindent 4 }}
+      {{- else if ne .Values.executor.resourcesPreset "none" }}
+      resources: {{- include "common.resources.preset" (dict "type" .Values.executor.resourcesPreset) | nindent 4 }}
+      {{- end }}
+      {{- if .Values.executor.extraEnvVars }}
+      env: {{- include "common.tplvalues.render" (dict "value" .Values.executor.extraEnvVars "context" $) | nindent 4 }}
+      {{- end }}
+      {{- if .Values.executor.containerSecurityContext }}
+      securityContext: {{- omit .Values.executor.containerSecurityContext "enabled" | toYaml | nindent 4 }}
+      {{- end }}
+    {{- end }}
+    artifactRepository:
+      archiveLogs: true
+      s3:
+        endpoint: "${S3_ENDPOINT}"
+        bucket: "${S3_BUCKET_NAME}"
+        insecure: true
+        accessKeySecret:
+          name: "${S3_CREDENTIALS_SECRET}"
+          key: "${S3_USERNAME_KEY}"
+        secretKeySecret:
+          name: "${S3_CREDENTIALS_SECRET}"
+          key: "${S3_PASSWORD_KEY}"
+    {{- if .Values.controller.metrics.enabled }}
+    metricsConfig: {{- include "common.tplvalues.render" (dict "value" .Values.controller.metrics "context" $) | nindent 2 }}
+    {{- end }}
+    {{- if .Values.controller.telemetry.enabled }}
+    telemetryConfig: {{- include "common.tplvalues.render" (dict "value" .Values.controller.telemetry "context" $) | nindent 2 }}
+    {{- end }}
+    {{- if (include "argo-workflows.controller.persistence.enabled" .) }}
+    persistence:
+      connectionPool:
+        maxIdleConns: 100
+        maxOpenConns: 0
+      nodeStatusOffLoad: false
+      archive: {{ include "common.tplvalues.render" (dict "value" .Values.controller.persistence.archive.enabled "context" $) }}
+      {{- if or .Values.postgresql.enabled (and .Values.externalDatabase.enabled (eq .Values.externalDatabase.type "postgresql")) }}
+      postgresql:
+      {{- else if or .Values.mysql.enabled (and .Values.externalDatabase.enabled (eq .Values.externalDatabase.type "mysql")) }}
+      mysql:
+      {{- end }}
+        host: {{ include "argo-workflows.controller.database.host" . }}
+        port: {{ include "argo-workflows.controller.database.port" . }}
+        database: {{ include "argo-workflows.controller.database" . }}
+        tableName: argo_workflows
+        userNameSecret:
+          name: {{ include "argo-workflows.controller.database.username.secret" . }}
+          key: username
+        passwordSecret:
+          name: {{ include "argo-workflows.controller.database.password.secret" . }}
+          key: {{ include "argo-workflows.controller.database.password.secret.key" . }}
+    {{- end }}
+    {{- if .Values.controller.workflowDefaults }}
+    workflowDefaults: {{- include "common.tplvalues.render" (dict "value" .Values.controller.workflowDefaults "context" $) | nindent 2 }}
+    {{- end }}
+    {{- if and .Values.server.auth.enabled .Values.server.auth.sso.enabled }}
+    sso: {{- include "common.tplvalues.render" (dict "value" .Values.server.auth.sso.config "context" $) | nindent 2 }}
+    {{- end }}
   clusterWorkflowTemplates:
     enabled: false
-  extraEnv:
-  - name: DEFAULT_REQUEUE_TIME
-    value: ${REQUEUE_TIME}
-  podLabels:
-    networking/traffic-allowed: "yes"
-  serviceMonitor:
+  metrics:
     enabled: true
-    namespace: ${MONITORING_NAMESPACE}
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "100m"
-    limits:
-      memory: "512Mi"
-      cpu: "1"
-  containerRuntimeExecutor: k8sapi
-  metricsConfig:
-    enabled: true
+    serviceMonitor:
+      enabled: true
   workflowDefaults:
     spec:
+      securityContext:
+        runAsGroup: 1001
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+        fsGroupChangePolicy: Always
+        seLinuxOptions: {}
+        seccompProfile:
+          type: RuntimeDefault
+      # make sure workflows do not run forever. Default limit set is 7 days (604800 seconds)
       activeDeadlineSeconds: 604800
       ttlStrategy:
+        # keep workflows that succeeded for 1d (86400 seconds).
+        # We can still view them since they are archived.
         secondsAfterSuccess: 86400
+        # keep workflows that have completed (either successfully or not) for 3d (259200 seconds).
+        # We can still view them since they are archived.
         secondsAfterCompletion: 259200
       podGC:
+        # Delete pods when workflows are successful.
+        # We can still access their logs and artifacts since they are archived.
+        # One of "OnPodCompletion", "OnPodSuccess", "OnWorkflowCompletion", "OnWorkflowSuccess"
         strategy: OnWorkflowSuccess
       volumeClaimGC:
+        # Delete PVCs when workflows are done. However, due to Kubernetes PVC Protection,
+        # such PVCs will just be marked as Terminating, until no pod is using them.
+        # Pod deletion (either via the Pod GC strategy or the TTL strategy) will allow to free up
+        # attached PVCs.
+        # One of "OnWorkflowCompletion", "OnWorkflowSuccess"
         strategy: OnWorkflowCompletion
-  persistence:
-    archive: true
-    archiveTTL: ${ARCHIVE_TTL}
-    postgresql:
-      host: "${POSTGRES_RELEASE_NAME}-postgresql"
-      database: ${ARGO_DATABASE}
-      tableName: workflows
-      userNameSecret:
-        name: ${ARGO_POSTGRESQL_SECRET_NAME}
-        key: argo-username
-      passwordSecret:
-        name: ${ARGO_POSTGRESQL_SECRET_NAME}
-        key: argo-password
-mainContainer:
-  imagePullPolicy: IfNotPresent
+  serviceAccount:
+    automountServiceAccountToken: true
+  nodeSelector:
+    "cosmotech.com/tier": "services"
+  tolerations:
+    - key: "vendor"
+      operator: "Equal"
+      value: "cosmotech"
+      effect: "NoSchedule"
+
+executor:
+  resources:
+    requests:
+      cpu: 2
+      memory: 512Mi
+    limits:
+      cpu: 3
+      memory: 1024Mi
+  extraEnvVars:
+    - name: RESOURCE_STATE_CHECK_INTERVAL
+      value: 1s
+    - name: WAIT_CONTAINER_STATUS_CHECK_INTERVAL
+      value: 1s
+
+ingress:
+  enabled: false
+
+workflows:
+  serviceAccount:
+    name: ${ARGO_SERVICE_ACCOUNT}
+    automountServiceAccountToken: true
+
+postgresql:
+  enabled: false
+
+externalDatabase:
+  enabled: true
+  type: "postgresql"
+  host: "${POSTGRES_RELEASE_NAME}"
+  port: "5432"
+  username: ${ARGO_POSTGRESQL_USER}
+  password: ""
+  database: ${ARGO_DATABASE}
+  existingSecret: ${ARGO_POSTGRESQL_SECRET_NAME}
 EOF
 ```
 
-## 3. Deploy RabbitMQ
+## 4. Deploy RabbitMQ
 
 Deploy RabbitMQ using the Bitnami Helm chart:
 
@@ -235,7 +451,7 @@ metrics:
 EOF
 ```
 
-## 4. Deploy Redis
+## 5. Deploy Redis
 
 Deploy Redis using the Bitnami Helm chart:
 
@@ -292,88 +508,9 @@ replica:
       cpu: 1000m
       memory: 4Gi
 commonConfiguration: |-
-  loadmodule /opt/bitnami/redis/modules/redisgraph.so
   loadmodule /opt/bitnami/redis/modules/redistimeseries.so DUPLICATE_POLICY LAST
   loadmodule /opt/bitnami/redis/modules/rejson.so
   loadmodule /opt/bitnami/redis/modules/redisearch.so
-EOF
-```
-
-## 5. Deploy logging
-
-```bash
-helm install loki bitnami/grafana-loki -n ${NAMESPACE} --values - <<EOF
-deploymentMode: SingleBinary
-commonLabels:
-  networking/traffic-allowed: "yes"
-promtail:
-  enabled: false
-memcached:
-  podSecurityContext:
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
-  containerSecurityContext:
-    seccompProfile:
-      type: RuntimeDefault
-    runAsUser: 1003
-memcachedExporter:
-  podSecurityContext:
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
-  containerSecurityContext:
-    runAsUser: 1003
-    seccompProfile:
-      type: RuntimeDefault
-gateway:
-  networkPolicy:
-    enabled: false
-  podSecurityContext:
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
-  containerSecurityContext:
-    seccompProfile:
-      type: RuntimeDefault
-    runAsUser: 1003
-loki:
-  overrideConfiguration:
-    storage_config:
-      aws:
-        bucketnames: <BUCKET NAME>
-        endpoint: <S3 ENDPOINT URL>
-        access_key_id: <ACCESS KEY>
-        secret_access_key: <SECRET>
-        s3forcepathstyle: true
-    schema_config:
-      configs:
-      - from: "2024-01-01"
-        store: tsdb
-        index:
-          prefix: loki_index_
-          period: 24h
-        object_store: 'aws'
-        schema: v13
-  storage:
-    type: 'aws'
-  auth_enabled: false
-  commonConfig:
-    replication_factor: 1
-  podSecurityContext:
-    seccompProfile:
-      type: RuntimeDefault
-  containerSecurityContext:
-    seccompProfile:
-      type: RuntimeDefault
-singleBinary:
-  replicas: 1
-read:
-  replicas: 0
-backend:
-  replicas: 0
-write:
-  replicas: 0
 EOF
 ```
 
@@ -461,7 +598,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "4.0.4-onprem" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.0.0-beta1" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
@@ -491,6 +628,12 @@ config:
       include-stacktrace: always
   csm:
     platform:
+      s3:
+        endpointUrl: http://seaweedfs-{NAMESPACE}.{NAMESPACE}.svc.cluster.local:9000
+        bucketName: cosmotech-api
+        accessKeyId: ${S3_ACCESS_KEY}
+        secretAccessKey: ${S3_ACCESS_SECRET}
+        region: ${S3_REGION}
       containerRegistry:
         # Add your container registry configuration here
       identityProvider:
@@ -508,8 +651,6 @@ config:
           clientSecret: ${CLIENT_SECRET}
           tenantId: ${TENANT_ID}
       namespace: ${NAMESPACE}
-      loki:
-        baseUrl: http://loki.${MONITORING_NAMESPACE}.svc.cluster.local:3100
       argo:
         base-uri: "http://${ARGO_RELEASE_NAME}-argo-workflows-server.${NAMESPACE}.svc.cluster.local:2746"
         workflows:
@@ -518,30 +659,6 @@ config:
       authorization:
         allowedApiKeyConsumers: ${ALLOWED_API_KEY_CONSUMERS}
         allowed-tenants: ${TENANT_ID}
-      azure:
-        appIdUri: ${APP_ID_URI}
-        containerRegistries:
-          solutions: ${ACR_LOGIN_SERVER}
-        cosmos:
-          key: ${COSMOS_KEY}
-          uri: ${COSMOS_URI}
-        credentials:
-          clientId: ${CLIENT_ID}
-          clientSecret: ${CLIENT_SECRET}
-          customer:
-            clientId: ${NETWORK_ADT_CLIENTID}
-            clientSecret: ${NETWORK_ADT_PASSWORD}
-            tenantId: ${TENANT_ID}
-          tenantId: ${TENANT_ID}
-        dataWarehouseCluster:
-          baseUri: ${ADX_URI}
-          options:
-            ingestionUri: ${ADX_INGESTION_URI}
-        eventBus:
-          baseUri: ${EVENTBUS_URI}
-        storage:
-          account-key: ${STORAGE_ACCOUNT_KEY}
-          account-name: ${STORAGE_ACCOUNT_NAME}
       internalResultServices:
         enabled: ${USE_INTERNAL_RESULT_SERVICES}
         storage:
@@ -821,6 +938,10 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | config.csm.platform.internalResultServices.storage.reader.username | string | `"changeme"` |  |
 | config.csm.platform.internalResultServices.storage.writer.password | string | `"changeme"` |  |
 | config.csm.platform.internalResultServices.storage.writer.username | string | `"changeme"` |  |
+| config.csm.platform.s3.accessKeyId | string | `"changeme"` |  |
+| config.csm.platform.s3.bucketName | string | `"changeme"` |  |
+| config.csm.platform.s3.endpointUrl | string | `"http://s3-server:9000"` |  |
+| config.csm.platform.s3.secretAccessKey | string | `"changeme"` |  |
 | config.csm.platform.twincache.host | string | `"redis.host.changeme"` |  |
 | config.csm.platform.twincache.password | string | `"changeme"` |  |
 | config.csm.platform.twincache.port | int | `6379` |  |
@@ -864,4 +985,4 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | tolerations | list | `[]` |  |
 
 ----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.5.0](https://github.com/norwoodj/helm-docs/releases/v1.5.0)
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
