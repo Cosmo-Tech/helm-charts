@@ -196,7 +196,12 @@ Deploy Argo Workflows using the Argo Helm chart:
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install --namespace ${NAMESPACE} ${ARGO_RELEASE_NAME} bitnami/argo-workflows --version "12.0.0" --values - <<EOF
+rbac:
+  singleNamespace: true
+createAggregateRoles: false
 server:
+  auth:
+    mode: server
   clusterWorkflowTemplates:
     enabled: false
   serviceAccount:
@@ -252,9 +257,6 @@ controller:
         secretKeySecret:
           name: "${S3_CREDENTIALS_SECRET}"
           key: "${S3_PASSWORD_KEY}"
-    {{- if .Values.controller.metrics.enabled }}
-    metricsConfig: {{- include "common.tplvalues.render" (dict "value" .Values.controller.metrics "context" $) | nindent 2 }}
-    {{- end }}
     {{- if .Values.controller.telemetry.enabled }}
     telemetryConfig: {{- include "common.tplvalues.render" (dict "value" .Values.controller.telemetry "context" $) | nindent 2 }}
     {{- end }}
@@ -356,7 +358,7 @@ workflows:
   serviceAccount:
     name: ${ARGO_SERVICE_ACCOUNT}
     automountServiceAccountToken: true
-
+    
 postgresql:
   enabled: false
 
