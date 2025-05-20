@@ -136,14 +136,6 @@ resources:
     cpu: 500m
     memory: 512Mi
 
-persistence:
-  # -- Enable the data storage persistence
-  enabled: true
-  # -- PVC storage request for the data volume
-  size: 8Gi
-  # -- PVC storage class for the data volume, currently requires a ReadWriteMany capability
-  storageClass: ""
-
 autoscaling:
   enabled: false
   minReplicas: 1

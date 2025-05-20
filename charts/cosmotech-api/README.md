@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 5.0.0-beta1](https://img.shields.io/badge/Version-5.0.0--beta1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0-beta1](https://img.shields.io/badge/AppVersion-5.0.0--beta1-informational?style=flat-square)
+![Version: 5.0.0-beta2](https://img.shields.io/badge/Version-5.0.0--beta2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0-beta2](https://img.shields.io/badge/AppVersion-5.0.0--beta2-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -600,7 +600,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.0.0-beta1" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.0.0-beta2" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
@@ -711,13 +711,6 @@ resources:
     memory: 1024Mi
 networkPolicy:
   enabled: true
-persistence:
-  # -- Enable the data storage persistence
-  enabled: true
-  # -- PVC storage request for the data volume
-  size: 8Gi
-  # -- PVC storage class for the data volume, currently requires a ReadWriteMany capability
-  storageClass: ""
 EOF
 ```
 
