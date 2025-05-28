@@ -38,5 +38,3 @@ config:
       s3:
         host: http://seaweedfs-eng-modapi-ci-s3.eng-modapi-ci.svc.cluster.local:8333
         bucket: argo-workflows
-      simulatorRegistry:
-        host: acrengmodapiciuvpy1z.azurecr.io

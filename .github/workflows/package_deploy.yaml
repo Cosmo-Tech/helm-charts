@@ -120,6 +120,7 @@ jobs:
           --values deploy_values/warp.yaml
           --set image.tag="${{ matrix.imageTag }}"
           --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
+          --set config.csm.modelingApi.simulatorRegistry.host=${{ secrets.ACR_CREDENTIALS_USERNAME }}.azurecr.io
           --set config.csm.modelingApi.simulatorRegistry.pushSecret=cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }}
           cosmotech-modeling-api-${{ matrix.imageTag }}
           oci://ghcr.io/cosmo-tech/cosmotech-modeling-api-chart
