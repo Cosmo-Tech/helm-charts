@@ -206,6 +206,7 @@ config:
       internalResultServices:
         enabled: false
         storage:
+          enabled: true
           host: "localhost"
           port: 5432
           reader:
