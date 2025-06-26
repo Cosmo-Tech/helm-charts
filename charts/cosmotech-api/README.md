@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 5.0.0-beta2](https://img.shields.io/badge/Version-5.0.0--beta2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0-beta2](https://img.shields.io/badge/AppVersion-5.0.0--beta2-informational?style=flat-square)
+![Version: 5.0.0-beta3](https://img.shields.io/badge/Version-5.0.0--beta3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0-beta3](https://img.shields.io/badge/AppVersion-5.0.0--beta3-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -600,7 +600,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.0.0-beta2" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.0.0-beta3" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
@@ -927,6 +927,7 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | config.csm.platform.internalResultServices.eventBus.tls.enabled | bool | `false` |  |
 | config.csm.platform.internalResultServices.storage.admin.password | string | `"changeme"` |  |
 | config.csm.platform.internalResultServices.storage.admin.username | string | `"changeme"` |  |
+| config.csm.platform.internalResultServices.storage.enabled | bool | `true` |  |
 | config.csm.platform.internalResultServices.storage.host | string | `"localhost"` |  |
 | config.csm.platform.internalResultServices.storage.port | int | `5432` |  |
 | config.csm.platform.internalResultServices.storage.reader.password | string | `"changeme"` |  |
