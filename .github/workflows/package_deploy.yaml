@@ -13,7 +13,6 @@ on:
 jobs:
   package:
     runs-on: ubuntu-latest
-    environment: modeling_api_warp
     steps:
       - uses: actions/checkout@v4
 
