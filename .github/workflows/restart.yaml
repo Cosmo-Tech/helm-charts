@@ -13,6 +13,7 @@ on:
 jobs:
   restart:
     runs-on: ubuntu-latest
+    environment: modeling_api_warp
     steps:
       - uses: azure/login@v2
         with:
