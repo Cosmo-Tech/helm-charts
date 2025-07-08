@@ -1,0 +1,40 @@
+name: Checks
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install helm
+        uses: azure/setup-helm@v4
+
+      - name: Helm lint
+        run: |
+          helm lint --strict charts/*
+
+      - name: Helm package
+        run: |
+          helm package --destination ${{ runner.temp }}/packages charts/*
+
+      # Manual command to update docs:
+      # docker run --rm -u `id -u` -v $PWD/charts:/helm-docs jnorwood/helm-docs --skip-version-footer
+      - name: Helm docs
+        uses: losisin/helm-docs-github-action@v1.6.1
+        with:
+          chart-search-root: charts/
+          skip-version-footer: true
+          fail-on-diff: true
+
+      - name: Reuse lint
+        run: |
+          pip install reuse
+          reuse lint
