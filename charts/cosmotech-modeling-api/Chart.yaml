@@ -1,5 +1,5 @@
 apiVersion: v2
-name: cosmotech-modeling-api-chart
+name: cosmotech-modeling-api
 description: Helm chart for Cosmo Tech Modeling API
 type: application
 version: 0.1.0
