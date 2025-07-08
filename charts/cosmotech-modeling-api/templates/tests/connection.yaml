@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "cosmotech-modeling-api.fullname" . }}-test-connection"
+  labels:
+    {{- include "cosmotech-modeling-api.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: test
+    helm.sh/hook-delete-policy: hook-succeeded
+spec:
+  nodeSelector:
+    cosmotech.com/tier: services
+  tolerations:
+    - key: vendor
+      value: cosmotech
+      effect: NoSchedule
+  containers:
+    - name: wget-endpoints
+      image: busybox
+      command: ['wget']
+      args:
+        - '--quiet'
+        - '--server-response'
+        - '--output-document=-'
+        - 'http://{{ include "cosmotech-modeling-api.fullname" . }}:{{ .Values.service.port }}/about'
+        - 'http://{{ include "cosmotech-modeling-api.fullname" . }}:{{ .Values.service.port }}/openapi.yaml'
+        {{- if .Values.serviceMonitor.enabled }}
+        - 'http://{{ include "cosmotech-modeling-api.fullname" . }}:{{ .Values.serviceMonitor.port }}/metrics'
+        {{- end }}
+      resources:
+        limits:
+          cpu: 100m
+          memory: 10Mi
+        requests:
+          cpu: 100m
+          memory: 1Mi
+  restartPolicy: Never
