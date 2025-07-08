@@ -12,12 +12,16 @@ metadata:
 spec:
   nodeSelector:
     cosmotech.com/tier: services
+  securityContext:
+    {{- toYaml .Values.podSecurityContext | nindent 4 }}
   tolerations:
     - key: vendor
       value: cosmotech
       effect: NoSchedule
   containers:
     - name: wget-endpoints
+      securityContext:
+        {{- toYaml .Values.containerSecurityContext | nindent 8 }}
       image: busybox
       command: ['wget']
       args:
