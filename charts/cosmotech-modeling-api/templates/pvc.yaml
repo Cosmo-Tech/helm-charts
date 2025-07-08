@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: Copyright (C) 2023-2024 Cosmo Tech
+# SPDX-FileCopyrightText: Copyright (C) 2023-2025 Cosmo Tech
 # SPDX-License-Identifier: LicenseRef-CosmoTech
-{{if .Values.persistence.enabled}}
+{{- if .Values.persistence.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -18,4 +18,4 @@ spec:
   {{- if .Values.persistence.storageClass }}
   storageClassName: {{ .Values.persistence.storageClass }}
   {{- end }}
-{{end}}
+{{- end }}
