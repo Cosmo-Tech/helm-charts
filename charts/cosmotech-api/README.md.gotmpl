@@ -1,8 +1,17 @@
-# cosmotech-api
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
 
-![Version: 5.0.0-beta3](https://img.shields.io/badge/Version-5.0.0--beta3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0-beta3](https://img.shields.io/badge/AppVersion-5.0.0--beta3-informational?style=flat-square)
+{{ template "chart.badgesSection" . }}
 
-Cosmo Tech Platform API
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
 
 # Kubernetes deployment schema
 ![kubernetes deployment schema](media/schema.png)
@@ -142,10 +151,10 @@ extraDeploy:
     apiVersion: batch/v1
     kind: Job
     metadata:
-      name: {{ printf "%s-init-buckets" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" }}
-      namespace: {{ include "common.names.namespace" . | quote }}
+      name: {{"{{"}} printf "%s-init-buckets" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" }}
+      namespace: {{"{{"}} include "common.names.namespace" . | quote }}
       labels:
-        {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+        {{"{{"}}- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
       annotations:
         helm.sh/hook: post-install,post-upgrade
         helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
@@ -153,13 +162,13 @@ extraDeploy:
       template:
         metadata:
           labels:
-            {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 8 }}
+            {{"{{"}}- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 8 }}
         spec:
           restartPolicy: OnFailure
-          {{- if .Values.filer.podSecurityContext.enabled }}
+          {{"{{"}}- if .Values.filer.podSecurityContext.enabled }}
           securityContext:
-            {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.filer.podSecurityContext "context" $) | nindent 8 }}
-          {{- end }}
+            {{"{{"}}- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.filer.podSecurityContext "context" $) | nindent 8 }}
+          {{"{{"}}- end }}
           nodeSelector:
             cosmotech.com/tier: services
           tolerations:
@@ -170,10 +179,10 @@ extraDeploy:
           containers:
             - name: init-buckets
               image: alpine
-              {{- if .Values.filer.containerSecurityContext.enabled }}
+              {{"{{"}}- if .Values.filer.containerSecurityContext.enabled }}
               securityContext:
-                {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.filer.containerSecurityContext "context" $) | nindent 12 }}
-              {{- end }}
+                {{"{{"}}- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.filer.containerSecurityContext "context" $) | nindent 12 }}
+              {{"{{"}}- end }}
               command:
                 - /bin/sh
               args:
@@ -221,29 +230,29 @@ controller:
     archive:
       enabled: true
   config: |
-    {{- if .Values.controller.instanceID.enabled }}
-    {{- if .Values.controller.instanceID.useReleaseName }}
-    instanceID: {{ .Release.Name }}
-    {{- else }}
-    instanceID: {{ .Values.controller.instanceID.explicitID }}
-    {{- end }}
-    {{- end }}
+    {{"{{"}}- if .Values.controller.instanceID.enabled }}
+    {{"{{"}}- if .Values.controller.instanceID.useReleaseName }}
+    instanceID: {{"{{"}} .Release.Name }}
+    {{"{{"}}- else }}
+    instanceID: {{"{{"}} .Values.controller.instanceID.explicitID }}
+    {{"{{"}}- end }}
+    {{"{{"}}- end }}
     parallelism:
     namespaceParallelism:
-    {{- if or .Values.executor.resources .Values.executor.extraEnvVars .Values.executor.containerSecurityContext }}
+    {{"{{"}}- if or .Values.executor.resources .Values.executor.extraEnvVars .Values.executor.containerSecurityContext }}
     executor:
-      {{- if .Values.executor.resources }}
-      resources: {{- include "common.tplvalues.render" (dict "value" .Values.executor.resources "context" $) | nindent 4 }}
-      {{- else if ne .Values.executor.resourcesPreset "none" }}
-      resources: {{- include "common.resources.preset" (dict "type" .Values.executor.resourcesPreset) | nindent 4 }}
-      {{- end }}
-      {{- if .Values.executor.extraEnvVars }}
-      env: {{- include "common.tplvalues.render" (dict "value" .Values.executor.extraEnvVars "context" $) | nindent 4 }}
-      {{- end }}
-      {{- if .Values.executor.containerSecurityContext }}
-      securityContext: {{- omit .Values.executor.containerSecurityContext "enabled" | toYaml | nindent 4 }}
-      {{- end }}
-    {{- end }}
+      {{"{{"}}- if .Values.executor.resources }}
+      resources: {{"{{"}}- include "common.tplvalues.render" (dict "value" .Values.executor.resources "context" $) | nindent 4 }}
+      {{"{{"}}- else if ne .Values.executor.resourcesPreset "none" }}
+      resources: {{"{{"}}- include "common.resources.preset" (dict "type" .Values.executor.resourcesPreset) | nindent 4 }}
+      {{"{{"}}- end }}
+      {{"{{"}}- if .Values.executor.extraEnvVars }}
+      env: {{"{{"}}- include "common.tplvalues.render" (dict "value" .Values.executor.extraEnvVars "context" $) | nindent 4 }}
+      {{"{{"}}- end }}
+      {{"{{"}}- if .Values.executor.containerSecurityContext }}
+      securityContext: {{"{{"}}- omit .Values.executor.containerSecurityContext "enabled" | toYaml | nindent 4 }}
+      {{"{{"}}- end }}
+    {{"{{"}}- end }}
     artifactRepository:
       archiveLogs: true
       s3:
@@ -256,38 +265,38 @@ controller:
         secretKeySecret:
           name: "${S3_CREDENTIALS_SECRET}"
           key: "${S3_PASSWORD_KEY}"
-    {{- if .Values.controller.telemetry.enabled }}
-    telemetryConfig: {{- include "common.tplvalues.render" (dict "value" .Values.controller.telemetry "context" $) | nindent 2 }}
-    {{- end }}
-    {{- if (include "argo-workflows.controller.persistence.enabled" .) }}
+    {{"{{"}}- if .Values.controller.telemetry.enabled }}
+    telemetryConfig: {{"{{"}}- include "common.tplvalues.render" (dict "value" .Values.controller.telemetry "context" $) | nindent 2 }}
+    {{"{{"}}- end }}
+    {{"{{"}}- if (include "argo-workflows.controller.persistence.enabled" .) }}
     persistence:
       connectionPool:
         maxIdleConns: 100
         maxOpenConns: 0
       nodeStatusOffLoad: false
-      archive: {{ include "common.tplvalues.render" (dict "value" .Values.controller.persistence.archive.enabled "context" $) }}
-      {{- if or .Values.postgresql.enabled (and .Values.externalDatabase.enabled (eq .Values.externalDatabase.type "postgresql")) }}
+      archive: {{"{{"}} include "common.tplvalues.render" (dict "value" .Values.controller.persistence.archive.enabled "context" $) }}
+      {{"{{"}}- if or .Values.postgresql.enabled (and .Values.externalDatabase.enabled (eq .Values.externalDatabase.type "postgresql")) }}
       postgresql:
-      {{- else if or .Values.mysql.enabled (and .Values.externalDatabase.enabled (eq .Values.externalDatabase.type "mysql")) }}
+      {{"{{"}}- else if or .Values.mysql.enabled (and .Values.externalDatabase.enabled (eq .Values.externalDatabase.type "mysql")) }}
       mysql:
-      {{- end }}
-        host: {{ include "argo-workflows.controller.database.host" . }}
-        port: {{ include "argo-workflows.controller.database.port" . }}
-        database: {{ include "argo-workflows.controller.database" . }}
+      {{"{{"}}- end }}
+        host: {{"{{"}} include "argo-workflows.controller.database.host" . }}
+        port: {{"{{"}} include "argo-workflows.controller.database.port" . }}
+        database: {{"{{"}} include "argo-workflows.controller.database" . }}
         tableName: argo_workflows
         userNameSecret:
-          name: {{ include "argo-workflows.controller.database.username.secret" . }}
+          name: {{"{{"}} include "argo-workflows.controller.database.username.secret" . }}
           key: username
         passwordSecret:
-          name: {{ include "argo-workflows.controller.database.password.secret" . }}
-          key: {{ include "argo-workflows.controller.database.password.secret.key" . }}
-    {{- end }}
-    {{- if .Values.controller.workflowDefaults }}
-    workflowDefaults: {{- include "common.tplvalues.render" (dict "value" .Values.controller.workflowDefaults "context" $) | nindent 2 }}
-    {{- end }}
-    {{- if and .Values.server.auth.enabled .Values.server.auth.sso.enabled }}
-    sso: {{- include "common.tplvalues.render" (dict "value" .Values.server.auth.sso.config "context" $) | nindent 2 }}
-    {{- end }}
+          name: {{"{{"}} include "argo-workflows.controller.database.password.secret" . }}
+          key: {{"{{"}} include "argo-workflows.controller.database.password.secret.key" . }}
+    {{"{{"}}- end }}
+    {{"{{"}}- if .Values.controller.workflowDefaults }}
+    workflowDefaults: {{"{{"}}- include "common.tplvalues.render" (dict "value" .Values.controller.workflowDefaults "context" $) | nindent 2 }}
+    {{"{{"}}- end }}
+    {{"{{"}}- if and .Values.server.auth.enabled .Values.server.auth.sso.enabled }}
+    sso: {{"{{"}}- include "common.tplvalues.render" (dict "value" .Values.server.auth.sso.config "context" $) | nindent 2 }}
+    {{"{{"}}- end }}
   clusterWorkflowTemplates:
     enabled: false
   metrics:
@@ -584,6 +593,7 @@ EOF
 
 ## 7. Deploy Cosmo Tech API
 
+
 ### Step 1: Add Helm Repository
 
 If you haven't already added the Helm repository for Cosmo Tech API, execute the following command:
@@ -862,110 +872,11 @@ curl --location --request GET 'http://localhost:8080/organizations' \
 
 You have successfully deployed the Cosmo Tech API on Kubernetes using Helm charts. Ensure all environment variables are correctly set and adjust configurations as needed for your environment.
 
+
 This markdown guide provides a comprehensive walkthrough for deploying the Cosmo Tech API using Helm charts, ensuring clarity and completeness in the deployment process. Adjust the placeholders (${...}) with your actual values before executing the commands.
 
-## Values
+{{ template "chart.valuesSection" . }}
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| affinity | object | `{}` | default behavior is a pod anti-affinity, which prevents pods from co-locating on a same node |
-| api.multiTenant | bool | `true` |  |
-| api.probes.liveness.failureThreshold | int | `5` |  |
-| api.probes.liveness.timeoutSeconds | int | `10` |  |
-| api.probes.readiness.failureThreshold | int | `5` |  |
-| api.probes.readiness.timeoutSeconds | int | `10` |  |
-| api.probes.startup.failureThreshold | int | `50` |  |
-| api.probes.startup.initialDelaySeconds | int | `60` |  |
-| api.serviceMonitor.additionalLabels | object | `{}` |  |
-| api.serviceMonitor.enabled | bool | `true` |  |
-| api.serviceMonitor.namespace | string | `"cosmotech-monitoring"` |  |
-| api.servletContextPath | string | `"/"` |  |
-| api.tlsTruststore.enabled | bool | `false` |  |
-| api.tlsTruststore.fileName | string | `""` |  |
-| api.tlsTruststore.jksPassword | string | `""` |  |
-| api.tlsTruststore.secretKey | string | `""` |  |
-| api.tlsTruststore.secretName | string | `""` |  |
-| api.tlsTruststore.type | string | `"pem"` |  |
-| api.version | string | `"latest"` |  |
-| argo.imageCredentials.password | string | `""` | password for registry to use for pulling the Workflow images. Useful if you are using a private registry |
-| argo.imageCredentials.registry | string | `""` | container registry to use for pulling the Workflow images. Useful if you are using a private registry |
-| argo.imageCredentials.username | string | `""` | username for the container registry to use for pulling the Workflow images. Useful if you are using a private registry |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
-| config.csm.platform.argo.base-uri | string | `"http://argo-server:2746"` |  |
-| config.csm.platform.argo.workflows.access-modes[0] | string | `"ReadWriteOnce"` | Any in the following list: ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod (K8s 1.22+). |
-| config.csm.platform.argo.workflows.requests.storage | string | `"100Gi"` |  |
-| config.csm.platform.argo.workflows.storage-class | string | `nil` | Name of the storage class for Workflows volumes. Useful if you want to use a different storage class managed externally |
-| config.csm.platform.authorization.allowed-tenants | list | `[]` |  |
-| config.csm.platform.identityProvider.audience | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.authorizationUrl | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.code | string | `"keycloak"` |  |
-| config.csm.platform.identityProvider.containerScopes.changeme | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.defaultScopes.openid | string | `"OpenId Scope"` |  |
-| config.csm.platform.identityProvider.identity.clientId | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.identity.clientSecret | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.identity.tenantId | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.serverBaseUrl | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.tls.bundle | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.tls.enabled | bool | `false` |  |
-| config.csm.platform.identityProvider.tokenUrl | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.enabled | bool | `false` |  |
-| config.csm.platform.internalResultServices.eventBus.enabled | bool | `true` |  |
-| config.csm.platform.internalResultServices.eventBus.host | string | `"localhost"` |  |
-| config.csm.platform.internalResultServices.eventBus.listener.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.listener.username | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.port | int | `5672` |  |
-| config.csm.platform.internalResultServices.eventBus.sender.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.sender.username | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.tls.bundle | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.tls.enabled | bool | `false` |  |
-| config.csm.platform.internalResultServices.storage.admin.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.admin.username | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.enabled | bool | `true` |  |
-| config.csm.platform.internalResultServices.storage.host | string | `"localhost"` |  |
-| config.csm.platform.internalResultServices.storage.port | int | `5432` |  |
-| config.csm.platform.internalResultServices.storage.reader.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.reader.username | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.writer.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.writer.username | string | `"changeme"` |  |
-| config.csm.platform.twincache.host | string | `"redis.host.changeme"` |  |
-| config.csm.platform.twincache.password | string | `"changeme"` |  |
-| config.csm.platform.twincache.port | int | `6379` |  |
-| config.csm.platform.twincache.tls.bundle | string | `"changeme"` |  |
-| config.csm.platform.twincache.tls.enabled | bool | `false` |  |
-| config.csm.platform.twincache.useGraphModule | bool | `true` |  |
-| config.csm.platform.twincache.username | string | `"default"` |  |
-| deploymentStrategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":"50%"},"type":"RollingUpdate"}` | Deployment strategy |
-| deploymentStrategy.rollingUpdate.maxSurge | int | `1` | maximum number of Pods that can be created over the desired number of Pods |
-| deploymentStrategy.rollingUpdate.maxUnavailable | string | `"50%"` | maximum number of Pods that can be unavailable during the update process |
-| fullnameOverride | string | `""` | value overriding the full name of the Chart. If not set, the value is computed from `nameOverride`. Truncated at 63 chars because some Kubernetes name fields are limited to this. |
-| image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) for pulling the image |
-| image.repository | string | `"ghcr.io/cosmo-tech/cosmotech-api"` | container image to use for deployment |
-| image.tag | string | `""` | container image tag. Defaults to the Chart `appVersion` if empty or missing |
-| imageCredentials.password | string | `""` | password for registry to use for pulling the Deployment image. Useful if you are using a private registry |
-| imageCredentials.registry | string | `""` | container registry to use for pulling the Deployment image. Useful if you are using a private registry |
-| imageCredentials.username | string | `""` | username for the container registry to use for pulling the Deployment image. Useful if you are using a private registry |
-| ingress.annotations | object | `{}` |  |
-| ingress.enabled | bool | `false` |  |
-| ingress.hosts[0].host | string | `"chart-example.local"` |  |
-| ingress.hosts[0].paths[0].path | string | `"/"` |  |
-| ingress.hosts[0].paths[0].pathType | string | `"Prefix"` |  |
-| ingress.tls | list | `[]` |  |
-| nameOverride | string | `""` | value overriding the name of the Chart. Defaults to the Chart name. Truncated at 63 chars because some Kubernetes name fields are limited to this. |
-| networkPolicy.enabled | bool | `true` |  |
-| nodeSelector | object | `{}` |  |
-| podAnnotations | object | `{}` | annotations to set the Deployment pod |
-| podSecurityContext | object | `{"runAsNonRoot":true}` | the pod security context, i.e. applicable to all containers part of the pod |
-| replicaCount | int | `1` | number of pods replicas |
-| resources | object | `{"limits":{"cpu":"1000m","memory":"1024Mi"},"requests":{"cpu":"500m","memory":"512Mi"}}` | resources limits and requests for the pod placement |
-| securityContext | object | `{"readOnlyRootFilesystem":true}` | the security context at the pod container level |
-| service.managementPort | int | `8081` | service management port |
-| service.port | int | `8080` | service port |
-| service.type | string | `"ClusterIP"` | service type. See [this page](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) for the possible values |
-| serviceAccount.annotations | object | `{}` | annotations to add to the service account |
-| serviceAccount.create | bool | `true` | whether a service account should be created |
-| serviceAccount.name | string | `""` | the name of the service account to use. If not set and `serviceAccount.create` is `true`, a name is generated using the `fullname` template |
-| tolerations | list | `[]` |  |
+{{- if not .SkipVersionFooter }}
+{{ template "helm-docs.versionFooter" . }}
+{{- end }}
