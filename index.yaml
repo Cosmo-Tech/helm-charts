@@ -3,6 +3,16 @@ entries:
   cosmotech-api:
   - apiVersion: v2
     appVersion: 5.0.0-beta3
+    created: "2025-07-08T15:12:11.594730371Z"
+    description: Cosmo Tech Platform API
+    digest: 1d332ff5ed7166e2a9d5e118a12624df147ca9cf7fd6c36233aecd75686a00dd
+    name: cosmotech-api
+    type: application
+    urls:
+    - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-api-5.0.0-beta3/cosmotech-api-5.0.0-beta3.tgz
+    version: 5.0.0-beta3
+  - apiVersion: v2
+    appVersion: 5.0.0-beta3
     created: "2025-06-26T13:56:20.968674587Z"
     description: Cosmo Tech Platform API
     digest: e5e6344846ca82a26705fd0a7b359940875714224a94ad2d51a1af8955204096
@@ -283,4 +293,4 @@ entries:
     urls:
     - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-modeling-api-0.1.0/cosmotech-modeling-api-0.1.0.tgz
     version: 0.1.0
-generated: "2025-07-08T09:53:21.814487308Z"
+generated: "2025-07-08T15:12:11.826485539Z"
