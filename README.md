@@ -4,13 +4,10 @@ This repository contains the Cosmo Tech helm charts for deploying various compon
 
 ## Charts
 
-### Cosmo Tech API
-
-The Cosmo Tech API chart is located in the [charts/cosmotech-api](charts/cosmotech-api) directory. It provides the necessary resources to deploy the Cosmo Tech API on a Kubernetes cluster.
-
-### Cosmo Tech Business Webapp
-
-The Cosmo Tech Business Webapp chart is located in the [charts/cosmotech-business-webapp](charts/cosmotech-business-webapp) directory. It provides the necessary resources to deploy the Cosmo Tech Business Webapp on a Kubernetes cluster.
+- [Cosmo Tech API](charts/cosmotech-api)
+- [Cosmo Tech Business Webapp](charts/cosmotech-business-webapp)
+- [Cosmo Tech Copilot API](charts/cosmotech-copilot-api)
+- [Cosmo Tech Modeling API](charts/cosmotech-modeling-api)
 
 ## Installation
 
