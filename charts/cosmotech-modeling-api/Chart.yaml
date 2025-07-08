@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (C) 2023-2024 Cosmo Tech
 # SPDX-License-Identifier: LicenseRef-CosmoTech
 apiVersion: v2
-name: cosmotech-modeling-api-chart
+name: cosmotech-modeling-api
 description: Helm chart for Cosmo Tech Modeling API
 type: application
 version: 0.2.0
