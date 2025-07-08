@@ -1,3 +1,7 @@
+<!--
+SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
+SPDX-License-Identifier: MIT
+-->
 # Cosmo Tech Helm Charts
 
 This repository contains the Cosmo Tech helm charts for deploying various components of the Cosmo Tech Platform.

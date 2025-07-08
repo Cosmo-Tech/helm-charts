@@ -1,12 +1,14 @@
-nameOverride: "" 
-fullnameOverride: "" 
+# SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
+# SPDX-License-Identifier: MIT
+nameOverride: ""
+fullnameOverride: ""
 
 # Number of API replicas to deploy.
 replicaCount: 1
 
 # Cosmotech API values for path
 cosmotech-api:
-  version: 
+  version:
 
 # Docker image settings for the Cosmotech Copilot API.
 image:
