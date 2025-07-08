@@ -1,4 +1,7 @@
 {{/*
+SPDX-FileCopyrightText: Copyright (C) 2023-2024 Cosmo Tech
+SPDX-License-Identifier: LicenseRef-CosmoTech
+
 Expand the name of the chart.
 */}}
 {{- define "cosmotech-modeling-api.name" -}}
