@@ -1,2 +1,4 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
+# SPDX-License-Identifier: MIT
 .helmignore
 README.md.gotmpl
