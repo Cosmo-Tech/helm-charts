@@ -1,5 +1,5 @@
-# SPDX-FileCopyrightText: Copyright (C) 2023-2025 Cosmo Tech
-# SPDX-License-Identifier: LicenseRef-CosmoTech
+# SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
+# SPDX-License-Identifier: MIT
 apiVersion: v2
 name: cosmotech-modeling-api
 description: Cosmo Tech Modeling API

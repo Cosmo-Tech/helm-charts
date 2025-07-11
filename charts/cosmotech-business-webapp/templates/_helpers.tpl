@@ -1,3 +1,8 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+
 {{/* Generates the name of the webapp server */}}
 {{- define "cosmotech-business-webapp.server-name" -}}
 {{ .Values.name }}-server

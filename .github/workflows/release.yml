@@ -1,4 +1,6 @@
-name: Release Charts
+# SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
+# SPDX-License-Identifier: MIT
+name: Release chart
 
 on:
   workflow_dispatch:
