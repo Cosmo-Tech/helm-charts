@@ -1,0 +1,32 @@
+{{- /*
+SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/ -}}
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+- [Homepage](https://cosmotech.com)
+- [Changelog](CHANGELOG.md)
+
+## Compatibility
+
+| Chart version | Compatible Cosmo Tech Webapp versions           | Compatible Cosmo Tech API versions |
+| ------------- | ----------------------------------------------- | ---------------------------------- |
+| 0.1           | >= 7.0.0-beta (_instance-specific_ server only) | 4.0.0-onprem                       |
+| >= 0.2        | >= 7.0.0-beta                                   | 4.0.0-onprem                       |
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{- if not .SkipVersionFooter }}
+{{ template "helm-docs.versionFooter" . }}
+{{- end }}
