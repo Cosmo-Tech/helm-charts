@@ -74,7 +74,7 @@ jobs:
 
       - name: Write helm values
         run: |
-          echo ${{ vars.HELM_VALUES }} > values.yaml
+          echo "${{ vars.HELM_VALUES }}" > values.yaml
           cat values.yaml
 
       - name: Helm upgrade/install
