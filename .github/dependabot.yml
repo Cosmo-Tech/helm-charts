@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
+# SPDX-License-Identifier: MIT
+version: 2
+updates:
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  commit-message:
+    prefix: "GitHub Actions"
+  labels:
+    - dependencies
+    - github-actions
