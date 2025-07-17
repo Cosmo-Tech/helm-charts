@@ -4,4 +4,4 @@ apiVersion: v2
 name: cosmotech-modeling-api
 description: Cosmo Tech Modeling API
 type: application
-version: 0.4.0
+version: 0.5.0
