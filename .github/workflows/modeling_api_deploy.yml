@@ -41,13 +41,6 @@ jobs:
           resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
           use-kubelogin: true
 
-      - name: Login to GitHub Container Registry
-        run: >
-          echo "${{ secrets.GITHUB_TOKEN }}" |
-          helm registry login ghcr.io
-          --username "${{ github.actor }}"
-          --password-stdin
-
       - name: Setup image pull secret
         uses: azure/k8s-create-secret@v5
         with:
