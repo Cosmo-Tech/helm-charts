@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - charts/cosmotech-modeling-api/**
+      - .github/workflows/modeling_api_deploy.yml
 
 jobs:
   deploy:
