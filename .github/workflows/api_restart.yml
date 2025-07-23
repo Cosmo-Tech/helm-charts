@@ -1,19 +1,14 @@
 # SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
 # SPDX-License-Identifier: MIT
-name: Modeling API / Restart deployment
+name: API / Restart deployment
 
 on:
   workflow_dispatch:
-    inputs:
-      imageTag:
-        description: "Docker image tag that was updated"
-        required: true
-        type: string
 
 jobs:
-  restart:
+  deploy:
     runs-on: ubuntu-latest
-    environment: modeling_api_warp
+    environment: api_warp
     steps:
       - uses: azure/login@v2
         with:
@@ -42,7 +37,7 @@ jobs:
         run: >
           kubectl rollout restart
           --namespace ${{ vars.CLUSTER_NAMESPACE }}
-          deployment/cosmotech-modeling-api-${{ inputs.imageTag }}
+          deployment/cosmotech-api-ci
 
       - name: Wait for restart to finish
         if: ${{ steps.cluster_availability.outcome == 'success' }}
@@ -50,4 +45,4 @@ jobs:
           kubectl rollout status
           --namespace ${{ vars.CLUSTER_NAMESPACE }}
           --timeout=10m
-          deployment/cosmotech-modeling-api-${{ inputs.imageTag }}
+          deployment/cosmotech-api-ci
