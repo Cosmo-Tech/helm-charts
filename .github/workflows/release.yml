@@ -44,7 +44,7 @@ jobs:
 
       - name: Chart package
         run: |
-          cr package ${{ inputs.chart_name }}
+          cr package charts/${{ inputs.chart_name }}
 
       - name: Chart release
         run: >
