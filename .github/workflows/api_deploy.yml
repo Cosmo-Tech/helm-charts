@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: api_warp
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: azure/setup-helm@v4
 
