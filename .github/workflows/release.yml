@@ -47,17 +47,9 @@ jobs:
           cr package charts/${{ inputs.chart_name }}
 
       - name: Chart release
-        run: >
-          cr upload
-            --owner "${{ github.repository_owner }}"
-            --git-repo "${{ env.REPO_NAME }}"
-            --token ${{ secrets.GITHUB_TOKEN }}
-            --commit ${{ github.sha }}
+        run: |
+          cr upload --owner "${{ github.repository_owner }}" --git-repo "${{ env.REPO_NAME }}" --token ${{ secrets.GITHUB_TOKEN }} --commit ${{ github.sha }}
 
       - name: Index update
-        run: >
-          cr index
-            --owner "${{ github.repository_owner }}"
-            --git-repo "${{ env.REPO_NAME }}"
-            --token ${{ secrets.GITHUB_TOKEN }}
-            --push
+        run: |
+          cr index --owner "${{ github.repository_owner }}" --git-repo "${{ env.REPO_NAME }}" --token ${{ secrets.GITHUB_TOKEN }} --push
