@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Needed by 'cr index' to be able to update the github pages branch
 
       - name: Configure Git
         run: |
