@@ -49,15 +49,15 @@ jobs:
       - name: Chart release
         run: >
           cr upload
-            --owner ${{ github.repository_owner }}
-            --git-repo ${{ env.REPO_NAME }}
+            --owner "${{ github.repository_owner }}"
+            --git-repo "${{ env.REPO_NAME }}"
             --token ${{ secrets.GITHUB_TOKEN }}
             --commit ${{ github.sha }}
 
       - name: Index update
         run: >
           cr index
-            --owner ${{ github.repository_owner }}
-            --git-repo ${{ env.REPO_NAME }}
+            --owner "${{ github.repository_owner }}"
+            --git-repo "${{ env.REPO_NAME }}"
             --token ${{ secrets.GITHUB_TOKEN }}
             --push
