@@ -8,7 +8,10 @@ on:
       imageTag:
         description: "Docker image tag that was updated"
         required: true
-        type: string
+        type: choice
+        options:
+          - continuous
+          - nightly
 
 jobs:
   restart:
