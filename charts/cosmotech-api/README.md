@@ -71,89 +71,277 @@ Deploy Argo Workflows using the Argo Helm chart:
 ```bash
 helm repo add argo https://argoproj.github.io/argo-helm
 helm install --namespace ${NAMESPACE} ${ARGO_RELEASE_NAME} bitnami/argo-workflows --version "12.0.0" --values - <<EOF
-singleNamespace: true
-createAggregateRoles: false
-crds:
-  install: false
-  keep: true
-images:
-  pullPolicy: IfNotPresent
-workflow:
-  serviceAccount:
-    create: true
-    name: ${ARGO_SERVICE_ACCOUNT}
+controller:
+  clusterWorkflowTemplates:
+    enabled: false
+  config: "{{- if .Values.controller.instanceID.enabled }}\n{{- if .Values.controller.instanceID.useReleaseName
+    }}\ninstanceID: {{ .Release.Name }}\n{{- else }}\ninstanceID: {{ .Values.controller.instanceID.explicitID
+    }}\n{{- end }}\n{{- end }}\nparallelism:\nnamespaceParallelism:\n{{- if or .Values.executor.resources
+    .Values.executor.extraEnvVars .Values.executor.containerSecurityContext }}\nexecutor:\n
+    \ {{- if .Values.executor.resources }}\n  resources: {{- include \"common.tplvalues.render\"
+    (dict \"value\" .Values.executor.resources \"context\" $) | nindent 4 }}\n  {{-
+    else if ne .Values.executor.resourcesPreset \"none\" }}\n  resources: {{- include
+    \"common.resources.preset\" (dict \"type\" .Values.executor.resourcesPreset) |
+    nindent 4 }}\n  {{- end }}\n  {{- if .Values.executor.extraEnvVars }}\n  env:
+    {{- include \"common.tplvalues.render\" (dict \"value\" .Values.executor.extraEnvVars
+    \"context\" $) | nindent 4 }}\n  {{- end }}\n  {{- if .Values.executor.containerSecurityContext
+    }}\n  securityContext: {{- omit .Values.executor.containerSecurityContext \"enabled\"
+    | toYaml | nindent 4 }}\n  {{- end }}     \nmainContainer: \n  {{- if .Values.executor.containerSecurityContext
+    }}\n  securityContext: {{- omit .Values.executor.containerSecurityContext \"enabled\"
+    | toYaml | nindent 4 }}\n  {{- end }}   \n{{- end }}\nartifactRepository:\n  archiveLogs:
+    true\n  s3:\n    endpoint: \"seaweedfs-${NAMESPACE}-s3.${NAMESPACE}.svc.cluster.local:8333\"\n
+    \   bucket: \"argo-workflows\"\n    insecure: true\n    accessKeySecret:\n      name:
+    \"seaweedfs-${NAMESPACE}-s3-auth\"\n      key: \"argo-workflows-username\"\n    secretKeySecret:\n
+    \     name: \"seaweedfs-${NAMESPACE}-s3-auth\"\n      key: \"argo-workflows-password\"\n{{-
+    if .Values.controller.metrics.enabled }}\nmetricsConfig:\n  enabled: true\n  path:
+    {{ .Values.controller.metrics.path }}\n{{- end }}\n{{- if .Values.controller.telemetry.enabled
+    }}\ntelemetryConfig: {{- include \"common.tplvalues.render\" (dict \"value\" .Values.controller.telemetry
+    \"context\" $) | nindent 2 }}\n{{- end }}\n{{- if (include \"argo-workflows.controller.persistence.enabled\"
+    .) }}\npersistence:\n  connectionPool:\n    maxIdleConns: 100\n    maxOpenConns:
+    0\n  nodeStatusOffLoad: false\n  archive: {{ include \"common.tplvalues.render\"
+    (dict \"value\" .Values.controller.persistence.archive.enabled \"context\" $)
+    }}\n  {{- if or .Values.postgresql.enabled (and .Values.externalDatabase.enabled
+    (eq .Values.externalDatabase.type \"postgresql\")) }}\n  postgresql:\n  {{- else
+    if or .Values.mysql.enabled (and .Values.externalDatabase.enabled (eq .Values.externalDatabase.type
+    \"mysql\")) }}\n  mysql:\n  {{- end }}\n    host: {{ include \"argo-workflows.controller.database.host\"
+    . }}\n    port: {{ include \"argo-workflows.controller.database.port\" . }}\n
+    \   database: {{ include \"argo-workflows.controller.database\" . }}\n    tableName:
+    argo_workflows\n    userNameSecret:\n      name: {{ include \"argo-workflows.controller.database.username.secret\"
+    . }}\n      key: username\n    passwordSecret:\n      name: {{ include \"argo-workflows.controller.database.password.secret\"
+    . }}\n      key: {{ include \"argo-workflows.controller.database.password.secret.key\"
+    . }}\n{{- end }}\n{{- if .Values.controller.workflowDefaults }}\nworkflowDefaults:
+    {{- include \"common.tplvalues.render\" (dict \"value\" .Values.controller.workflowDefaults
+    \"context\" $) | nindent 2 }}\n{{- end }}\n{{- if and .Values.server.auth.enabled
+    .Values.server.auth.sso.enabled }}\nsso: {{- include \"common.tplvalues.render\"
+    (dict \"value\" .Values.server.auth.sso.config \"context\" $) | nindent 2 }}\n{{-
+    end }}\n"
+  containerPorts:
+    metrics: 9090
+    telemetry: 8081
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    enabled: true
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsGroup: 1001
+    runAsNonRoot: true
+    runAsUser: 1001
+    seLinuxOptions: {}
+    seccompProfile:
+      type: RuntimeDefault
+  existingConfigMap: ""
+  extraArgs: ""
+  instanceID:
+    enabled: false
+    explicitID: ""
+    useReleaseName: false
+  logging:
+    globalLevel: "0"
+    level: info
+  metrics:
+    enabled: true
+    path: /metrics
+    serviceMonitor:
+      enabled: true
+  networkPolicy:
+    allowExternal: true
+    allowExternalEgress: true
+    enabled: true
+    kubeAPIServerPorts:
+    - 443
+    - 6443
+    - 8443
+  nodeSelector:
+    cosmotech.com/tier: services
+  persistence:
+    archive:
+      enabled: true
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+    fsGroupChangePolicy: Always
+    supplementalGroups: []
+    sysctls: []
   rbac:
     create: true
+  service:
+    ports:
+      metrics: 8080
+      telemetry: 8081
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+    automountServiceAccountToken: true
+    create: true
+    name: ""
+  telemetry:
+    enabled: false
+    path: /telemetry
+  tolerations:
+  - effect: NoSchedule
+    key: vendor
+    operator: Equal
+    value: cosmotech
+  workflowDefaults:
+    spec:
+      activeDeadlineSeconds: 604800
+      podGC:
+        strategy: OnWorkflowSuccess
+      securityContext:
+        fsGroup: 1001
+        fsGroupChangePolicy: Always
+        runAsGroup: 1001
+        runAsNonRoot: true
+        runAsUser: 1001
+        seLinuxOptions: {}
+        seccompProfile:
+          type: RuntimeDefault
+      ttlStrategy:
+        secondsAfterCompletion: 259200
+        secondsAfterSuccess: 86400
+      volumeClaimGC:
+        strategy: OnWorkflowCompletion
+  workflowNamespaces:
+  - default
+  workflowWorkers: 32
+createAggregateRoles: false
 executor:
-  env:
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    enabled: true
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsGroup: 1001
+    runAsNonRoot: true
+    runAsUser: 1001
+    seLinuxOptions: {}
+    seccompProfile:
+      type: RuntimeDefault
+  extraEnvVars:
   - name: RESOURCE_STATE_CHECK_INTERVAL
     value: 1s
   - name: WAIT_CONTAINER_STATUS_CHECK_INTERVAL
     value: 1s
+  resources:
+    limits:
+      cpu: 3
+      memory: 1024Mi
+    requests:
+      cpu: 2
+      memory: 512Mi
+  resourcesPreset: nano
+externalDatabase:
+  database: argo_workflows
+  enabled: true
+  existingSecret: postgres-config
+  host: postgresql-${NAMESPACE}
+  password: ""
+  port: "5432"
+  type: postgresql
+  username: argo
+ingress:
+  enabled: false
+postgresql:
+  enabled: false
+rbac:
+  singleNamespace: true
 server:
+  auth:
+    enabled: true
+    mode: server
+    sso:
+      enabled: false
+  baseHref: /
   clusterWorkflowTemplates:
+    enableEditing: true
     enabled: false
-  extraArgs:
-  - --auth-mode=server
+  containerPorts:
+    web: 2746
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    enabled: true
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsGroup: 1001
+    runAsNonRoot: true
+    runAsUser: 1001
+    seLinuxOptions: {}
+    seccompProfile:
+      type: RuntimeDefault
+  enabled: true
+  extraArgs: ""
+  livenessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 20
+    successThreshold: 1
+    timeoutSeconds: 1
+  networkPolicy:
+    allowExternal: true
+    allowExternalEgress: true
+    enabled: true
+    kubeAPIServerPorts:
+    - 443
+    - 6443
+    - 8443
+  nodeSelector:
+    cosmotech.com/tier: services
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+    fsGroupChangePolicy: Always
+    supplementalGroups: []
+    sysctls: []
+  rbac:
+    create: true
+  readinessProbe:
+    enabled: true
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 20
+    successThreshold: 1
+    timeoutSeconds: 1
+  replicaCount: 1
   secure: false
-  podLabels:
-    networking/traffic-allowed: "yes"
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "100m"
-    limits:
-      memory: "512Mi"
-      cpu: "1"
-controller:
-  extraArgs:
-  - "--managed-namespace"
-  - "${NAMESPACE}"
-  clusterWorkflowTemplates:
+  service:
+    ports:
+      http: 2746
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+    automountServiceAccountToken: true
+    create: true
+    name: ""
+  startupProbe:
     enabled: false
-  extraEnv:
-  - name: DEFAULT_REQUEUE_TIME
-    value: ${REQUEUE_TIME}
-  podLabels:
-    networking/traffic-allowed: "yes"
-  serviceMonitor:
-    enabled: true
-    namespace: ${MONITORING_NAMESPACE}
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "100m"
-    limits:
-      memory: "512Mi"
-      cpu: "1"
-  containerRuntimeExecutor: k8sapi
-  metricsConfig:
-    enabled: true
-  workflowDefaults:
-    spec:
-      activeDeadlineSeconds: 604800
-      ttlStrategy:
-        secondsAfterSuccess: 86400
-        secondsAfterCompletion: 259200
-      podGC:
-        strategy: OnWorkflowSuccess
-      volumeClaimGC:
-        strategy: OnWorkflowCompletion
-  persistence:
-    archive: true
-    archiveTTL: ${ARCHIVE_TTL}
-    postgresql:
-      host: "${POSTGRES_RELEASE_NAME}-postgresql"
-      database: ${ARGO_DATABASE}
-      tableName: workflows
-      userNameSecret:
-        name: ${ARGO_POSTGRESQL_SECRET_NAME}
-        key: argo-username
-      passwordSecret:
-        name: ${ARGO_POSTGRESQL_SECRET_NAME}
-        key: argo-password
-mainContainer:
-  imagePullPolicy: IfNotPresent
+    failureThreshold: 6
+    initialDelaySeconds: 300
+    path: /
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+  tolerations:
+  - effect: NoSchedule
+    key: vendor
+    operator: Equal
+    value: cosmotech
+workflows:
+  rbac:
+    create: true
+  serviceAccount:
+    automountServiceAccountToken: true
+    create: true
+    name: argo-workflows-${NAMESPACE}-service-account
 EOF
 ```
 
