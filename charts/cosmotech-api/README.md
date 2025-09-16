@@ -26,6 +26,7 @@ Before starting the deployment, ensure you have the following:
 Deploy PostgreSQL using the Bitnami Helm chart:
 
 ```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install --namespace ${NAMESPACE} ${POSTGRES_RELEASE_NAME} bitnami/postgresql --version "11.6.12" --values - <<EOF
 image:
   debug: true
@@ -69,7 +70,7 @@ Deploy Argo Workflows using the Argo Helm chart:
 
 ```bash
 helm repo add argo https://argoproj.github.io/argo-helm
-helm install --namespace ${NAMESPACE} ${ARGO_RELEASE_NAME} argo/argo-workflows --version "0.16.6" --values - <<EOF
+helm install --namespace ${NAMESPACE} ${ARGO_RELEASE_NAME} bitnami/argo-workflows --version "12.0.0" --values - <<EOF
 singleNamespace: true
 createAggregateRoles: false
 crds:
@@ -161,6 +162,7 @@ EOF
 Deploy RabbitMQ using the Bitnami Helm chart:
 
 ```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install --namespace ${NAMESPACE} ${RABBITMQ_RELEASE_NAME} bitnami/rabbitmq --version "13.0.3" --values - <<EOF
 auth:
   existingPasswordSecret: ${INSTANCE_NAME}-secret
@@ -240,6 +242,7 @@ EOF
 Deploy Redis using the Bitnami Helm chart:
 
 ```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install --namespace ${NAMESPACE} ${REDIS_RELEASE_NAME} bitnami/redis --version "17.8.0" --values - <<EOF
 auth:
   password: ${REDIS_PASSWORD}
@@ -302,6 +305,7 @@ EOF
 ## 5. Deploy logging
 
 ```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install loki bitnami/grafana-loki -n ${NAMESPACE} --values - <<EOF
 deploymentMode: SingleBinary
 commonLabels:
@@ -398,6 +402,7 @@ kubectl create secret generic keycloak_config --namespace <namespace> --from-env
 Install the PostgreSQL helm chart
 
 ```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install postgresql bitnami/postgresql --namespace <namespace> --version 15.5.1 --values - <<EOF
 global:
   postgresql:
@@ -415,6 +420,7 @@ primary:
 EOF
 
 # Install Keycloak helm chart
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install keycloak bitnami/keycloak --namespace <namespace> --version 21.3.1 --values - <<EOF
 proxy: "edge"
 httpRelativePath: "/keycloak/"
