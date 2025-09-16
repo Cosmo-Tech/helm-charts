@@ -1,9 +1,19 @@
-name: Release Charts
+# SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
+# SPDX-License-Identifier: MIT
+name: Release chart
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      chart_name:
+        description: "Name of the chart to release"
+        required: true
+        type: choice
+        options:
+          - cosmotech-api
+          - cosmotech-business-webapp
+          - cosmotech-copilot-api
+          - cosmotech-modeling-api
 
 jobs:
   release:
@@ -12,21 +22,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Needed by 'cr index' to be able to update the github pages branch
 
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Install Helm
-        uses: azure/setup-helm@v4
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Compute repository name
+        run: |
+          echo "REPO_NAME=$(basename ${{ github.repository }})" >> "$GITHUB_ENV"
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Install chart releaser
+        run: |
+          cr_version=1.8.1
+          curl -sSL https://github.com/helm/chart-releaser/releases/download/v${cr_version}/chart-releaser_${cr_version}_linux_amd64.tar.gz -o cr.tgz
+          mkdir cr_bin
+          tar -xzf cr.tgz -C cr_bin
+          rm cr.tgz
+          echo "$PWD/cr_bin" >> "$GITHUB_PATH"
+
+      - name: Chart package
+        run: |
+          cr package charts/${{ inputs.chart_name }}
+
+      - name: Chart release
+        run: |
+          cr upload --owner "${{ github.repository_owner }}" --git-repo "${{ env.REPO_NAME }}" --token ${{ secrets.GITHUB_TOKEN }} --commit ${{ github.sha }}
+
+      # The mkdir command should/may not be needed
+      # See https://github.com/helm/chart-releaser/issues/187
+      - name: Index update
+        run: |
+          mkdir .cr-index
+          cr index --owner "${{ github.repository_owner }}" --git-repo "${{ env.REPO_NAME }}" --token ${{ secrets.GITHUB_TOKEN }} --push
