@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 4.1.2-onprem](https://img.shields.io/badge/Version-4.1.2--onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.1.2-onprem](https://img.shields.io/badge/AppVersion-4.1.2--onprem-informational?style=flat-square)
+![Version: 4.2.0-onprem](https://img.shields.io/badge/Version-4.2.0--onprem-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.2.0-onprem](https://img.shields.io/badge/AppVersion-4.2.0--onprem-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
