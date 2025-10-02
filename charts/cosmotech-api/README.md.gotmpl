@@ -533,7 +533,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.0.0-beta5" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "{{ template "chart.appVersion" . }}" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
