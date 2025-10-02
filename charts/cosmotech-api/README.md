@@ -9,7 +9,7 @@ Cosmo Tech Platform API
 
 # How to Deploy the Cosmo Tech Platform on a Kubernetes Cluster
 
-This guide provides instructions to deploy the Cosmo Tech platform on a Kubernetes cluster using Helm charts. The deployment includes several services in the following order: PostgreSQL, Argo Workflows, RabbitMQ, Redis, and finally, the Cosmo Tech API.
+This guide provides instructions to deploy the Cosmo Tech platform on a Kubernetes cluster using Helm charts. The deployment includes several services in the following order: PostgreSQL, Argo Workflows, Redis, and finally, the Cosmo Tech API.
 
 ## Prerequisites
 
@@ -373,86 +373,7 @@ externalDatabase:
 EOF
 ```
 
-## 4. Deploy RabbitMQ
-
-Deploy RabbitMQ using the Bitnami Helm chart:
-
-```bash
-helm install --namespace ${NAMESPACE} ${RABBITMQ_RELEASE_NAME} bitnami/rabbitmq --version "13.0.3" --values - <<EOF
-auth:
-  existingPasswordSecret: ${INSTANCE_NAME}-secret
-  existingSecretPasswordKey: admin-password
-extraPlugins: "rabbitmq_amqp1_0 rabbitmq_prometheus"
-extraSecrets:
-  ${INSTANCE_NAME}-load-definition:
-    load_definition.json: |
-      {
-        "users": [
-          {
-            "name": "admin",
-            "password": "${ADMIN_PASSWORD}",
-            "tags": "administrator"
-          },
-          {
-            "name": "${LISTENER_USERNAME}",
-            "password": "${LISTENER_PASSWORD}",
-            "tags": ""
-          },
-          {
-            "name": "${SENDER_USERNAME}",
-            "password": "${SENDER_PASSWORD}",
-            "tags": ""
-          }
-        ],
-        "vhosts": [
-          {
-            "name": "/"
-          }
-        ],
-        "permissions": [
-          {
-            "user": "admin",
-            "vhost": "/",
-            "configure": ".*",
-            "write": ".*",
-            "read": ".*"
-          },
-          {
-            "user": "${LISTENER_USERNAME}",
-            "vhost": "/",
-            "configure": ".*",
-            "write": ".*",
-            "read": ".*"
-          },
-          {
-            "user": "${SENDER_USERNAME}",
-            "vhost": "/",
-            "configure": ".*",
-            "write": ".*",
-            "read": ".*"
-          }
-        ]
-      }
-loadDefinition:
-  enabled: true
-  existingSecret: ${INSTANCE_NAME}-load-definition
-extraConfiguration: |
-  load_definitions = /app/load_definition.json
-persistence:
-  enabled: true
-  size: ${PERSISTENCE_SIZE}
-  existingClaim: ${PVC_NAME}
-metrics:
-  enabled: true
-  serviceMonitor:
-    enabled: true
-    namespace: ${MONITORING_NAMESPACE}
-    interval: 30s
-    scrapeTimeout: 10s
-EOF
-```
-
-## 5. Deploy Redis
+## 4. Deploy Redis
 
 Deploy Redis using the Bitnami Helm chart:
 
@@ -515,7 +436,7 @@ commonConfiguration: |-
 EOF
 ```
 
-## 6. Deploy keycloak
+## 5. Deploy keycloak
 
 Create a file for the secrets
 
@@ -582,7 +503,7 @@ externalDatabase:
 EOF
 ```
 
-## 7. Deploy Cosmo Tech API
+## 6. Deploy Cosmo Tech API
 
 ### Step 1: Add Helm Repository
 
@@ -598,7 +519,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.0.0-beta3" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.0.0-beta5" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
@@ -659,9 +580,16 @@ config:
       authorization:
         allowedApiKeyConsumers: ${ALLOWED_API_KEY_CONSUMERS}
         allowed-tenants: ${TENANT_ID}
-      internalResultServices:
-        enabled: ${USE_INTERNAL_RESULT_SERVICES}
-        storage:
+      databases:
+        resources:
+          host: "cosmotechredis-${NAMESPACE}-master.${NAMESPACE}.svc.cluster.local"
+          port: 6379
+          username: "default"
+          password: ${REDIS_PASSWORD}
+          tls:
+            enabled: false
+            bundle: "changeme"
+        data:
           host: "${POSTGRESQL_RELEASE_NAME}-postgresql.${NAMESPACE}.svc.cluster.local"
           port: 5432
           reader:
@@ -673,20 +601,6 @@ config:
           admin:
             username: ${POSTGRESQL_ADMIN_USERNAME}
             password: ${POSTGRESQL_ADMIN_PASSWORD}
-        eventBus:
-          host: "${RABBITMQ_RELEASE_NAME}.${NAMESPACE}.svc.cluster.local"
-          port: 5672
-          listener:
-            username: ${RABBITMQ_LISTENER_USERNAME}
-            password: ${RABBITMQ_LISTENER_PASSWORD}
-          sender:
-            username: ${RABBITMQ_SENDER_USERNAME}
-            password: ${RABBITMQ_SENDER_PASSWORD}
-      twincache:
-        host: "cosmotechredis-${NAMESPACE}-master.${NAMESPACE}.svc.cluster.local"
-        port: ${REDIS_PORT}
-        username: "default"
-        password: ${REDIS_PASSWORD}
 ingress:
   enabled: ${COSMOTECH_API_INGRESS_ENABLED}
   annotations:
@@ -724,8 +638,8 @@ kubectl get pods -n ${NAMESPACE}
 
 Once deployed, access the Cosmo Tech API using the configured ingress hostname (${COSMOTECH_API_DNS_NAME}).
 
-### Optional: Configure TLS client access to Redis / Keycloak / RabbitMQ
-If you want to access a Redis / Keycloak / RabbitMQ with SSL / TLS you need to configure the following values:
+### Optional: Configure TLS client access to Redis / Keycloak
+If you want to access a Redis / Keycloak with SSL / TLS you need to configure the following values:
 ``` yaml
 api:
   tlsTruststore:
@@ -740,7 +654,7 @@ You can define this root certificate either with CRT/PEM format or with a Java K
 
 To do so you need first to create a kubernetes secret with your certificate file, then you must to define the values in api.tlsTruststore.
 
-##### Example: Redis / Keycloak / RabbitMQ TLS with PEM custom root CA
+##### Example: Redis / Keycloak TLS with PEM custom root CA
 Create a kubernetes secret:
 ``` bash
 kubectl -n mynamespace create secret generic cosmo-certificates-tls-secret --from-file=./rootCA.crt
@@ -756,7 +670,7 @@ api:
     type: pem
 ```
 
-##### Example: Redis / Keycloak / RabbitMQ TLS with JKS custom root CA
+##### Example: Redis / Keycloak TLS with JKS custom root CA
 Create a kubernetes secret:
 ``` bash
 kubectl -n mynamespace create secret generic cosmo-jks-secret --from-file=./rootCA.jks
@@ -794,31 +708,6 @@ config:
     platform:
       identityProvider:
         tls:
-          enabled: false
-```
-
-### Optional: Disable TLS client access to RabbitMQ
-
-To do so, modify the Cosmo Tech API values file by adding this part :
-``` yaml
-config:
-  csm:
-    platform:
-      internalResultServices:
-        eventBus:
-          tls:
-            enabled: false
-```
-
-### Optional: Disable RabbitMQ
-
-To do so, modify the Cosmo Tech API values file by adding this part :
-``` yaml
-config:
-  csm:
-    platform:
-      internalResultServices:
-        eventBus:
           enabled: false
 ```
 
@@ -895,6 +784,20 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
+| config.csm.databases.data.admin.password | string | `"changeme"` |  |
+| config.csm.databases.data.admin.username | string | `"changeme"` |  |
+| config.csm.databases.data.host | string | `"postgresql.host.changeme"` |  |
+| config.csm.databases.data.port | int | `5432` |  |
+| config.csm.databases.data.reader.password | string | `"changeme"` |  |
+| config.csm.databases.data.reader.username | string | `"changeme"` |  |
+| config.csm.databases.data.writer.password | string | `"changeme"` |  |
+| config.csm.databases.data.writer.username | string | `"changeme"` |  |
+| config.csm.databases.resources.host | string | `"redis.host.changeme"` |  |
+| config.csm.databases.resources.password | string | `"changeme"` |  |
+| config.csm.databases.resources.port | int | `6379` |  |
+| config.csm.databases.resources.tls.bundle | string | `"changeme"` |  |
+| config.csm.databases.resources.tls.enabled | bool | `false` |  |
+| config.csm.databases.resources.username | string | `"default"` |  |
 | config.csm.platform.argo.base-uri | string | `"http://argo-server:2746"` |  |
 | config.csm.platform.argo.workflows.access-modes[0] | string | `"ReadWriteOnce"` | Any in the following list: ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod (K8s 1.22+). |
 | config.csm.platform.argo.workflows.requests.storage | string | `"100Gi"` |  |
@@ -902,7 +805,6 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | config.csm.platform.authorization.allowed-tenants | list | `[]` |  |
 | config.csm.platform.identityProvider.audience | string | `"changeme"` |  |
 | config.csm.platform.identityProvider.authorizationUrl | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.code | string | `"keycloak"` |  |
 | config.csm.platform.identityProvider.containerScopes.changeme | string | `"changeme"` |  |
 | config.csm.platform.identityProvider.defaultScopes.openid | string | `"OpenId Scope"` |  |
 | config.csm.platform.identityProvider.identity.clientId | string | `"changeme"` |  |
@@ -912,32 +814,6 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | config.csm.platform.identityProvider.tls.bundle | string | `"changeme"` |  |
 | config.csm.platform.identityProvider.tls.enabled | bool | `false` |  |
 | config.csm.platform.identityProvider.tokenUrl | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.enabled | bool | `false` |  |
-| config.csm.platform.internalResultServices.eventBus.enabled | bool | `true` |  |
-| config.csm.platform.internalResultServices.eventBus.host | string | `"localhost"` |  |
-| config.csm.platform.internalResultServices.eventBus.listener.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.listener.username | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.port | int | `5672` |  |
-| config.csm.platform.internalResultServices.eventBus.sender.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.sender.username | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.tls.bundle | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.eventBus.tls.enabled | bool | `false` |  |
-| config.csm.platform.internalResultServices.storage.admin.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.admin.username | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.enabled | bool | `true` |  |
-| config.csm.platform.internalResultServices.storage.host | string | `"localhost"` |  |
-| config.csm.platform.internalResultServices.storage.port | int | `5432` |  |
-| config.csm.platform.internalResultServices.storage.reader.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.reader.username | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.writer.password | string | `"changeme"` |  |
-| config.csm.platform.internalResultServices.storage.writer.username | string | `"changeme"` |  |
-| config.csm.platform.twincache.host | string | `"redis.host.changeme"` |  |
-| config.csm.platform.twincache.password | string | `"changeme"` |  |
-| config.csm.platform.twincache.port | int | `6379` |  |
-| config.csm.platform.twincache.tls.bundle | string | `"changeme"` |  |
-| config.csm.platform.twincache.tls.enabled | bool | `false` |  |
-| config.csm.platform.twincache.useGraphModule | bool | `true` |  |
-| config.csm.platform.twincache.username | string | `"default"` |  |
 | deploymentStrategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":"50%"},"type":"RollingUpdate"}` | Deployment strategy |
 | deploymentStrategy.rollingUpdate.maxSurge | int | `1` | maximum number of Pods that can be created over the desired number of Pods |
 | deploymentStrategy.rollingUpdate.maxUnavailable | string | `"50%"` | maximum number of Pods that can be unavailable during the update process |

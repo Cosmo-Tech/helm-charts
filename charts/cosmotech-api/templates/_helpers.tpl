@@ -139,9 +139,6 @@ spring:
 ssl bundle must be set here because it is searched even if empty
 */}}
 {{- if .Values.api.tlsTruststore.enabled }}
-  rabbitmq:
-    ssl:
-      bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
   data:
     redis:
       ssl:
@@ -207,11 +204,8 @@ csm:
     identityProvider:
       tls:
         bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
-    twincache:
-      tls:
-        bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
-    internalResultServices:
-      eventBus:
+    databases:
+      resources:
         tls:
           bundle: {{ include "cosmotech-api.custom-rootca-bundle" . }}
 {{- end }}
