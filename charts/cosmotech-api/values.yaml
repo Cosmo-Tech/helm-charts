@@ -163,15 +163,6 @@ argo:
 config:
   csm:
     platform:
-      twincache:
-        host: redis.host.changeme
-        password: changeme
-        port: 6379
-        username: default
-        useGraphModule: true
-        tls:
-          enabled: false
-          bundle: "changeme"
       argo:
         base-uri: "http://argo-server:2746"
         workflows:
@@ -187,7 +178,6 @@ config:
       authorization:
         allowed-tenants: []
       identityProvider:
-        code: keycloak
         authorizationUrl: "changeme"
         tokenUrl: "changeme"
         defaultScopes:
@@ -203,31 +193,24 @@ config:
         tls:
           enabled: false
           bundle: "changeme"
-      internalResultServices:
-        enabled: false
-        storage:
-          enabled: true
-          host: "localhost"
-          port: 5432
-          reader:
-            username: "changeme"
-            password: "changeme"
-          writer:
-            username: "changeme"
-            password: "changeme"
-          admin:
-            username: "changeme"
-            password: "changeme"
-        eventBus:
-          enabled: true
-          tls:
-            enabled: false
-            bundle: "changeme"
-          host: "localhost"
-          port: 5672
-          listener:
-            username: "changeme"
-            password: "changeme"
-          sender:
-            username: "changeme"
-            password: "changeme"
+    databases:
+      resources:
+        host: redis.host.changeme
+        port: 6379
+        username: default
+        password: changeme
+        tls:
+          enabled: false
+          bundle: "changeme"
+      data:
+        host: postgresql.host.changeme
+        port: 5432
+        reader:
+          username: "changeme"
+          password: "changeme"
+        writer:
+          username: "changeme"
+          password: "changeme"
+        admin:
+          username: "changeme"
+          password: "changeme"
