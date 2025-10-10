@@ -784,24 +784,24 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
-| config.csm.databases.data.database | string | `"cosmotech"` |  |
-| config.csm.databases.data.host | string | `"postgresql.host.changeme"` |  |
-| config.csm.databases.data.port | int | `5432` |  |
-| config.csm.databases.data.reader.password | string | `"changeme"` |  |
-| config.csm.databases.data.reader.username | string | `"changeme"` |  |
-| config.csm.databases.data.writer.password | string | `"changeme"` |  |
-| config.csm.databases.data.writer.username | string | `"changeme"` |  |
-| config.csm.databases.resources.host | string | `"redis.host.changeme"` |  |
-| config.csm.databases.resources.password | string | `"changeme"` |  |
-| config.csm.databases.resources.port | int | `6379` |  |
-| config.csm.databases.resources.tls.bundle | string | `"changeme"` |  |
-| config.csm.databases.resources.tls.enabled | bool | `false` |  |
-| config.csm.databases.resources.username | string | `"default"` |  |
 | config.csm.platform.argo.base-uri | string | `"http://argo-server:2746"` |  |
 | config.csm.platform.argo.workflows.access-modes[0] | string | `"ReadWriteOnce"` | Any in the following list: ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod (K8s 1.22+). |
 | config.csm.platform.argo.workflows.requests.storage | string | `"100Gi"` |  |
 | config.csm.platform.argo.workflows.storage-class | string | `nil` | Name of the storage class for Workflows volumes. Useful if you want to use a different storage class managed externally |
 | config.csm.platform.authorization.allowed-tenants | list | `[]` |  |
+| config.csm.platform.databases.data.database | string | `"cosmotech"` |  |
+| config.csm.platform.databases.data.host | string | `"postgresql.host.changeme"` |  |
+| config.csm.platform.databases.data.port | int | `5432` |  |
+| config.csm.platform.databases.data.reader.password | string | `"changeme"` |  |
+| config.csm.platform.databases.data.reader.username | string | `"changeme"` |  |
+| config.csm.platform.databases.data.writer.password | string | `"changeme"` |  |
+| config.csm.platform.databases.data.writer.username | string | `"changeme"` |  |
+| config.csm.platform.databases.resources.host | string | `"redis.host.changeme"` |  |
+| config.csm.platform.databases.resources.password | string | `"changeme"` |  |
+| config.csm.platform.databases.resources.port | int | `6379` |  |
+| config.csm.platform.databases.resources.tls.bundle | string | `"changeme"` |  |
+| config.csm.platform.databases.resources.tls.enabled | bool | `false` |  |
+| config.csm.platform.databases.resources.username | string | `"default"` |  |
 | config.csm.platform.identityProvider.audience | string | `"changeme"` |  |
 | config.csm.platform.identityProvider.authorizationUrl | string | `"changeme"` |  |
 | config.csm.platform.identityProvider.containerScopes.changeme | string | `"changeme"` |  |

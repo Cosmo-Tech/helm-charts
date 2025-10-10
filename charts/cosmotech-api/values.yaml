@@ -193,22 +193,22 @@ config:
         tls:
           enabled: false
           bundle: "changeme"
-    databases:
-      resources:
-        host: redis.host.changeme
-        port: 6379
-        username: default
-        password: changeme
-        tls:
-          enabled: false
-          bundle: "changeme"
-      data:
-        host: postgresql.host.changeme
-        port: 5432
-        database: "cosmotech"
-        reader:
-          username: "changeme"
-          password: "changeme"
-        writer:
-          username: "changeme"
-          password: "changeme"
+      databases:
+        resources:
+          host: redis.host.changeme
+          port: 6379
+          username: default
+          password: changeme
+          tls:
+            enabled: false
+            bundle: "changeme"
+        data:
+          host: postgresql.host.changeme
+          port: 5432
+          database: "cosmotech"
+          reader:
+            username: "changeme"
+            password: "changeme"
+          writer:
+            username: "changeme"
+            password: "changeme"
