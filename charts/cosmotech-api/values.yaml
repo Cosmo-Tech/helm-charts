@@ -205,12 +205,10 @@ config:
       data:
         host: postgresql.host.changeme
         port: 5432
+        database: "cosmotech"
         reader:
           username: "changeme"
           password: "changeme"
         writer:
-          username: "changeme"
-          password: "changeme"
-        admin:
           username: "changeme"
           password: "changeme"

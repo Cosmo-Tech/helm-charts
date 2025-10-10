@@ -784,8 +784,7 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
-| config.csm.databases.data.admin.password | string | `"changeme"` |  |
-| config.csm.databases.data.admin.username | string | `"changeme"` |  |
+| config.csm.databases.data.database | string | `"cosmotech"` |  |
 | config.csm.databases.data.host | string | `"postgresql.host.changeme"` |  |
 | config.csm.databases.data.port | int | `5432` |  |
 | config.csm.databases.data.reader.password | string | `"changeme"` |  |
