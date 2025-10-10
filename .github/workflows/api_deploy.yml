@@ -59,7 +59,9 @@ jobs:
           --set config.csm.platform.containerRegistry.password=${{ secrets.ACR_CREDENTIALS_PASSWORD }}
           --set config.csm.platform.identityProvider.identity.clientSecret=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
           --set config.csm.platform.s3.secretAccessKey=${{ secrets.S3_PASSWORD }}
-          --set config.csm.platform.twincache.password=${{ secrets.REDIS_PASSWORD }}
+          --set config.csm.platform.databases.resources.password=${{ secrets.REDIS_PASSWORD }}
+          --set config.csm.platform.databases.data.reader.password=${{ secrets.POSTGRES_READER_PASSWORD }}
+          --set config.csm.platform.databases.data.writer.password=${{ secrets.POSTGRES_WRITER_PASSWORD }}
           cosmotech-api-ci
           ${{ runner.temp }}/package/cosmotech-api-*.tgz
 
