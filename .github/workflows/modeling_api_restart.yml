@@ -13,6 +13,10 @@ on:
           - continuous
           - nightly
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   restart:
     runs-on: ubuntu-latest
@@ -20,7 +24,9 @@ jobs:
     steps:
       - uses: azure/login@v2
         with:
-          creds: "${{ secrets.AZURE_CREDENTIALS }}"
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - uses: azure/use-kubelogin@v1
         env:
