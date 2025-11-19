@@ -102,7 +102,7 @@ api:
       failureThreshold: 5
   serviceMonitor:
     enabled: true
-    namespace: "cosmotech-monitoring"
+    namespace: ""
     additionalLabels: {}
   tlsTruststore:
     enabled: false

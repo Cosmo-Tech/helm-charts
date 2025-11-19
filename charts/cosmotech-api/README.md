@@ -767,7 +767,7 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | api.probes.startup.initialDelaySeconds | int | `60` |  |
 | api.serviceMonitor.additionalLabels | object | `{}` |  |
 | api.serviceMonitor.enabled | bool | `true` |  |
-| api.serviceMonitor.namespace | string | `"cosmotech-monitoring"` |  |
+| api.serviceMonitor.namespace | string | `""` |  |
 | api.servletContextPath | string | `"/"` |  |
 | api.tlsTruststore.enabled | bool | `false` |  |
 | api.tlsTruststore.fileName | string | `""` |  |
