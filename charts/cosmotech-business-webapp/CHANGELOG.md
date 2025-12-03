@@ -3,6 +3,18 @@ SPDX-FileCopyrightText: Copyright (C) 2022-2025 Cosmo Tech
 SPDX-License-Identifier: MIT
 -->
 
+## **0.2.2** <sub><sup>2025-12-03</sup></sub>
+
+### Features
+
+- add optional tolerations for deployment of webapp server and functions
+- add optional entries for Superset configuration in values and secrets
+- add optional certificate in deployment of webapp functions if secret CA_CERT_FILE is defined
+
+### Documentation
+
+- update compatibility matrix & generated docs of cosmotech-business-webapp chart
+
 ## **0.2.1** <sub><sup>2024-11-12</sup></sub>
 
 ### Features

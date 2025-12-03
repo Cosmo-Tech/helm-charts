@@ -16,6 +16,8 @@ webapp:
   server:
     # -- node selector for webapp server deployment
     nodeSelector: {}
+    # -- tolerations for webapp server deployment
+    tolerations: []
     image:
       # -- name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry)
       pullSecret: ""
@@ -28,6 +30,8 @@ webapp:
   functions:
     # -- node selector for webapp functions deployment
     nodeSelector: {}
+    # -- tolerations for webapp functions deployment
+    tolerations: []
     image:
       # -- name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry)
       pullSecret: ""
@@ -49,6 +53,19 @@ powerbi:
   clientId: ""
   # -- client secret of the app registration that delivers PowerBI tokens for the GetEmbedInfo function
   clientSecret: ""
+
+cosmotech:
+  # -- URL of the Cosmo Tech API used by the webapp (e.g. https://mytenant.cosmotech.com/mytenant/v5)
+  apiUrl: ""
+
+superset:
+  # -- URL of the Superset instance API. This is required to fetch guest tokens, when Superset dashboards are embedded in the webapp. (e.g. http://superset-web.mytenant.svc.cluster.local/api/v1)
+  apiUrl: ""
+  superuser:
+    # -- Superset user name to use as credentials when calling superset /login endpoint, in order to generate guest tokens for Superset
+    username: ""
+    # -- Superset user password to use as credentials when calling superset /login endpoint, in order to generate guest tokens for Superset
+    password: ""
 
 ingress:
   # -- whether to deploy the ingress for the webapp server and functions
