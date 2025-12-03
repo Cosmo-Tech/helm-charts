@@ -16,6 +16,8 @@ webapp:
   server:
     # -- node selector for webapp server deployment
     nodeSelector: {}
+    # -- tolerations for webapp server deployment
+    tolerations: []
     image:
       # -- name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry)
       pullSecret: ""
@@ -28,6 +30,8 @@ webapp:
   functions:
     # -- node selector for webapp functions deployment
     nodeSelector: {}
+    # -- tolerations for webapp functions deployment
+    tolerations: []
     image:
       # -- name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry)
       pullSecret: ""
