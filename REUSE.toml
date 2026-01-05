@@ -5,5 +5,5 @@ path = [
   "charts/*/README.md",
   "charts/cosmotech-api/media/schema.png",
 ]
-SPDX-FileCopyrightText = "Copyright (C) 2022-2025 Cosmo Tech"
+SPDX-FileCopyrightText = "Copyright (C) 2022-2026 Cosmo Tech"
 SPDX-License-Identifier = "MIT"
