@@ -30,7 +30,7 @@ jobs:
       # Manual command to update docs:
       # docker run --rm -u `id -u` -v $PWD/charts:/helm-docs jnorwood/helm-docs --skip-version-footer
       - name: Helm docs
-        uses: losisin/helm-docs-github-action@v1.6.2
+        uses: losisin/helm-docs-github-action@v1.7.0
         with:
           chart-search-root: charts/
           skip-version-footer: true
