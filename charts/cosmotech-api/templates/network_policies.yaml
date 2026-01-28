@@ -27,7 +27,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      {{- include "cosmotech-api.defaultNetworkPolicy" . | indent 6}}
+      {{- include "cosmotech-api.defaultNetworkPolicy" . | indent 6 }}
   ingress:
   - {}
 {{- end }}

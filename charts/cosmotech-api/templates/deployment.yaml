@@ -50,14 +50,14 @@ spec:
         - name: helm-config
           secret:
             secretName: {{ include "cosmotech-api.fullname" . }}
-        {{if .Values.api.tlsTruststore.enabled}}
+        {{ if .Values.api.tlsTruststore.enabled }}
         - name: custom-rootca
           secret:
             secretName: {{ .Values.api.tlsTruststore.secretName }}
             items:
             - key: {{  .Values.api.tlsTruststore.secretKey  }}
               path: {{  .Values.api.tlsTruststore.fileName  }}
-        {{end}}
+        {{ end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -73,11 +73,11 @@ spec:
             - name: CSM_PLATFORM_VENDOR
               # Used to include a specific '{{ .Values.config.csm.platform.vendor }}' Spring profile
               value: "{{ .Values.config.csm.platform.vendor }}"
-            {{if .Values.config.csm.platform.identityProvider }}
+            {{ if .Values.config.csm.platform.identityProvider }}
             - name: IDENTITY_PROVIDER
             # Used to include a specific '{{ .Values.config.csm.platform.identityProvider.code | default "keycloak" }}' Spring profile
               value: {{ .Values.config.csm.platform.identityProvider.code | quote }}
-            {{end}}
+            {{ end }}
             - name: SPRING_PROFILES_INCLUDE
               # The properties file for the 'helm' profile is mounted as a Volume in the Container,
               # using a configured Kubernetes Secret containing all the 'config.*' properties
@@ -89,11 +89,11 @@ spec:
             - mountPath: /config
               name: helm-config
               readOnly: true
-            {{if .Values.api.tlsTruststore.enabled }}
+            {{ if .Values.api.tlsTruststore.enabled }}
             - mountPath: {{ include "cosmotech-api.custom-rootca-path" . | quote }}
               name: custom-rootca
               readOnly: true
-            {{end}}
+            {{ end }}
           ports:
             - name: http
               containerPort: 8080
@@ -130,7 +130,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       affinity:
-      {{- if .Values.affinity}}
+      {{- if .Values.affinity }}
       {{- with .Values.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
