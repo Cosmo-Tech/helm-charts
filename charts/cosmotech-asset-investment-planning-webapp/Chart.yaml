@@ -1,0 +1,8 @@
+apiVersion: v2
+name: asset-investment-planning-webapp
+description: Cosmo Tech Asset Investment Planning Web Application
+type: application
+version: 0.0.1
+home: https://cosmotech.com
+sources:
+  - https://github.com/Cosmo-Tech/asset-investment-planning-webapp

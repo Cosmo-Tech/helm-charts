@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "asset-investment-planning-webapp.server-name" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    cosmotech.com/service: {{ include "asset-investment-planning-webapp.server-name" . }}
+data:
+  ContentSecurityPolicy.json: |
+    {
+      "connect-src": [
+        {{ required "A valid source Url is required" .Values.api.sourceUrl | quote }}
+      ]
+    } 
+  GlobalConfiguration.json: |
+    {
+      "AUTH_KEYCLOAK_CLIENT_ID": {{ required "A valid keycloak client id is required" .Values.keycloak.clientId | quote }},
+      "AUTH_KEYCLOAK_REALM": {{ required "A valid keycloak realm is required" .Values.keycloak.realm | quote }},
+      "AUTH_KEYCLOAK_ROLES_JWT_CLAIM":{{ required "A valid JWT role claims is required" .Values.keycloak.rolesClaim | quote }},
+      "COSMOTECH_API_SCOPE": {{ required "A valid scope is required" .Values.api.scope | quote }},
+      "PUBLIC_URL": {{ required "A valid public URL is required" .Values.webapp.publicUrl | quote }},
+      "API_BASE_URL": {{ required "A valud API base URL is required" .Values.api.baseUrl | quote }}
+    } 
