@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}
+  labels:
+    {{- include "cosmotech-asset-investment-planning-api.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cosmotech-asset-investment-planning-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        networking/traffic-allowed: "yes"
+        {{- include "cosmotech-asset-investment-planning-api.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            {{- /* If existingClaim is provided, use it. Otherwise, use the chart's generated name. */}}
+            claimName: {{ .Values.persistence.existingClaim | default (printf "%s-data" (include "cosmotech-asset-investment-planning-api.fullname" .)) }}
+        {{- else}}
+          {{- /* Use temporary storage if persistence is disabled */}}
+          emptyDir: {}
+        {{- end}}
+        - name: config
+          configMap:
+            name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-config
+        {{- if .Values.postgres.enabled }}
+        - name: postgres-password
+          secret:
+            secretName: {{ .Release.Name }}-secrets
+            items:
+              - key: postgres-password
+                path: postgres-password
+        {{- end }}
+      serviceAccountName: {{ include "cosmotech-asset-investment-planning-api.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /about
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /about
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            # Required variables with validation
+            - name: ROOT_URI
+              value: {{ required "A valid apiConfig.rootUri is required!" .Values.apiConfig.rootUri | quote }}
+            - name: KEYCLOAK_REALM
+              value: {{ required "A valid apiConfig.keycloakRealm is required!" .Values.apiConfig.keycloakRealm | quote }}
+            - name: DATA_DIR
+              value: {{ default "/data" .Values.apiConfig.dataDir | quote }}
+            - name: CONFIG_PATH
+              value: "/app/config.toml"
+            # Flexible block for user-defined env variables
+            {{- if .Values.extraEnvVars }}
+            {{- toYaml .Values.extraEnvVars | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: "/data"
+              readOnly: false
+            - name: config
+              mountPath: "/app/config.toml"
+              subPath: config.toml
+              readOnly: true
+            {{- if .Values.postgres.enabled }}
+            - name: postgres-password
+              mountPath: "/app/secrets"
+              readOnly: true
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
