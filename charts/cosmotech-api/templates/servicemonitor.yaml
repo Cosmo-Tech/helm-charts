@@ -7,9 +7,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "cosmotech-api.fullname" . }}
-  {{- with .Values.api.serviceMonitor.namespace }}
-  namespace: {{ . }}
-  {{- end }}
+  namespace: {{ .Values.api.serviceMonitor.namespace | default .Release.Namespace }}
   labels:
     {{- include "cosmotech-api.labels" . | nindent 4 }}
     {{- with .Values.api.serviceMonitor.additionalLabels }}
