@@ -100,7 +100,7 @@ envConfig:
     # Deployment name for the LLM model.
     LLM_DEPLOYMENT_NAME: ""
     # Deployment name for the embeddings model.
-    EMBEDDINGS_DEPLOYEMENT_NAME: ""
+    EMBEDDINGS_DEPLOYMENT_NAME: ""
     # Temperature parameter for LLM generation.
     TEMPERATURE: ""
     # Maximum tokens for LLM responses.
