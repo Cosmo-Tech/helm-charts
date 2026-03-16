@@ -62,9 +62,9 @@ jobs:
         with:
           namespace: ${{ vars.CLUSTER_NAMESPACE }}
           secret-name: cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }}
-          container-registry-url: ${{ secrets.ACR_CREDENTIALS_USERNAME }}.azurecr.io
-          container-registry-username: ${{ secrets.ACR_CREDENTIALS_USERNAME }}
-          container-registry-password: ${{ secrets.ACR_CREDENTIALS_PASSWORD }}
+          container-registry-url: ${{ secrets.SIMULATOR_REGISTRY_HOSTNAME }}
+          container-registry-username: ${{ secrets.SIMULATOR_REGISTRY_USERNAME }}
+          container-registry-password: ${{ secrets.SIMULATOR_REGISTRY_PASSWORD }}
 
       - name: Helm package
         run: >
@@ -87,7 +87,7 @@ jobs:
           --values values.yaml
           --set image.tag="${{ matrix.imageTag }}"
           --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
-          --set config.csm.modelingApi.simulatorRegistry.host=${{ secrets.ACR_CREDENTIALS_USERNAME }}.azurecr.io
+          --set config.csm.modelingApi.simulatorRegistry.host=${{ secrets.SIMULATOR_REGISTRY_HOSTNAME }}
           --set config.csm.modelingApi.simulatorRegistry.pushSecret=cosmotech-modeling-api-simulator-secret-${{ matrix.imageTag }}
           cosmotech-modeling-api-${{ matrix.imageTag }}
           ${{ runner.temp }}/package/cosmotech-modeling-api-*.tgz
