@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.name }}-restart
+data:
+  restart.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    trap 'echo "Error restarting!"' ERR 
+    kubectl rollout restart deployment {{ include "asset-investment-planning-webapp.server-name" . }} -n {{ .Release.Namespace }}
+    kubectl rollout status deployment {{ include "asset-investment-planning-webapp.server-name" . }} -n {{ .Release.Namespace }}

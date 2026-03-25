@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-restart
+  namespace: {{ .Release.Namespace }}
+spec:
+  concurrencyPolicy: "Forbid"
+  schedule: '0 0 * * *' 
+  jobTemplate:
+    spec:
+      backoffLimit: 5
+      activeDeadlineSeconds: 300
+      template:
+        spec:
+          containers:
+            - name: kubectl
+              image: alpine/k8s:1.33.0
+              command: [ "/bin/bash", "/scripts/restart.sh" ]
+              volumeMounts:
+                - name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-restart
+                  mountPath: /scripts
+          restartPolicy: Never
+          serviceAccountName: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}
+          volumes:
+            - name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-restart
+              configMap:
+                defaultMode: 0644
+                name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-restart
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
