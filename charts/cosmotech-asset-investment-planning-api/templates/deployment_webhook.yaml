@@ -10,13 +10,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "cosmotech-asset-investment-planning-api.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-webhook
       app.kubernetes.io/component: webhook
   template:
     metadata:
       labels:
-        {{- include "cosmotech-asset-investment-planning-api.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-webhook
         app.kubernetes.io/component: webhook
+        networking/traffic-allowed: "yes"
     spec:
       serviceAccountName: {{ include "cosmotech-asset-investment-planning-api.serviceAccountName" . }}
       containers:

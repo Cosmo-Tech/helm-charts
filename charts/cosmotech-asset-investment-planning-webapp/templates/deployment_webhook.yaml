@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: {{ .Values.name }}-webhook
+        networking/traffic-allowed: "yes"
     spec:
       serviceAccountName: {{ include "asset-investment-planning-webapp.serviceAccountName" . }}
       containers:
