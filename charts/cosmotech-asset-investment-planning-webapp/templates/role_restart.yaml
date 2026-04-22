@@ -13,4 +13,11 @@ rules:
     resources: ["deployments"]
     resourceNames: [ {{ include "asset-investment-planning-webapp.server-name" . }} ]
     verbs: ["get", "patch", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create"]
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    resourceNames: [ "{{ .Values.name }}-restart" ]
+    verbs: ["get"]
 {{- end }}

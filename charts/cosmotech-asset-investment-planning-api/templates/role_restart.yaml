@@ -15,4 +15,11 @@ rules:
     resources: ["deployments"]
     resourceNames: [ {{ include "cosmotech-asset-investment-planning-api.fullname" . }} ]
     verbs: ["get", "patch", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create"]
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    resourceNames: [ "{{ include "cosmotech-asset-investment-planning-api.fullname" . }}-restart" ]
+    verbs: ["get"]
 {{- end }}
