@@ -1,0 +1,19 @@
+{{- if .Values.webhookRestart.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-webhook
+  labels:
+    {{- include "cosmotech-asset-investment-planning-api.labels" . | nindent 4 }}
+    app.kubernetes.io/component: webhook
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.webhookRestart.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "cosmotech-asset-investment-planning-api.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: webhook
+{{- end }}
