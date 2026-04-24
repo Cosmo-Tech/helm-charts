@@ -3,8 +3,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-harbor-webhook
-  labels:
-    {{- include "cosmotech-asset-investment-planning-api.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
