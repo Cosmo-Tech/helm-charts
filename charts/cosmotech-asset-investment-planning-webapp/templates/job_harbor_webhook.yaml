@@ -32,7 +32,7 @@ spec:
               echo "Checking if webhook '${WEBHOOK_NAME}' already exists..."
               EXISTING=$(curl -s -o /dev/null -w "%{http_code}" \
                 -H "Authorization: Basic ${HARBOR_CREDENTIALS}" \
-                "${HARBOR_URL}/api/v2.0/projects/${HARBOR_PROJECT}/webhook/policies")
+                "${HARBOR_URL}/api/v2.0/projects/${HARBOR_PROJECT}/webhook/policies?q=name=${WEBHOOK_NAME}")
 
               if [ "${EXISTING}" != "200" ]; then
                 echo "Warning: Could not list webhooks (HTTP ${EXISTING}). Attempting creation anyway..."
@@ -41,7 +41,7 @@ spec:
               # Check if our webhook already exists by name
               WEBHOOK_ID=$(curl -s \
                 -H "Authorization: Basic ${HARBOR_CREDENTIALS}" \
-                "${HARBOR_URL}/api/v2.0/projects/${HARBOR_PROJECT}/webhook/policies" \
+                "${HARBOR_URL}/api/v2.0/projects/${HARBOR_PROJECT}/webhook/policies?q=name=${WEBHOOK_NAME}" \
                 | grep -o "\"id\":[0-9]*,\"name\":\"${WEBHOOK_NAME}\"" \
                 | grep -o '"id":[0-9]*' \
                 | grep -o '[0-9]*' || true)
