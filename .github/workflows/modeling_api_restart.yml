@@ -20,7 +20,7 @@ permissions:
 jobs:
   restart:
     runs-on: ubuntu-latest
-    environment: modeling_api_warp
+    environment: modeling_api_joy
     steps:
       - uses: azure/login@v3
         with:
