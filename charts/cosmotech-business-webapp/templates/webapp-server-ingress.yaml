@@ -8,34 +8,26 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    email: platform@cosmotech.com
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/rewrite-target: $1/$2
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
-    nginx.org/client-max-body-size: "0"
-  labels:
-    owner: csm-platform
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Values.name }}-strip-webapp-prefix@kubernetescrd
   name: {{ include "cosmotech-business-webapp.server-name" . }}
   namespace: {{ .Release.Namespace }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
   - host: {{ .Values.webapp.domainName }}
     http:
       paths:
-      - path: "{{ .Values.webapp.publicUrl }}(/api)(?:/|$)(.*)"
-        pathType: ImplementationSpecific
+      - path: {{ .Values.webapp.publicUrl }}/api
+        pathType: Prefix
         backend:
           service:
             name: {{ include "cosmotech-business-webapp.functions-name" . }}
             port:
               number: 8080
-      - path: "{{ .Values.webapp.publicUrl }}()(?:/|$)(.*)"
-        pathType: ImplementationSpecific
+      - path: {{ .Values.webapp.publicUrl }}
+        pathType: Prefix
         backend:
           service:
             name: {{ include "cosmotech-business-webapp.server-name" . }}
