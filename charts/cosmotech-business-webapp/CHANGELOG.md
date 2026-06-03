@@ -3,6 +3,11 @@ SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
 SPDX-License-Identifier: MIT
 -->
 
+## **0.3.0** <sub><sup>2026-06-03 ([f95fadc...fc04474](https://github.com/Cosmo-Tech/helm-charts/compare/f95fadc...fc04474?diff=split))</sup></sub>
+
+### BREAKING CHANGES
+*  replace ingress-nginx by traefik ([365365a](https://github.com/Cosmo-Tech/helm-charts/commit/365365a))
+
 ## **0.2.2** <sub><sup>2025-12-03</sup></sub>
 
 ### Features
