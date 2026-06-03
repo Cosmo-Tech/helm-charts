@@ -1,6 +1,6 @@
 # cosmotech-business-webapp
 
-![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Cosmo Tech Business Web Application
 
@@ -11,9 +11,9 @@ Cosmo Tech Business Web Application
 
 | Chart version | Compatible Cosmo Tech Webapp versions           | Compatible Cosmo Tech API versions |
 | ------------- | ----------------------------------------------- | ---------------------------------- |
-| 0.1           | >= 7.0.0-beta (_instance-specific_ server only) | 4.0.0-onprem                       |
-| >= 0.2        | >= 7.0.0-beta                                   | 4.0.0-onprem                       |
-| >= 0.2        | >= 7.0.0-sphinx                                 | 5.0.0-rc                           |
+| 0.1           | 7.0.0-beta.\* (_instance-specific_ server only) | 4.0.0-onprem                       |
+| >= 0.2        | 7.0.0-beta.\*                                   | 4.0.0-onprem                       |
+| >= 0.2        | >= 7.0.0                                        | >= 5.0.0                           |
 
 ## Source Code
 
