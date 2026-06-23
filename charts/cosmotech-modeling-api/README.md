@@ -28,7 +28,7 @@ Cosmo Tech Modeling API
 | persistence.storageClass | string | `""` | PVC storage class |
 | podAnnotations | object | `{}` | Additional pod annotations |
 | podSecurityContext | object | `{"fsGroup":1001,"fsGroupChangePolicy":"Always","supplementalGroups":[],"sysctls":[]}` | Security context injected at pod level |
-| resources | object | `{"limits":{"cpu":"1","memory":"256Mi"},"requests":{"cpu":"1","memory":"256Mi"}}` | Resources values |
+| resources | object | `{"limits":{"cpu":"1","ephemeral-storage":"2Gi","memory":"256Mi"},"requests":{"cpu":"1","ephemeral-storage":"50Mi","memory":"256Mi"}}` | Resources values |
 | service.port | int | `8080` | Service port number |
 | service.type | string | `"ClusterIP"` | Service type |
 | serviceMonitor.enabled | bool | `false` | Enable monitoring service |
