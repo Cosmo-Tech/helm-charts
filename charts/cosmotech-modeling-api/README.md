@@ -24,8 +24,9 @@ Cosmo Tech Modeling API
 | nameOverride | string | `"cosmotech-modeling-api"` | Base name override |
 | nodeSelector | object | `{}` | Node selector values |
 | persistence.enabled | bool | `true` | Enable the data storage persistence |
-| persistence.size | string | `"8Gi"` | PVC size request |
-| persistence.storageClass | string | `""` | PVC storage class |
+| persistence.existingClaim | string | `""` | Name of an existing PVC to use instead of creating one |
+| persistence.size | string | `"8Gi"` | PVC size request, ignored if an existingClaim is provided |
+| persistence.storageClass | string | `""` | PVC storage class, ignored if an existingClaim is provided |
 | podAnnotations | object | `{}` | Additional pod annotations |
 | podSecurityContext | object | `{"fsGroup":1001,"fsGroupChangePolicy":"Always","supplementalGroups":[],"sysctls":[]}` | Security context injected at pod level |
 | resources | object | `{"limits":{"cpu":"1","ephemeral-storage":"2Gi","memory":"256Mi"},"requests":{"cpu":"1","ephemeral-storage":"50Mi","memory":"256Mi"}}` | Resources values |

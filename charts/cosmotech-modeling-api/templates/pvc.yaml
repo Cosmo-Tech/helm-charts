@@ -3,10 +3,11 @@ SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
 SPDX-License-Identifier: MIT
 */}}
 {{- if .Values.persistence.enabled }}
+{{- if not .Values.persistence.existingClaim }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "cosmotech-modeling-api.fullname" . }}-data
+  name: {{ include "cosmotech-modeling-api.dataPersistenceClaim" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "cosmotech-modeling-api.labels" . | nindent 4 }}
@@ -20,4 +21,5 @@ spec:
   {{- if .Values.persistence.storageClass }}
   storageClassName: {{ .Values.persistence.storageClass }}
   {{- end }}
+{{- end }}
 {{- end }}

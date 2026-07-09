@@ -88,3 +88,14 @@ Location of the persistence data
 {{- define "cosmotech-modeling-api.dataPersistencePath" -}}
 /var/lib/cosmotech-modeling-api/data
 {{- end }}
+
+{{/*
+Name on the persistence claim
+*/}}
+{{- define "cosmotech-modeling-api.dataPersistenceClaim" -}}
+{{- if .Values.persistence.existingClaim }}
+{{- .Values.persistence.existingClaim }}
+{{- else }}
+{{- include "cosmotech-modeling-api.fullname" . }}-data
+{{- end }}
+{{- end }}

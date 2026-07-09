@@ -88,9 +88,11 @@ affinity: {}
 persistence:
   # -- Enable the data storage persistence
   enabled: true
-  # -- PVC size request
+  # -- Name of an existing PVC to use instead of creating one
+  existingClaim: ""
+  # -- PVC size request, ignored if an existingClaim is provided
   size: 8Gi
-  # -- PVC storage class
+  # -- PVC storage class, ignored if an existingClaim is provided
   storageClass: ""
 
 extraEnv:
