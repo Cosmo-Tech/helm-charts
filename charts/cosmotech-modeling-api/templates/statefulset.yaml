@@ -13,6 +13,7 @@ spec:
   selector:
     matchLabels:
       {{- include "cosmotech-modeling-api.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "cosmotech-modeling-api.fullname" . }}-headless
   template:
     metadata:
       annotations:

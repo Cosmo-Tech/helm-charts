@@ -1,0 +1,19 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cosmotech-modeling-api.fullname" . }}-headless
+  labels:
+    {{- include "cosmotech-modeling-api.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      protocol: TCP
+  selector:
+    {{- include "cosmotech-modeling-api.selectorLabels" . | nindent 4 }}
