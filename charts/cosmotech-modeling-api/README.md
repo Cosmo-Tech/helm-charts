@@ -21,6 +21,12 @@ Cosmo Tech Modeling API
 | image.pullPolicy | string | `"Always"` | Image pull policy |
 | image.repository | string | `"ghcr.io/cosmo-tech/cosmotech-modeling-api"` | Image repository |
 | image.tag | string | `"latest"` | Image tag |
+| livenessProbe.enabled | bool | `true` | Enable livenessProbe |
+| livenessProbe.failureThreshold | int | `2` | Failure threshold for livenessProbe |
+| livenessProbe.initialDelaySeconds | int | `2` | Initial delay seconds for livenessProbe |
+| livenessProbe.periodSeconds | int | `10` | Period seconds for livenessProbe |
+| livenessProbe.successThreshold | int | `1` | Success threshold for livenessProbe |
+| livenessProbe.timeoutSeconds | int | `3` | Timeout seconds for livenessProbe |
 | nameOverride | string | `"cosmotech-modeling-api"` | Base name override |
 | nodeSelector | object | `{}` | Node selector values |
 | persistence.enabled | bool | `true` | Enable the data storage persistence |
@@ -29,6 +35,12 @@ Cosmo Tech Modeling API
 | persistence.storageClass | string | `""` | PVC storage class, ignored if an existingClaim is provided |
 | podAnnotations | object | `{}` | Additional pod annotations |
 | podSecurityContext | object | `{"fsGroup":1001,"fsGroupChangePolicy":"Always","supplementalGroups":[],"sysctls":[]}` | Security context injected at pod level |
+| readinessProbe.enabled | bool | `true` | Enable readinessProbe |
+| readinessProbe.failureThreshold | int | `2` | Failure threshold for readinessProbe |
+| readinessProbe.initialDelaySeconds | int | `2` | Initial delay seconds for readinessProbe |
+| readinessProbe.periodSeconds | int | `10` | Period seconds for readinessProbe |
+| readinessProbe.successThreshold | int | `1` | Success threshold for readinessProbe |
+| readinessProbe.timeoutSeconds | int | `5` | Timeout seconds for readinessProbe |
 | resources | object | `{"limits":{"cpu":"1","ephemeral-storage":"2Gi","memory":"256Mi"},"requests":{"cpu":"1","ephemeral-storage":"50Mi","memory":"256Mi"}}` | Resources values |
 | service.port | int | `8080` | Service port number |
 | service.type | string | `"ClusterIP"` | Service type |

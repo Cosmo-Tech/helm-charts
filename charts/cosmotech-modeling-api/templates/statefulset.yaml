@@ -66,6 +66,20 @@ spec:
             - name: metrics
               containerPort: 9100
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            {{- toYaml (omit .Values.livenessProbe "enabled") | nindent 12 }}
+            httpGet:
+              path: /health/liveness
+              port: http
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            {{- toYaml (omit .Values.readinessProbe "enabled") | nindent 12 }}
+            httpGet:
+              path: /health/readiness
+              port: http
+          {{- end }}
           {{- with .Values.extraEnv.env }}
           env:
             {{- toYaml . | nindent 12 }}
