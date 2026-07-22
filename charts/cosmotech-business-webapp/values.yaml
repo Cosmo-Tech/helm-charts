@@ -71,11 +71,12 @@ ingress:
   # -- whether to deploy the ingress for the webapp server and functions
   enabled: true
 
-# -- resource limits for the webapp server pod
 resources:
   limits:
     cpu: 1000m
     memory: 256Mi
+    ephemeral-storage: 2Gi
   requests:
     cpu: 200m
     memory: 128Mi
+    ephemeral-storage: 50Mi

@@ -30,7 +30,12 @@ Cosmo Tech Business Web Application
 | powerbi.clientId | string | `""` | client id of the app registration that delivers PowerBI tokens for the GetEmbedInfo function |
 | powerbi.clientSecret | string | `""` | client secret of the app registration that delivers PowerBI tokens for the GetEmbedInfo function |
 | powerbi.tenantId | string | `""` | tenant id of the app registration that delivers PowerBI tokens for the GetEmbedInfo function |
-| resources | object | `{"limits":{"cpu":"1000m","memory":"256Mi"},"requests":{"cpu":"200m","memory":"128Mi"}}` | resource limits for the webapp server pod |
+| resources.limits.cpu | string | `"1000m"` |  |
+| resources.limits.ephemeral-storage | string | `"2Gi"` |  |
+| resources.limits.memory | string | `"256Mi"` |  |
+| resources.requests.cpu | string | `"200m"` |  |
+| resources.requests.ephemeral-storage | string | `"50Mi"` |  |
+| resources.requests.memory | string | `"128Mi"` |  |
 | superset.apiUrl | string | `""` | URL of the Superset instance API. This is required to fetch guest tokens, when Superset dashboards are embedded in the webapp. (e.g. http://superset-web.mytenant.svc.cluster.local/api/v1) |
 | superset.superuser.password | string | `""` | Superset user password to use as credentials when calling superset /login endpoint, in order to generate guest tokens for Superset |
 | superset.superuser.username | string | `""` | Superset user name to use as credentials when calling superset /login endpoint, in order to generate guest tokens for Superset |

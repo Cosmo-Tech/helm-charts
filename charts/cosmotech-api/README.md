@@ -835,7 +835,12 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | podAnnotations | object | `{}` | annotations to set the Deployment pod |
 | podSecurityContext | object | `{"runAsNonRoot":true}` | the pod security context, i.e. applicable to all containers part of the pod |
 | replicaCount | int | `1` | number of pods replicas |
-| resources | object | `{"limits":{"cpu":"1000m","memory":"1024Mi"},"requests":{"cpu":"500m","memory":"512Mi"}}` | resources limits and requests for the pod placement |
+| resources.limits.cpu | string | `"1000m"` |  |
+| resources.limits.ephemeral-storage | string | `"2Gi"` |  |
+| resources.limits.memory | string | `"1024Mi"` |  |
+| resources.requests.cpu | string | `"500m"` |  |
+| resources.requests.ephemeral-storage | string | `"50Mi"` |  |
+| resources.requests.memory | string | `"512Mi"` |  |
 | securityContext | object | `{"readOnlyRootFilesystem":true}` | the security context at the pod container level |
 | service.managementPort | int | `8081` | service management port |
 | service.port | int | `8080` | service port |
