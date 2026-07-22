@@ -16,6 +16,7 @@ spec:
     cosmotech.com/tier: services
   securityContext:
     {{- toYaml .Values.podSecurityContext | nindent 4 }}
+  automountServiceAccountToken: false
   tolerations:
     - key: vendor
       value: cosmotech

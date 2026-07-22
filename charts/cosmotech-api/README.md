@@ -840,7 +840,4 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | service.managementPort | int | `8081` | service management port |
 | service.port | int | `8080` | service port |
 | service.type | string | `"ClusterIP"` | service type. See [this page](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) for the possible values |
-| serviceAccount.annotations | object | `{}` | annotations to add to the service account |
-| serviceAccount.create | bool | `true` | whether a service account should be created |
-| serviceAccount.name | string | `""` | the name of the service account to use. If not set and `serviceAccount.create` is `true`, a name is generated using the `fullname` template |
 | tolerations | list | `[]` |  |

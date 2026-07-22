@@ -37,9 +37,9 @@ spec:
       imagePullSecrets:
         - name: {{ include "cosmotech-api.fullname" . }}-registry
       {{- end }}
-      serviceAccountName: {{ include "cosmotech-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      automountServiceAccountToken: false
       volumes:
         - name: tmp-dir
           emptyDir: {}

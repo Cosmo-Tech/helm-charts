@@ -26,6 +26,7 @@ spec:
     runAsUser: 65534
     # nobody
     runAsGroup: 65534
+  automountServiceAccountToken: false
   tolerations:
   - key: "vendor"
     operator: "Equal"

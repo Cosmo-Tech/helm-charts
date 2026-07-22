@@ -30,6 +30,7 @@ spec:
         - name: {{ include "cosmotech-modeling-api.imagePullSecretName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      automountServiceAccountToken: false
       volumes:
         - name: config
           configMap:

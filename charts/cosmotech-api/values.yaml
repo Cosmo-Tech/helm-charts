@@ -34,15 +34,6 @@ nameOverride: ""
 # Truncated at 63 chars because some Kubernetes name fields are limited to this.
 fullnameOverride: ""
 
-serviceAccount:
-  # -- whether a service account should be created
-  create: true
-  # -- annotations to add to the service account
-  annotations: {}
-  # -- the name of the service account to use.
-  # If not set and `serviceAccount.create` is `true`, a name is generated using the `fullname` template
-  name: ""
-
 # -- Deployment strategy
 deploymentStrategy:
   type: RollingUpdate

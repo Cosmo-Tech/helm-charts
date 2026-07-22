@@ -66,17 +66,6 @@ networking/traffic-allowed: "yes"
 {{- end }}
 
 {{/*
-Create the name of the service account to use
-*/}}
-{{- define "cosmotech-api.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "cosmotech-api.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
 Create Docker secrets for pulling images from a private container registry.
 */}}
 {{- define "cosmotech-api.imagePullSecret" -}}

@@ -59,17 +59,6 @@ Default Network policy
 {{- end }}
 
 {{/*
-Create the name of the service account to use
-*/}}
-{{- define "cosmotech-copilot-api.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "cosmotech-copilot-api.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
 Context path:
 This path will follow the pattern /{namespace}/{apiVersion}/{appPath}
 E.g:

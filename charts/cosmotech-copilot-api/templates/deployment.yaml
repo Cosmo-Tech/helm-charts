@@ -21,6 +21,7 @@ spec:
         cosmotech.com/service: {{ include "cosmotech-copilot-api.name" . }}
         {{- include "cosmotech-copilot-api.defaultNetworkPolicy" . | nindent 8 }}
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: {{ include "cosmotech-copilot-api.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
