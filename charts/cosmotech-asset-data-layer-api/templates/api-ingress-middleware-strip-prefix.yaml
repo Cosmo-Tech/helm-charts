@@ -12,5 +12,4 @@ spec:
         - {{ .path }}
       {{- end }}
     {{- end }}
-    forceSlash: true
 {{- end }}
