@@ -84,7 +84,7 @@ ingress:
         # If a conflict exists, consider using a sub-path such as "/api".
   # Annotations for the ingress resource
   annotations:
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: traefik
   # TLS/SSL configuration
   tls:
     # Enable TLS for ingress
