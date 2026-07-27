@@ -89,6 +89,8 @@ spec:
               value: {{ required "A valid apiConfig.rootUri is required!" .Values.apiConfig.rootUri | quote }}
             - name: DATA_DIR
               value: {{ default "/data" .Values.apiConfig.dataDir | quote }}
+            - name: TMPDIR
+              value: {{ default "/data" .Values.apiConfig.dataDir | quote }}
             - name: CONFIG_PATH
               value: "/app/config.toml"
             # Flexible block for user-defined env variables
