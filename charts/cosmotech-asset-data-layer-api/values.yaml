@@ -192,6 +192,24 @@ keycloak:
   # Keycloak client id used by the API
   clientId: "asset-data-layer"
 
+# Cosmo Tech generic API configuration (Required)
+# The API authenticates against the Cosmo Tech generic API using a dedicated
+# confidential client (client credentials flow).
+csmApi:
+  # Base URL of the Cosmo Tech generic API
+  url: "http://cosmotech-api.host.url:8080"
+  # OAuth2 scope requested when authenticating against the Cosmo Tech API
+  scope: "http://dev.api.cosmotech.com/.default"
+  # Client id of the dedicated confidential client used by the API
+  clientId: "asset-data-layer-api"
+  # Client secret of the dedicated confidential client
+  # SECURITY WARNING:
+  # - Do NOT store real secrets directly in this values.yaml file if it is committed to version control.
+  # - Prefer passing it via --set/--set-string at install time or an external secret management solution.
+  # The client secret is stored in a Kubernetes Secret and mounted in the container
+  # at /app/secrets/csm-api-client-secret; this field should be treated as sensitive input.
+  clientSecret: "CHANGEME"
+
 # SeaweedFS / S3-compatible object storage configuration
 seaweedfs:
   # Enable or disable SeaweedFS/S3 object storage
