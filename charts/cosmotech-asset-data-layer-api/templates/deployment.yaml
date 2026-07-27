@@ -38,6 +38,12 @@ spec:
         - name: config
           configMap:
             name: {{ include "cosmotech-asset-data-layer-api.fullname" . }}-config
+        - name: csm-api-client-secret
+          secret:
+            secretName: {{ .Release.Name }}-secrets
+            items:
+              - key: csm-api-client-secret
+                path: csm-api-client-secret
         {{- if .Values.postgres.enabled }}
         - name: postgres-password
           secret:
@@ -104,6 +110,10 @@ spec:
             - name: config
               mountPath: "/app/config.toml"
               subPath: config.toml
+              readOnly: true
+            - name: csm-api-client-secret
+              mountPath: "/app/secrets/csm-api-client-secret"
+              subPath: csm-api-client-secret
               readOnly: true
             {{- if .Values.postgres.enabled }}
             - name: postgres-password

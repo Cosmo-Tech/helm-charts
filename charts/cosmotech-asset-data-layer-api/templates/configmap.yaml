@@ -20,6 +20,13 @@ data:
     realm = {{ .Values.keycloak.realm | quote }}
     client_id = {{ .Values.keycloak.clientId | quote }}
 
+    [csm_api]
+    url = {{ .Values.csmApi.url | quote }}
+    scope = {{ .Values.csmApi.scope | quote }}
+    client_id = {{ .Values.csmApi.clientId | quote }}
+    # Note: The Cosmo Tech API client secret is intentionally not rendered in this ConfigMap.
+    # It is provided via a Kubernetes Secret and mounted as a file at runtime.
+
     [seaweedfs]
     enabled = {{ .Values.seaweedfs.enabled | toString | lower | quote }}
     endpoint_url = {{ .Values.seaweedfs.endpointUrl | quote }}
