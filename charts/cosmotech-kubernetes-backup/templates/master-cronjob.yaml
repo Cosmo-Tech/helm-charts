@@ -1,0 +1,52 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: "{{ required "backup.cron" .Values.backup.cron }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ .Values.backup.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.backup.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+          restartPolicy: Never
+          containers:
+            - name: {{ include "cosmotech-kubernetes-backup.fullname" . }}-master
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              env:
+                - name: CLUSTER_NAME
+                  value: {{ required "clusterName" .Values.clusterName | quote }}
+                - name: NAMESPACE
+                  value: {{ .Release.Namespace | quote }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml .Values.imagePullSecrets | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

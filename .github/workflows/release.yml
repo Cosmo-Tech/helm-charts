@@ -14,6 +14,7 @@ on:
           - cosmotech-business-webapp
           - cosmotech-copilot-api
           - cosmotech-modeling-api
+          - cosmotech-kubernetes-backup
 
 jobs:
   release:
