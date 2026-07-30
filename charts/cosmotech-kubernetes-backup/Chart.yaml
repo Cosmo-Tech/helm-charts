@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
+apiVersion: v2
+name: cosmotech-kubernetes-backup
+description: Cosmo Tech Kubernetes backup (bkup)
+type: application
+version: 0.0.0
+appVersion: "0.0.0"

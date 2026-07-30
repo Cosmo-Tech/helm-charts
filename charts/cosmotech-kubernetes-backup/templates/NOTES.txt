@@ -1,0 +1,15 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+Welcome on bkup! What to do next?
+1- get bkup locally to use the CLI
+2- configure the bkup-config Secret
+3- create a backup-map ConfigMap from the CLI
+  > preview:  bkup -c KUBE_CONTEXT -n NAMESPACE -bm -p
+  > apply:    bkup -c KUBE_CONTEXT -n NAMESPACE -bm -a
+4- tweak the backup-map (replace the CHANGEME, configure the backup-types, remove unwanted namespaces, etc...)
+5- Run a one-shot backup from CLI to validate your backup-map
+  > bkup -c KUBE_CONTEXT -n NAMESPACE -j
+6- Once validated, just wait for the cronjob to run.
+... Your backups are now working!

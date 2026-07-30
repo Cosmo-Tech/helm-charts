@@ -17,6 +17,7 @@ This repository contains the Cosmo Tech helm charts for deploying various compon
 - [Cosmo Tech Gateway](charts/cosmotech-gateway)
 - [Cosmo Tech Kubernetes workload scaler](charts/cosmotech-kubernetes-workload-scaler)
 - [Cosmo Tech Modeling API](charts/cosmotech-modeling-api)
+- [Cosmo Tech Kubernetes backup](charts/cosmotech-kubernetes-backup)
 
 ## Installation
 
