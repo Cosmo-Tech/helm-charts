@@ -36,7 +36,7 @@ spec:
 
           {{- with .Values.master.image.pullSecrets }}
           imagePullSecrets:
-            {{- toYaml .Values.master.image.pullSecrets | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
 
           {{- with .Values.master.nodeSelector }}
