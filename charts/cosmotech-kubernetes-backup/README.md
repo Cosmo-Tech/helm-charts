@@ -20,8 +20,10 @@ Cosmo Tech Kubernetes backup (bkup)
 | master.image.tag | string | `"latest"` |  |
 | master.nodeSelector | object | `{}` |  |
 | master.resources.limits.cpu | string | `"100m"` |  |
+| master.resources.limits.ephemeral-storage | string | `"50Mi"` |  |
 | master.resources.limits.memory | string | `"128Mi"` |  |
 | master.resources.requests.cpu | string | `"100m"` |  |
+| master.resources.requests.ephemeral-storage | string | `"2Gi"` |  |
 | master.resources.requests.memory | string | `"128Mi"` |  |
 | master.tolerations | list | `[]` |  |
 | nameOverride | string | `""` |  |
@@ -31,7 +33,9 @@ Cosmo Tech Kubernetes backup (bkup)
 | worker.image.repository | string | `"ghcr.io/cosmo-tech/bkup"` |  |
 | worker.image.tag | string | `"latest"` |  |
 | worker.resources.limits.cpu | string | `"100m"` |  |
+| worker.resources.limits.ephemeral-storage | string | `"50Mi"` |  |
 | worker.resources.limits.memory | string | `"128Mi"` |  |
 | worker.resources.requests.cpu | string | `"1000m"` |  |
+| worker.resources.requests.ephemeral-storage | string | `"2Gi"` |  |
 | worker.resources.requests.memory | string | `"512Mi"` |  |
 | worker.tolerations | list | `[]` |  |
