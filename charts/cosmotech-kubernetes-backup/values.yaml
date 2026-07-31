@@ -14,11 +14,11 @@ master:
   tolerations: []
   affinity: {}
   resources:
-    limits:
+    requests:
       cpu: 100m
       memory: 128Mi
       ephemeral-storage: 50Mi
-    requests:
+    limits:
       cpu: 100m
       memory: 128Mi
       ephemeral-storage: 2Gi
@@ -34,11 +34,11 @@ worker:
   tolerations: []
   affinity: {}
   resources:
-    limits:
+    requests:
       cpu: 100m
       memory: 128Mi
       ephemeral-storage: 50Mi
-    requests:
+    limits:
       cpu: 1000m
       memory: 512Mi
       ephemeral-storage: 2Gi
