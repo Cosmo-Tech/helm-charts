@@ -17,9 +17,11 @@ master:
     limits:
       cpu: 100m
       memory: 128Mi
+      ephemeral-storage: 50Mi
     requests:
       cpu: 100m
       memory: 128Mi
+      ephemeral-storage: 2Gi
   image:
     repository: ghcr.io/cosmo-tech/bkup
     pullPolicy: IfNotPresent
@@ -35,9 +37,11 @@ worker:
     limits:
       cpu: 100m
       memory: 128Mi
+      ephemeral-storage: 50Mi
     requests:
       cpu: 1000m
       memory: 512Mi
+      ephemeral-storage: 2Gi
   image:
     repository: ghcr.io/cosmo-tech/bkup
     pullPolicy: IfNotPresent
