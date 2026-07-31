@@ -238,7 +238,7 @@ usage:
 # Local storage configuration
 localStorage:
   # Filesystem path used for local storage
-  path: "./data/local_storage"
+  path: "/data/local_storage"
 
 # Database management settings
 database:
