@@ -5,14 +5,8 @@
 nameOverride: ""
 fullnameOverride: ""
 
-# Override the default image
-image:
-  repository: ghcr.io/cosmo-tech/bkup
-  pullPolicy: IfNotPresent
-  tag: "latest"
-
-# Secret name for pulling the bkup image from a private repository
-imagePullSecrets: ""
+# Required cluster name
+clusterName: ""
 
 # Customize workload of master
 master:
@@ -26,18 +20,29 @@ master:
     requests:
       cpu: 100m
       memory: 128Mi
+  image:
+    repository: ghcr.io/cosmo-tech/bkup
+    pullPolicy: IfNotPresent
+    tag: "latest"
+    pullSecrets: []
 
-## Customize workload of workers
-# worker:
-#   tolerations: []
-#   affinity: {}
-#   resources:
-#     limits:
-#       cpu: 100m
-#       memory: 128Mi
-#     requests:
-#       cpu: 100m
-#       memory: 128Mi
+# Customize workload of workers
+worker:
+  # Note: there is no nodeSelector here as it's part of bkup to determine the right node where to launch the workers
+  tolerations: []
+  affinity: {}
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 1000m
+      memory: 512Mi
+  image:
+    repository: ghcr.io/cosmo-tech/bkup
+    pullPolicy: IfNotPresent
+    tag: "latest"
+    pullSecrets: []
 
 # Backup jobs behaviors
 backup:
@@ -47,6 +52,3 @@ backup:
   successfulJobsHistoryLimit: 3
   # Number of failed jobs to keep in history
   failedJobsHistoryLimit: 5
-
-# Required cluster name
-clusterName: ""

@@ -21,32 +21,35 @@ spec:
           restartPolicy: Never
           containers:
             - name: {{ include "cosmotech-kubernetes-backup.fullname" . }}-master
-              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              image: "{{ .Values.master.image.repository }}:{{ .Values.master.image.tag }}"
+              imagePullPolicy: {{ .Values.master.image.pullPolicy }}
               env:
                 - name: CLUSTER_NAME
                   value: {{ required "clusterName" .Values.clusterName | quote }}
                 - name: NAMESPACE
                   value: {{ .Release.Namespace | quote }}
+                - name: WORKER_VALUES
+                  value: |
+                    {{- toYaml .Values.worker | nindent 20 }}
               resources:
-                {{- toYaml .Values.resources | nindent 16 }}
+                {{- toYaml .Values.master.resources | nindent 16 }}
 
-          {{- with .Values.imagePullSecrets }}
+          {{- with .Values.master.image.pullSecrets }}
           imagePullSecrets:
-            {{- toYaml .Values.imagePullSecrets | nindent 12 }}
+            {{- toYaml .Values.master.image.pullSecrets | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.nodeSelector }}
+          {{- with .Values.master.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.affinity }}
+          {{- with .Values.master.affinity }}
           affinity:
             {{- toYaml . | nindent 12 }}
           {{- end }}
 
-          {{- with .Values.tolerations }}
+          {{- with .Values.master.tolerations }}
           tolerations:
             {{- toYaml . | nindent 12 }}
           {{- end }}
