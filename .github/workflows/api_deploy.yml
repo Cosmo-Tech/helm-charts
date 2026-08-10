@@ -18,7 +18,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: api_warp
+    environment: api_joy
     steps:
       - uses: actions/checkout@v7
 
@@ -42,6 +42,13 @@ jobs:
           resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
           use-kubelogin: true
 
+      - name: Remove default api helm release if present
+        run: >
+          helm uninstall
+          --namespace ${{ vars.CLUSTER_NAMESPACE }}
+          --ignore-not-found
+          cosmotech-api-tenant-api-ci
+
       - name: Helm package
         run: >
           helm package
@@ -61,8 +68,8 @@ jobs:
           --namespace ${{ vars.CLUSTER_NAMESPACE }}
           --reset-values
           --values values.yaml
-          --set argo.imageCredentials.password=${{ secrets.ACR_CREDENTIALS_PASSWORD }}
-          --set config.csm.platform.containerRegistry.password=${{ secrets.ACR_CREDENTIALS_PASSWORD }}
+          --set argo.imageCredentials.password=${{ secrets.HARBOR_CREDENTIALS_PASSWORD }}
+          --set config.csm.platform.containerRegistry.password=${{ secrets.HARBOR_CREDENTIALS_PASSWORD }}
           --set config.csm.platform.identityProvider.identity.clientSecret=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
           --set config.csm.platform.s3.secretAccessKey=${{ secrets.S3_PASSWORD }}
           --set config.csm.platform.databases.resources.password=${{ secrets.REDIS_PASSWORD }}

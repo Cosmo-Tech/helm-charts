@@ -12,7 +12,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: api_warp
+    environment: api_joy
     steps:
       - uses: azure/login@v3
         with:
