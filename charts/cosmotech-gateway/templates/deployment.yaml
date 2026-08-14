@@ -12,9 +12,6 @@ metadata:
   annotations:
     email: "platform@cosmotech.com"
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   strategy:
   {{- with .Values.deploymentStrategy }}
     {{- toYaml . | nindent 4 }}
