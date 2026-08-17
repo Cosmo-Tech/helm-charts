@@ -56,6 +56,11 @@ spec:
               # The properties file for the 'helm' profile is mounted as a Volume in the Container,
               # using a configured Kubernetes Secret containing all the 'config.*' properties
               value: "helm"
+            - name: {{ include "cosmotech-gateway.identityClientSecretEnvVarName" . }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cosmotech-gateway.identitySecretName" . }}
+                  key: clientSecret
           volumeMounts:
             - mountPath: /config
               name: helm-config
