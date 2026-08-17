@@ -87,6 +87,7 @@ config:
           authorizationGrantType: "authorization_code"
           identity:
             clientId: "gateway-client-id"
+            # -- stored in a Secret and injected into the Pod as an env var, never rendered into the ConfigMap
             clientSecret: "gateway-client-secret"
             tenantId: "my-tenant-id"
           scopes:

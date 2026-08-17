@@ -20,7 +20,7 @@ Cosmo Tech Gateway
 | config.csm.platform.gateway.contextPath | string | `"/"` |  |
 | config.csm.platform.gateway.identityProvider.authorizationGrantType | string | `"authorization_code"` |  |
 | config.csm.platform.gateway.identityProvider.identity.clientId | string | `"gateway-client-id"` |  |
-| config.csm.platform.gateway.identityProvider.identity.clientSecret | string | `"gateway-client-secret"` |  |
+| config.csm.platform.gateway.identityProvider.identity.clientSecret | string | `"gateway-client-secret"` | stored in a Secret and injected into the Pod as an env var, never rendered into the ConfigMap |
 | config.csm.platform.gateway.identityProvider.identity.tenantId | string | `"my-tenant-id"` |  |
 | config.csm.platform.gateway.identityProvider.scopes[0] | string | `"openid"` |  |
 | config.csm.platform.gateway.identityProvider.serverBaseUrl | string | `"http://changeme"` |  |

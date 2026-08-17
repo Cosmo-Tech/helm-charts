@@ -94,3 +94,18 @@ into the Spring Cloud Gateway config format actually read by the deployed app.
 {{- $_ = set $config "spring" (dict "cloud" (dict "gateway" (dict "server" (dict "webflux" $webflux)))) -}}
 {{- toYaml $config -}}
 {{- end }}
+
+{{/*
+Name of the Secret holding the identity provider client secret.
+*/}}
+{{- define "cosmotech-gateway.identitySecretName" -}}
+{{- include "cosmotech-gateway.fullname" . }}-idp-client-secret
+{{- end }}
+
+{{/*
+Name of the env var the identity provider client secret is exposed under, and
+which application-helm.yaml refers to via a "${...}" placeholder.
+*/}}
+{{- define "cosmotech-gateway.identityClientSecretEnvVarName" -}}
+CSM_PLATFORM_GATEWAY_IDENTITY_CLIENT_SECRET
+{{- end }}
