@@ -29,19 +29,37 @@ spec:
         {{- include "cosmotech-gateway.defaultNetworkPolicy" . | nindent 8 }}
         {{- include "cosmotech-gateway.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- if .Values.imageCredentials.registry }}
       imagePullSecrets:
         - name: {{ include "cosmotech-gateway.fullname" . }}-registry
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       automountServiceAccountToken: false
+      volumes:
+        - name: helm-config
+          configMap:
+            name: {{ include "cosmotech-gateway.fullname" . }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            #
+            # Some env vars here are properties that affect the way the Spring Application Context
+            # is configured.
+            # They need to be set here *before* the Application Context starts
+            #
+            - name: SPRING_PROFILES_INCLUDE
+              # The properties file for the 'helm' profile is mounted as a Volume in the Container,
+              # using a configured Kubernetes Secret containing all the 'config.*' properties
+              value: "helm"
+          volumeMounts:
+            - mountPath: /config
+              name: helm-config
+              readOnly: true
           ports:
             - name: http
               containerPort: 80
@@ -50,21 +68,21 @@ spec:
               containerPort: 8081
               protocol: TCP
           startupProbe:
-            initialDelaySeconds: {{ .Values.gateway.probes.startup.initialDelaySeconds }}
+            initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds }}
             periodSeconds: 5
-            failureThreshold: {{ .Values.gateway.probes.startup.failureThreshold }}
+            failureThreshold: {{ .Values.probes.startup.failureThreshold }}
             tcpSocket:
               port: http
           livenessProbe:
-            timeoutSeconds: {{ .Values.gateway.probes.liveness.timeoutSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
             periodSeconds: 5
-            failureThreshold: {{ .Values.gateway.probes.liveness.failureThreshold }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
             httpGet:
               path: /actuator/health/liveness
               port: http-management
           readinessProbe:
-            timeoutSeconds: {{ .Values.gateway.probes.readiness.timeoutSeconds }}
-            failureThreshold: {{ .Values.gateway.probes.readiness.failureThreshold }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
             httpGet:
               path: /actuator/health/readiness
               port: http-management
