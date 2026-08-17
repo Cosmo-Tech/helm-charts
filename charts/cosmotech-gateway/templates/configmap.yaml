@@ -5,6 +5,8 @@ SPDX-License-Identifier: MIT
 {{- $baseConfig := include "cosmotech-gateway.baseConfig" . | fromYaml -}}
 {{- $translatedConfig := include "cosmotech-gateway.translatedConfig" . | fromYaml -}}
 {{- $mergedConfig := mustMergeOverwrite (dict) $translatedConfig $baseConfig  -}}
+{{- /* Keep the actual secret value out of the ConfigMap, it's injected via env var from a Secret instead */ -}}
+{{- $_ := set $mergedConfig.csm.platform.gateway.identityProvider.identity "clientSecret" (printf "${%s}" (include "cosmotech-gateway.identityClientSecretEnvVarName" .)) -}}
 kind: ConfigMap
 apiVersion: v1
 metadata:
