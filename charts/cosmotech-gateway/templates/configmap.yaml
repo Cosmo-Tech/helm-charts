@@ -1,0 +1,19 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+{{- $baseConfig := include "cosmotech-gateway.baseConfig" . | fromYaml -}}
+{{- $translatedConfig := include "cosmotech-gateway.translatedConfig" . | fromYaml -}}
+{{- $mergedConfig := mustMergeOverwrite (dict) $translatedConfig $baseConfig  -}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "cosmotech-gateway.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+  {{- include "cosmotech-gateway.labels" . | nindent 4 }}
+  annotations:
+    email: "platform@cosmotech.com"
+data:
+  application-helm.yaml: |
+    {{- toYaml $mergedConfig | nindent 4 }}
