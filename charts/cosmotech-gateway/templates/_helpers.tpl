@@ -71,3 +71,26 @@ Create Docker secrets for pulling images from a private container registry.
 {{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .Values.imageCredentials.registry (printf "%s:%s" .Values.imageCredentials.username .Values.imageCredentials.password | b64enc) | b64enc }}
 {{- end }}
 
+{{/*
+Define cosmotech-gateway base configuration that'll be merged with values.
+*/}}
+{{- define "cosmotech-gateway.baseConfig" -}}
+spring:
+  application:
+    name: {{ include "cosmotech-gateway.fullname" . }}
+  output:
+    ansi:
+      enabled: never
+{{- end }}
+
+{{/*
+Translate the chart's Spring-agnostic values (csm.platform.gateway.configuration)
+into the Spring Cloud Gateway config format actually read by the deployed app.
+*/}}
+{{- define "cosmotech-gateway.translatedConfig" -}}
+{{- $config := deepCopy .Values.config -}}
+{{- $webflux := dig "csm" "platform" "gateway" "configuration" dict $config -}}
+{{- $_ := unset $config.csm.platform.gateway "configuration" -}}
+{{- $_ = set $config "spring" (dict "cloud" (dict "gateway" (dict "server" (dict "webflux" $webflux)))) -}}
+{{- toYaml $config -}}
+{{- end }}

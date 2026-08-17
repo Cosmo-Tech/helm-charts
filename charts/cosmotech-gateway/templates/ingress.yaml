@@ -5,7 +5,7 @@ SPDX-License-Identifier: MIT
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "cosmotech-gateway.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
-{{- $contextPath := .Values.gateway.contextPath -}}
+{{- $contextPath := .Values.config.csm.platform.gateway.contextPath -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

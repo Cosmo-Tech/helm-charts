@@ -15,8 +15,6 @@ image:
   # -- container image tag. Defaults to the Chart `appVersion` if empty or missing
   tag: ""
 
-#imagePullSecrets: []
-
 # Set image pull secrets (in case you're using a private container registry).
 imageCredentials:
   # -- container registry to use for pulling the Deployment image. Useful if you are using a private registry
@@ -62,31 +60,56 @@ service:
   # -- service type. See [this page](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) for the possible values
   type: ClusterIP
   # -- service port
-  port: 8080
-  # -- service management port
-  managementPort: 8081
+  port: 8060
 
 networkPolicy:
   enabled: true
 
-gateway:
-  # This corresponds to the path under which this service is exposed
-  contextPath: /
-  # Configure probes failure thresholds to higher values if you are in debug mode to avoid pod restart
-  probes:
-    startup:
-      initialDelaySeconds: 60
-      failureThreshold: 50
-    liveness:
-      timeoutSeconds: 10
-      failureThreshold: 5
-    readiness:
-      timeoutSeconds: 10
-      failureThreshold: 5
-  serviceMonitor:
-    enabled: true
-    namespace: ""
-    additionalLabels: {}
+probes:
+  startup:
+    initialDelaySeconds: 60
+    failureThreshold: 50
+  liveness:
+    timeoutSeconds: 10
+    failureThreshold: 5
+  readiness:
+    timeoutSeconds: 10
+    failureThreshold: 5
+config:
+  csm:
+    platform:
+      gateway:
+        # This corresponds to the path under which this service is exposed
+        contextPath: /
+        port: 8060
+        identityProvider:
+          serverBaseUrl: "http://changeme"
+          authorizationGrantType: "authorization_code"
+          identity:
+            clientId: "gateway-client-id"
+            clientSecret: "gateway-client-secret"
+            tenantId: "my-tenant-id"
+          scopes:
+            - "openid"
+        # See https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway-server-webflux/glossary.html
+        configuration:
+          # Option to fail on route definition errors, defaults to true. Otherwise, a warning is logged.
+          failOnRouteDefinitionError: true
+          # Enables the route filter cache, defaults to false.
+          routeFilterCacheEnabled: false
+          # Regular expression defining proxies that are trusted when they appear in a Forwarded or X-Forwarded header.
+          trustedProxies: ""
+          # List of filter definitions that are applied to every route.
+          defaultFilters:
+            - TokenRelay=
+          # List of Routes.
+          routes:
+            - id: my-route-id
+              uri: http://localhost:8080
+              predicates:
+                - Path=/changeme/**
+              filters:
+                - RewritePath=/changeme/(?<segment>.*),/$\{segment}
 
 ingress:
   enabled: false
