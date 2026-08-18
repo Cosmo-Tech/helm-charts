@@ -81,6 +81,16 @@ spring:
   output:
     ansi:
       enabled: never
+management:
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        # This exposes the following endpoints for Kubernetes: /actuator/health/{live,readi}ness
+        enabled: true
+      group:
+        readiness:
+          include: "readinessState"
 {{- end }}
 
 {{/*
