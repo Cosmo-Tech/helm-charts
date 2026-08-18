@@ -61,14 +61,16 @@ service:
   type: ClusterIP
   # -- service port
   port: 8060
+  # -- service management port
+  managementPort: 8061
 
 networkPolicy:
   enabled: true
 
 probes:
   startup:
-    initialDelaySeconds: 60
-    failureThreshold: 50
+    initialDelaySeconds: 20
+    failureThreshold: 40
   liveness:
     timeoutSeconds: 10
     failureThreshold: 5

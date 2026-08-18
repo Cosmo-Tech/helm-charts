@@ -67,10 +67,10 @@ spec:
               readOnly: true
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
             - name: http-management
-              containerPort: 8081
+              containerPort: {{ .Values.service.managementPort }}
               protocol: TCP
           startupProbe:
             initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds }}
