@@ -74,13 +74,13 @@ spec:
               protocol: TCP
           startupProbe:
             initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds }}
-            periodSeconds: 5
+            periodSeconds: {{ .Values.probes.startup.periodSeconds }}
             failureThreshold: {{ .Values.probes.startup.failureThreshold }}
             tcpSocket:
               port: http
           livenessProbe:
             timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
-            periodSeconds: 5
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
             failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
             httpGet:
               path: /actuator/health/liveness
