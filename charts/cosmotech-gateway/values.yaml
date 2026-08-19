@@ -71,9 +71,11 @@ probes:
   startup:
     initialDelaySeconds: 20
     failureThreshold: 40
+    periodSeconds: 5
   liveness:
     timeoutSeconds: 10
     failureThreshold: 5
+    periodSeconds: 5
   readiness:
     timeoutSeconds: 10
     failureThreshold: 5
