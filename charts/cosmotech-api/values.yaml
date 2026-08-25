@@ -182,6 +182,10 @@ config:
           clientId: "changeme"
           clientSecret: "changeme"
           tenantId: "changeme"
+        admin:
+          clientId: "changeme"
+          username: "changeme"
+          password: "changeme"
         tls:
           enabled: false
           bundle: "changeme"
