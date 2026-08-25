@@ -18,12 +18,12 @@ data:
 
     [keycloak]
     realm = {{ .Values.keycloak.realm | quote }}
-    client_id = {{ .Values.keycloak.clientId | quote }}
+    client_id = {{ required "A valid keycloak.clientId is required!" .Values.keycloak.clientId | quote }}
 
     [csm_api]
-    url = {{ .Values.csmApi.url | quote }}
+    url = {{ required "A valid csmApi.url is required!" .Values.csmApi.url | quote }}
     scope = {{ .Values.csmApi.scope | quote }}
-    client_id = {{ .Values.csmApi.clientId | quote }}
+    client_id = {{ required "A valid csmApi.clientId is required!" .Values.csmApi.clientId | quote }}
     # Note: The Cosmo Tech API client secret is intentionally not rendered in this ConfigMap.
     # It is provided via a Kubernetes Secret and mounted as a file at runtime.
 
@@ -43,7 +43,7 @@ data:
     script_location = {{ .Values.alembic.script_location | quote }}
 
     [cors]
-    origins = ["{{ .Values.apiConfig.corsOrigin | join "\", \""}}"]
+    origins = {{ toJson (.Values.apiConfig.corsOrigin | default list) }}
 
     [usage]
     enabled = {{ .Values.usage.enabled | toString | lower | quote }}
