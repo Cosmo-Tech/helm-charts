@@ -3,7 +3,7 @@
 # -- Base name override
 nameOverride: cosmotech-modeling-api
 # -- Full name override
-fullNameOverride: ""
+fullnameOverride: ""
 
 image:
   # -- Image repository

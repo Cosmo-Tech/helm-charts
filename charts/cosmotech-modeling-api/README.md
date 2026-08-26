@@ -13,7 +13,7 @@ Cosmo Tech Modeling API
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":true,"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001,"seLinuxOptions":{},"seccompProfile":{"type":"RuntimeDefault"}}` | Security context injected at container level |
 | extraEnv.env | list | `[]` | Extra environment values, as 'env' form |
 | extraEnv.envFrom | list | `[]` | Extra environment values, as 'envFrom' form |
-| fullNameOverride | string | `""` | Full name override |
+| fullnameOverride | string | `""` | Full name override |
 | image.credentials.password | string | `""` | Password for the generated pull secret auth config. Only applies if `pullSecret` is empty. If `registry`, `username` and `password` are all empty, the generated secret is only created if not already there. |
 | image.credentials.pullSecret | string | `""` | Existing image pull secret |
 | image.credentials.registry | string | `""` | Registry name for the generated pull secret auth config. Only applies if `pullSecret` is empty. If `registry`, `username` and `password` are all empty, the generated secret is only created if not already there. |
