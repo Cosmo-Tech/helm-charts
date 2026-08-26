@@ -585,6 +585,10 @@ config:
           clientId: ${CLIENT_ID}
           clientSecret: ${CLIENT_SECRET}
           tenantId: ${TENANT_ID}
+        admin:
+          clientId: ${ADMIN_CLIENT_ID}
+          username: ${ADMIN_CLIENT_USERNAME}
+          password: ${ADMIN_CLIENT_PASSWORD}
       namespace: ${NAMESPACE}
       argo:
         base-uri: "http://${ARGO_RELEASE_NAME}-argo-workflows-server.${NAMESPACE}.svc.cluster.local:2746"

@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 5.1.0](https://img.shields.io/badge/Version-5.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.1.0](https://img.shields.io/badge/AppVersion-5.1.0-informational?style=flat-square)
+![Version: 5.2.0](https://img.shields.io/badge/Version-5.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.2.0](https://img.shields.io/badge/AppVersion-5.2.0-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -519,7 +519,7 @@ helm repo update
 Deploy the Cosmo Tech API using the Helm chart with the specified values:
 
 ```bash
-helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.1.0" --values - <<EOF
+helm install ${RELEASE_NAME} cosmotech/cosmotech-api --namespace ${NAMESPACE} --version "5.2.0" --values - <<EOF
 replicaCount: ${API_REPLICAS}
 api:
   version: ${API_VERSION_PATH}
@@ -571,6 +571,10 @@ config:
           clientId: ${CLIENT_ID}
           clientSecret: ${CLIENT_SECRET}
           tenantId: ${TENANT_ID}
+        admin:
+          clientId: ${ADMIN_CLIENT_ID}
+          username: ${ADMIN_CLIENT_USERNAME}
+          password: ${ADMIN_CLIENT_PASSWORD}
       namespace: ${NAMESPACE}
       argo:
         base-uri: "http://${ARGO_RELEASE_NAME}-argo-workflows-server.${NAMESPACE}.svc.cluster.local:2746"
