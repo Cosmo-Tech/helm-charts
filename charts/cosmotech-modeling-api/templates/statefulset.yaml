@@ -52,6 +52,8 @@ spec:
             - --property
             - csm.modelingapi.buildimage.repository={{ .Values.image.repository }}
             - --property
+            - csm.modelingapi.buildimage.defaulttag={{ .Values.image.tag }}
+            - --property
             - csm.modelingapi.buildimage.pullsecret={{ include "cosmotech-modeling-api.imagePullSecretName" . }}
             {{- if empty (((.Values.config.csm).modelingApi).simulatorRegistry).pushSecret }}
             - --property
