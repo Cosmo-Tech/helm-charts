@@ -807,8 +807,7 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | config.csm.platform.databases.resources.tls.enabled | bool | `false` |  |
 | config.csm.platform.databases.resources.username | string | `"default"` |  |
 | config.csm.platform.identityProvider.admin.clientId | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.admin.password | string | `"changeme"` |  |
-| config.csm.platform.identityProvider.admin.username | string | `"changeme"` |  |
+| config.csm.platform.identityProvider.admin.clientSecret | string | `"changeme"` |  |
 | config.csm.platform.identityProvider.audience | string | `"changeme"` |  |
 | config.csm.platform.identityProvider.authorizationUrl | string | `"changeme"` |  |
 | config.csm.platform.identityProvider.containerScopes.changeme | string | `"changeme"` |  |
