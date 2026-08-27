@@ -78,7 +78,6 @@ jobs:
           --values values.yaml
           --set image.tag="${{ matrix.imageTag }}"
           --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
-          --set config.csm.modelingApi.simulatorRegistry.host=${{ secrets.SIMULATOR_REGISTRY_HOSTNAME }}
           cosmotech-modeling-api-${{ matrix.imageTag }}
           ${{ runner.temp }}/package/cosmotech-modeling-api-*.tgz
 
