@@ -184,8 +184,7 @@ config:
           tenantId: "changeme"
         admin:
           clientId: "changeme"
-          username: "changeme"
-          password: "changeme"
+          clientSecret: "changeme"
         tls:
           enabled: false
           bundle: "changeme"
