@@ -9,7 +9,7 @@ image:
   # -- Image repository
   repository: ghcr.io/cosmo-tech/cosmotech-modeling-api
   # -- Image tag
-  tag: "latest"
+  tag: "12.3.0"
   # -- Image pull policy
   pullPolicy: Always
   credentials:

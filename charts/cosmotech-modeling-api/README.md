@@ -20,7 +20,7 @@ Cosmo Tech Modeling API
 | image.credentials.username | string | `""` | Username for the generated pull secret auth config. Only applies if `pullSecret` is empty. If `registry`, `username` and `password` are all empty, the generated secret is only created if not already there. |
 | image.pullPolicy | string | `"Always"` | Image pull policy |
 | image.repository | string | `"ghcr.io/cosmo-tech/cosmotech-modeling-api"` | Image repository |
-| image.tag | string | `"latest"` | Image tag |
+| image.tag | string | `"12.3.0"` | Image tag |
 | livenessProbe.enabled | bool | `true` | Enable livenessProbe |
 | livenessProbe.failureThreshold | int | `2` | Failure threshold for livenessProbe |
 | livenessProbe.initialDelaySeconds | int | `2` | Initial delay seconds for livenessProbe |
