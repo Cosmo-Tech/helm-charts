@@ -1,0 +1,67 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+rules:
+  - apiGroups: [""]
+    resources:
+      - "persistentvolumeclaims"
+      - "persistentvolumes"
+      - "pods"
+      - "namespaces"
+      - "services"
+      - "nodes"
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: [""]
+    resources:
+      - "configmaps"
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+
+  - apiGroups: [""]
+    resources:
+      - "secrets"
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["apps"]
+    resources:
+      - "statefulsets"
+      - "deployments"
+    verbs: ["get", "list", "watch", "patch", "update"]
+
+  - apiGroups: ["batch"]
+    resources:
+      - "jobs"
+      - "jobs/status"
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  - apiGroups: ["storage.k8s.io"]
+    resources:
+      - "volumeattachments"
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
