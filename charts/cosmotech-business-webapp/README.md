@@ -43,13 +43,13 @@ Cosmo Tech Business Web Application
 | webapp.functions.image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image |
 | webapp.functions.image.pullSecret | string | `""` | name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry) |
 | webapp.functions.image.repository | string | `""` | container image to use for webapp functions (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-functions) |
-| webapp.functions.image.tag | string | `"latest"` | container image tag |
+| webapp.functions.image.tag | string | `""` | container image tag |
 | webapp.functions.nodeSelector | object | `{}` | node selector for webapp functions deployment |
 | webapp.functions.tolerations | list | `[]` | tolerations for webapp functions deployment |
 | webapp.publicUrl | string | `""` | URL path to use as root of the webapp (e.g. /cosmotech-webapp/brewery) |
 | webapp.server.image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image |
 | webapp.server.image.pullSecret | string | `""` | name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry) |
 | webapp.server.image.repository | string | `""` | container image to use as webapp server (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-server) |
-| webapp.server.image.tag | string | `"latest"` | container image tag |
+| webapp.server.image.tag | string | `""` | container image tag |
 | webapp.server.nodeSelector | object | `{}` | node selector for webapp server deployment |
 | webapp.server.tolerations | list | `[]` | tolerations for webapp server deployment |

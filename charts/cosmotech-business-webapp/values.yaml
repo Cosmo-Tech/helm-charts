@@ -24,7 +24,7 @@ webapp:
       # -- container image to use as webapp server (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-server)
       repository: ""
       # -- container image tag
-      tag: latest
+      tag: ""
       # -- [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image
       pullPolicy: Always
   functions:
@@ -38,7 +38,7 @@ webapp:
       # -- container image to use for webapp functions (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-functions)
       repository: ""
       # -- container image tag
-      tag: latest
+      tag: ""
       # -- [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image
       pullPolicy: Always
 

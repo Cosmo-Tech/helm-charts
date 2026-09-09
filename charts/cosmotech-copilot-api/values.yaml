@@ -15,7 +15,7 @@ image:
   # Repository for the API image.
   repository: ghcr.io/cosmo-tech/cosmotech-copilot-api
   # Tag for the image.
-  tag: "latest"
+  tag: ""
   # Pull policy for the image.
   pullPolicy: IfNotPresent
 
