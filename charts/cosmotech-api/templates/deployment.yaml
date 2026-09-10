@@ -78,6 +78,10 @@ spec:
               # The properties file for the 'helm' profile is mounted as a Volume in the Container,
               # using a configured Kubernetes Secret containing all the 'config.*' properties
               value: "helm"
+            - name : SPRING_CONFIG_ADDITIONAL_LOCATION
+              # Add optional config folder to Spring boot configuration
+              # using Chainguard base image made it require to declare it
+              value : "optional:file:/config/"
           volumeMounts:
             - mountPath: /tmp
               name: tmp-dir
