@@ -33,9 +33,8 @@ spec:
         {{- include "cosmotech-api.defaultNetworkPolicy" . | nindent 8 }}
         {{- include "cosmotech-api.selectorLabels" . | nindent 8 }}
     spec:
-      {{- if or .Values.imageCredentials.registry .Values.image.pullSecret }}
+      {{- if .Values.image.pullSecret }}
       imagePullSecrets:
-        - name: {{ include "cosmotech-api.fullname" . }}-registry
         - name: {{ .Values.image.pullSecret }}
       {{- end }}
       securityContext:

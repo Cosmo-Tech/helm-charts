@@ -827,9 +827,6 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | image.pullSecret | string | `""` | name of the secret containing registry credentials to pull private images |
 | image.repository | string | `"ghcr.io/cosmo-tech/cosmotech-api"` | container image to use for deployment |
 | image.tag | string | `""` | container image tag. Defaults to the Chart `appVersion` if empty or missing |
-| imageCredentials.password | string | `""` | password for registry to use for pulling the Deployment image. Useful if you are using a private registry |
-| imageCredentials.registry | string | `""` | container registry to use for pulling the Deployment image. Useful if you are using a private registry |
-| imageCredentials.username | string | `""` | username for the container registry to use for pulling the Deployment image. Useful if you are using a private registry |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.hosts[0].host | string | `"chart-example.local"` |  |
