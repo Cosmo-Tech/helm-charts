@@ -1,0 +1,58 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
+
+# Override the chart name
+nameOverride: ""
+fullnameOverride: ""
+
+# Required cluster name
+clusterName: ""
+
+# Customize workload of master
+master:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+      ephemeral-storage: 50Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+      ephemeral-storage: 2Gi
+  image:
+    repository: ghcr.io/cosmo-tech/bkup
+    pullPolicy: IfNotPresent
+    tag: "latest"
+    pullSecrets: []
+
+# Customize workload of workers
+worker:
+  # Note: there is no nodeSelector here as it's part of bkup to determine the right node where to launch the workers
+  tolerations: []
+  affinity: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+      ephemeral-storage: 50Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+      ephemeral-storage: 2Gi
+  image:
+    repository: ghcr.io/cosmo-tech/bkup
+    pullPolicy: IfNotPresent
+    tag: "latest"
+    pullSecrets: []
+
+# Backup jobs behaviors
+backup:
+  # Cron expression to specify when to run the jobs
+  cron: ""
+  # Number of successful jobs to keep in history
+  successfulJobsHistoryLimit: 3
+  # Number of failed jobs to keep in history
+  failedJobsHistoryLimit: 5

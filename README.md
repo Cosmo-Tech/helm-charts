@@ -12,6 +12,7 @@ This repository contains the Cosmo Tech helm charts for deploying various compon
 - [Cosmo Tech Business Webapp](charts/cosmotech-business-webapp)
 - [Cosmo Tech Copilot API](charts/cosmotech-copilot-api)
 - [Cosmo Tech Modeling API](charts/cosmotech-modeling-api)
+- [Cosmo Tech Kubernetes backup](charts/cosmotech-kubernetes-backup)
 
 ## Installation
 
