@@ -1,6 +1,6 @@
 # cosmotech-api
 
-![Version: 5.2.0](https://img.shields.io/badge/Version-5.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.2.0](https://img.shields.io/badge/AppVersion-5.2.0-informational?style=flat-square)
+![Version: 5.2.1](https://img.shields.io/badge/Version-5.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.2.0](https://img.shields.io/badge/AppVersion-5.2.0-informational?style=flat-square)
 
 Cosmo Tech Platform API
 
@@ -824,6 +824,7 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | deploymentStrategy.rollingUpdate.maxUnavailable | string | `"50%"` | maximum number of Pods that can be unavailable during the update process |
 | fullnameOverride | string | `""` | value overriding the full name of the Chart. If not set, the value is computed from `nameOverride`. Truncated at 63 chars because some Kubernetes name fields are limited to this. |
 | image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) for pulling the image |
+| image.pullSecret | string | `""` | name of the secret containing registry credentials to pull private images |
 | image.repository | string | `"ghcr.io/cosmo-tech/cosmotech-api"` | container image to use for deployment |
 | image.tag | string | `""` | container image tag. Defaults to the Chart `appVersion` if empty or missing |
 | imageCredentials.password | string | `""` | password for registry to use for pulling the Deployment image. Useful if you are using a private registry |
