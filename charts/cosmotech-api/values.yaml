@@ -11,21 +11,12 @@ replicaCount: 1
 image:
   # -- container image to use for deployment
   repository: ghcr.io/cosmo-tech/cosmotech-api
+  # -- name of the secret containing registry credentials to pull private images
+  pullSecret: ""
   # -- [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) for pulling the image
   pullPolicy: Always
   # -- container image tag. Defaults to the Chart `appVersion` if empty or missing
   tag: ""
-
-#imagePullSecrets: []
-
-# Set image pull secrets (in case you're using a private container registry).
-imageCredentials:
-  # -- container registry to use for pulling the Deployment image. Useful if you are using a private registry
-  registry: ""
-  # -- username for the container registry to use for pulling the Deployment image. Useful if you are using a private registry
-  username: ""
-  # -- password for registry to use for pulling the Deployment image. Useful if you are using a private registry
-  password: ""
 
 # -- value overriding the name of the Chart. Defaults to the Chart name.
 # Truncated at 63 chars because some Kubernetes name fields are limited to this.
