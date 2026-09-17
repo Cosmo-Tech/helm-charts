@@ -788,6 +788,9 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | autoscaling.targetMemoryUtilizationPercentage | int | `80` |  |
+| config.csm.platform.api.mcp.dashboard-enabled | bool | `false` |  |
+| config.csm.platform.api.mcp.enabled | bool | `false` |  |
+| config.csm.platform.api.mcp.paths-to-exclude | string | `"/path-to-exclude-1,/path-to-exclude-2,/path-to-exclude-3"` |  |
 | config.csm.platform.argo.base-uri | string | `"http://argo-server:2746"` |  |
 | config.csm.platform.argo.workflows.access-modes[0] | string | `"ReadWriteOnce"` | Any in the following list: ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod (K8s 1.22+). |
 | config.csm.platform.argo.workflows.requests.storage | string | `"100Gi"` |  |
