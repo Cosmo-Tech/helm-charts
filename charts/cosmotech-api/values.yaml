@@ -160,6 +160,11 @@ config:
             storage: 100Gi
       authorization:
         allowed-tenants: []
+      api:
+        mcp:
+          dashboard-enabled: false
+          enabled: false
+          paths-to-exclude: "/path-to-exclude-1,/path-to-exclude-2,/path-to-exclude-3"
       identityProvider:
         authorizationUrl: "changeme"
         tokenUrl: "changeme"
