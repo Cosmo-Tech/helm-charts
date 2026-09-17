@@ -26,6 +26,8 @@ jobs:
         with:
           fetch-depth: 0 # Needed by 'cr index' to be able to update the github pages branch
 
+      - uses: azure/setup-helm@v5
+
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
@@ -58,3 +60,18 @@ jobs:
         run: |
           mkdir .cr-index
           cr index --owner "${{ github.repository_owner }}" --git-repo "${{ env.REPO_NAME }}" --token ${{ secrets.GITHUB_TOKEN }} --push
+
+      - name: Helm login to the registry
+        run: >
+          echo "${{ secrets.HARBOR_ROBOT_ACCOUNT_SECRET }}" |
+          helm registry login registry.cosmotech.com
+          --username "${{ secrets.HARBOR_ROBOT_ACCOUNT_NAME }}"
+          --password-stdin
+
+      - name: Helm package
+        run: |
+          helm package charts/${{ inputs.chart_name }}
+
+      - name: Helm push
+        run: |
+          helm push *.tgz oci://registry.cosmotech.com/product-charts
