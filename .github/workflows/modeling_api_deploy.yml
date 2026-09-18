@@ -48,14 +48,12 @@ jobs:
           resource-group: "${{ vars.CLUSTER_RESOURCE_GROUP }}"
           use-kubelogin: true
 
-      - name: Setup image pull secret
-        uses: azure/k8s-create-secret@v6
-        with:
-          namespace: ${{ vars.CLUSTER_NAMESPACE }}
-          secret-name: cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
-          container-registry-url: ghcr.io
-          container-registry-username: ${{ secrets.GHCR_CREDENTIALS_USERNAME }}
-          container-registry-password: ${{ secrets.GHCR_CREDENTIALS_PASSWORD }}
+      - name: Remove default modeling api helm release if present
+        run: >
+          helm uninstall
+          --namespace ${{ vars.CLUSTER_NAMESPACE }}
+          --ignore-not-found
+          cosmotech-modeling-api
 
       - name: Helm package
         run: >
@@ -77,7 +75,6 @@ jobs:
           --reset-values
           --values values.yaml
           --set image.tag="${{ matrix.imageTag }}"
-          --set image.credentials.pullSecret=cosmotech-modeling-api-image-secret-${{ matrix.imageTag }}
           cosmotech-modeling-api-${{ matrix.imageTag }}
           ${{ runner.temp }}/package/cosmotech-modeling-api-*.tgz
 
