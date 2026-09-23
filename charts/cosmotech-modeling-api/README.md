@@ -1,6 +1,6 @@
 # cosmotech-modeling-api
 
-![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Cosmo Tech Modeling API
 
@@ -19,7 +19,7 @@ Cosmo Tech Modeling API
 | image.credentials.registry | string | `""` | Registry name for the generated pull secret auth config. Only applies if `pullSecret` is empty. If `registry`, `username` and `password` are all empty, the generated secret is only created if not already there. |
 | image.credentials.username | string | `""` | Username for the generated pull secret auth config. Only applies if `pullSecret` is empty. If `registry`, `username` and `password` are all empty, the generated secret is only created if not already there. |
 | image.pullPolicy | string | `"Always"` | Image pull policy |
-| image.repository | string | `"ghcr.io/cosmo-tech/cosmotech-modeling-api"` | Image repository |
+| image.repository | string | `"registry.cosmotech.com/product/cosmotech-modeling-api"` | Image repository |
 | image.tag | string | `"12.3.0"` | Image tag |
 | livenessProbe.enabled | bool | `true` | Enable livenessProbe |
 | livenessProbe.failureThreshold | int | `2` | Failure threshold for livenessProbe |
