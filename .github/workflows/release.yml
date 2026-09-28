@@ -63,9 +63,9 @@ jobs:
 
       - name: Helm login to the registry
         run: >
-          echo "${{ secrets.HARBOR_ROBOT_ACCOUNT_SECRET }}" |
+          echo '${{ secrets.HARBOR_ROBOT_ACCOUNT_SECRET }}' |
           helm registry login registry.cosmotech.com
-          --username "${{ secrets.HARBOR_ROBOT_ACCOUNT_NAME }}"
+          --username '${{ secrets.HARBOR_ROBOT_ACCOUNT_NAME }}'
           --password-stdin
 
       - name: Helm package
