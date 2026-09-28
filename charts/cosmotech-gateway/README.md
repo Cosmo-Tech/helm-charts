@@ -18,9 +18,7 @@ Cosmo Tech Gateway
 | config.csm.platform.gateway.configuration.routes[0].uri | string | `"http://localhost:8080"` |  |
 | config.csm.platform.gateway.configuration.trustedProxies | string | `""` |  |
 | config.csm.platform.gateway.contextPath | string | `"/"` |  |
-| config.csm.platform.gateway.identityProvider.authorizationGrantType | string | `"authorization_code"` |  |
 | config.csm.platform.gateway.identityProvider.identity.clientId | string | `"gateway-client-id"` |  |
-| config.csm.platform.gateway.identityProvider.identity.clientSecret | string | `"gateway-client-secret"` | stored in a Secret and injected into the Pod as an env var, never rendered into the ConfigMap |
 | config.csm.platform.gateway.identityProvider.identity.tenantId | string | `"my-tenant-id"` |  |
 | config.csm.platform.gateway.identityProvider.scopes[0] | string | `"openid"` |  |
 | config.csm.platform.gateway.identityProvider.serverBaseUrl | string | `"http://changeme"` |  |
@@ -48,11 +46,13 @@ Cosmo Tech Gateway
 | podAnnotations | object | `{}` | annotations to set the Deployment pod |
 | podSecurityContext | object | `{"runAsNonRoot":true}` | the pod security context, i.e. applicable to all containers part of the pod |
 | probes.liveness.failureThreshold | int | `5` |  |
+| probes.liveness.periodSeconds | int | `5` |  |
 | probes.liveness.timeoutSeconds | int | `10` |  |
 | probes.readiness.failureThreshold | int | `5` |  |
 | probes.readiness.timeoutSeconds | int | `10` |  |
-| probes.startup.failureThreshold | int | `50` |  |
-| probes.startup.initialDelaySeconds | int | `60` |  |
+| probes.startup.failureThreshold | int | `40` |  |
+| probes.startup.initialDelaySeconds | int | `20` |  |
+| probes.startup.periodSeconds | int | `5` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"1000m"` |  |
 | resources.limits.ephemeral-storage | string | `"2Gi"` |  |
@@ -61,6 +61,7 @@ Cosmo Tech Gateway
 | resources.requests.ephemeral-storage | string | `"50Mi"` |  |
 | resources.requests.memory | string | `"512Mi"` |  |
 | securityContext | object | `{"readOnlyRootFilesystem":true}` | the security context at the pod container level |
+| service.managementPort | int | `8061` | service management port |
 | service.port | int | `8060` | service port |
 | service.type | string | `"ClusterIP"` | service type. See [this page](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types) for the possible values |
 | tolerations | list | `[]` |  |
