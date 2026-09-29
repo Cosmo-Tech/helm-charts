@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
 apiVersion: v2
 name: asset-investment-planning-webapp
 description: Cosmo Tech Asset Investment Planning Web Application

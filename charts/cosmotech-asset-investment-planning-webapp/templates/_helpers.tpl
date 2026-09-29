@@ -1,3 +1,7 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
 {{/* Generates the name of the webapp server */}}
 {{- define "asset-investment-planning-webapp.server-name" -}}
 {{ .Values.name }}-server

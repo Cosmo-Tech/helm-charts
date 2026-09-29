@@ -1,3 +1,7 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -5,7 +9,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   concurrencyPolicy: "Forbid"
-  schedule: '0 0 * * *' 
+  schedule: '0 0 * * *'
   jobTemplate:
     spec:
       backoffLimit: 5
