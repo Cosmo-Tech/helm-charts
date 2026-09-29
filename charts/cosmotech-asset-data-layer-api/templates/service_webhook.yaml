@@ -1,3 +1,7 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
 {{- if .Values.webhookRestart.enabled }}
 apiVersion: v1
 kind: Service

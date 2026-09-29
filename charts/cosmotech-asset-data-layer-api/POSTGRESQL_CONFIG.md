@@ -1,3 +1,7 @@
+<!--
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+-->
 # PostgreSQL Configuration
 
 This document describes how to configure PostgreSQL database connection for the Asset Investment Planning API.
