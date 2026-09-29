@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.name }}-restart
+  namespace: {{ .Release.Namespace }}
+spec:
+  concurrencyPolicy: "Forbid"
+  schedule: '0 0 * * *' 
+  jobTemplate:
+    spec:
+      backoffLimit: 5
+      activeDeadlineSeconds: 300
+      ttlSecondsAfterFinished: 0
+      template:
+        spec:
+          containers:
+            - name: kubectl
+              image: alpine/k8s:1.33.0
+              command: [ "/bin/bash", "/scripts/restart.sh" ]
+              volumeMounts:
+                - name: {{ .Values.name }}-restart
+                  mountPath: /scripts
+          restartPolicy: Never
+          serviceAccountName:  {{ include "asset-investment-planning-webapp.serviceAccountName" . }}
+          volumes:
+            - name: {{ .Values.name }}-restart
+              configMap:
+                defaultMode: 0644
+                name: {{ .Values.name }}-restart
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
