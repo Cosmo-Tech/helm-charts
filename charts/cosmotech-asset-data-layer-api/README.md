@@ -25,7 +25,7 @@ A Helm chart for the Cosmo Tech Asset Data Layer API
 | extraEnvVars | list | `[]` |  |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"ghcr.io/cosmo-tech/cosmotech-asset-data-layer-api"` |  |
+| image.repository | string | `"registry.cosmotech.com/product/cosmotech-asset-data-layer-api"` |  |
 | image.tag | string | `"latest"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations."kubernetes.io/ingress.class" | string | `"traefik"` |  |
@@ -57,7 +57,12 @@ A Helm chart for the Cosmo Tech Asset Data Layer API
 | postgres.schema | string | `"public"` |  |
 | postgres.username | string | `"psql"` |  |
 | replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
+| resources.limits.cpu | string | `"100m"` |  |
+| resources.limits.ephemeral-storage | string | `"2Gi"` |  |
+| resources.limits.memory | string | `"128Mi"` |  |
+| resources.requests.cpu | string | `"100m"` |  |
+| resources.requests.ephemeral-storage | string | `"50Mi"` |  |
+| resources.requests.memory | string | `"128Mi"` |  |
 | seaweedfs.accessKey | string | `"S3_ACCESS_KEY"` |  |
 | seaweedfs.bucket | string | `"asset-data-layer"` |  |
 | seaweedfs.enabled | bool | `false` |  |
