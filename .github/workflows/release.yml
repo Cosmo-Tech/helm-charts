@@ -11,6 +11,7 @@ on:
         type: choice
         options:
           - cosmotech-api
+          - cosmotech-asset-data-layer-api
           - cosmotech-business-webapp
           - cosmotech-copilot-api
           - cosmotech-modeling-api
