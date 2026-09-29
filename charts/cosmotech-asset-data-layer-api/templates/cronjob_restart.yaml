@@ -1,3 +1,7 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
