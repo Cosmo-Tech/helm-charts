@@ -22,7 +22,7 @@ A Helm chart for Kubernetes
 | extraEnvVars | list | `[]` |  |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"ghcr.io/cosmo-tech/cosmotech-asset-investment-planning-api"` |  |
+| image.repository | string | `"registry.cosmotech.com/product/cosmotech-asset-investment-planning-api"` |  |
 | image.tag | string | `"latest"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations."kubernetes.io/ingress.class" | string | `"traefik"` |  |
@@ -51,7 +51,12 @@ A Helm chart for Kubernetes
 | postgres.schema | string | `"public"` |  |
 | postgres.username | string | `"psql"` |  |
 | replicaCount | int | `1` |  |
-| resources | object | `{}` |  |
+| resources.limits.cpu | string | `"100m"` |  |
+| resources.limits.ephemeral-storage | string | `"2Gi"` |  |
+| resources.limits.memory | string | `"128Mi"` |  |
+| resources.requests.cpu | string | `"100m"` |  |
+| resources.requests.ephemeral-storage | string | `"50Mi"` |  |
+| resources.requests.memory | string | `"128Mi"` |  |
 | securityContext | object | `{}` |  |
 | service.port | int | `8080` |  |
 | service.type | string | `"ClusterIP"` |  |

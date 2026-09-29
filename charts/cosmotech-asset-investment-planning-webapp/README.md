@@ -24,7 +24,7 @@ Cosmo Tech Asset Investment Planning Web Application
 | keycloak.realm | string | `""` |  |
 | keycloak.rolesClaim | string | `""` |  |
 | name | string | `"asset-investment-planning-webapp"` | prefix of the deployments, ingress and services that will be created |
-| resources | object | `{"limits":{"cpu":"1000m","memory":"256Mi"},"requests":{"cpu":"200m","memory":"128Mi"}}` | resource limits for the webapp server pod |
+| resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"2Gi","memory":"256Mi"},"requests":{"cpu":"200m","ephemeral-storage":"50Mi","memory":"128Mi"}}` | resources limits for the webapp server pod |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |

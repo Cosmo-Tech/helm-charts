@@ -26,4 +26,4 @@ data:
     script_location = {{ .Values.alembic.script_location | quote }}
 
     [cors]
-    origins = ["{{ .Values.apiConfig.corsOrigin | join "\", \""}}"]
+    origins = ["{{ .Values.apiConfig.corsOrigin | join "\", \"" }}"]
