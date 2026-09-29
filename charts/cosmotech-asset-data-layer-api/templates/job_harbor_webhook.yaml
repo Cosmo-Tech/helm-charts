@@ -1,0 +1,100 @@
+{{- if and .Values.webhookRestart.enabled .Values.webhookRestart.harbor.url }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "cosmotech-asset-data-layer-api.fullname" . }}-harbor-webhook
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+    "helm.sh/hook-weight": "10"
+spec:
+  ttlSecondsAfterFinished: 60
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: harbor-webhook-setup
+          image: alpine/k8s:1.33.0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -euo pipefail
+
+              HARBOR_URL={{ .Values.webhookRestart.harbor.url | quote }}
+              HARBOR_PROJECT={{ .Values.webhookRestart.harbor.project | quote }}
+              HARBOR_CREDENTIALS={{ .Values.webhookRestart.harbor.credentials | quote }}
+              WEBHOOK_NAME="{{ include "cosmotech-asset-data-layer-api.fullname" . }}-restart-webhook"
+              WEBHOOK_ENDPOINT="http://{{ include "cosmotech-asset-data-layer-api.fullname" . }}-webhook.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.webhookRestart.port }}/hooks/restart"
+              AUTH_TOKEN={{ .Values.webhookRestart.authToken | quote }}
+
+              echo "Checking if webhook '${WEBHOOK_NAME}' already exists..."
+              EXISTING=$(curl -s -o /dev/null -w "%{http_code}" \
+                -H "Authorization: Basic ${HARBOR_CREDENTIALS}" \
+                "${HARBOR_URL}/api/v2.0/projects/${HARBOR_PROJECT}/webhook/policies?q=name=${WEBHOOK_NAME}")
+
+              if [ "${EXISTING}" != "200" ]; then
+                echo "Warning: Could not list webhooks (HTTP ${EXISTING}). Attempting creation anyway..."
+              fi
+
+              # Check if our webhook already exists by name
+              WEBHOOK_ID=$(curl -s \
+                -H "Authorization: Basic ${HARBOR_CREDENTIALS}" \
+                "${HARBOR_URL}/api/v2.0/projects/${HARBOR_PROJECT}/webhook/policies?q=name=${WEBHOOK_NAME}" \
+                | grep -o "\"id\":[0-9]*,\"name\":\"${WEBHOOK_NAME}\"" \
+                | grep -o '"id":[0-9]*' \
+                | grep -o '[0-9]*' || true)
+
+              PAYLOAD=$(cat <<EOF
+              {
+                "name": "${WEBHOOK_NAME}",
+                "enabled": true,
+                "event_types": ["PUSH_ARTIFACT"],
+                "targets": [
+                  {
+                    "type": "http",
+                    "address": "${WEBHOOK_ENDPOINT}",
+                    "auth_header": "${AUTH_TOKEN}",
+                    "skip_cert_verify": true
+                  }
+                ]
+              }
+              EOF
+              )
+
+              if [ -n "${WEBHOOK_ID}" ]; then
+                echo "Webhook already exists (ID: ${WEBHOOK_ID}), updating..."
+                HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+                  -X PUT \
+                  -H "Authorization: Basic ${HARBOR_CREDENTIALS}" \
+                  -H "Content-Type: application/json" \
+                  -d "${PAYLOAD}" \
+                  "${HARBOR_URL}/api/v2.0/projects/${HARBOR_PROJECT}/webhook/policies/${WEBHOOK_ID}")
+                echo "Update response: HTTP ${HTTP_CODE}"
+              else
+                echo "Creating new webhook..."
+                HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+                  -X POST \
+                  -H "Authorization: Basic ${HARBOR_CREDENTIALS}" \
+                  -H "Content-Type: application/json" \
+                  -d "${PAYLOAD}" \
+                  "${HARBOR_URL}/api/v2.0/projects/${HARBOR_PROJECT}/webhook/policies")
+                echo "Create response: HTTP ${HTTP_CODE}"
+              fi
+
+              if [ "${HTTP_CODE}" -ge 200 ] && [ "${HTTP_CODE}" -lt 300 ]; then
+                echo "Harbor webhook configured successfully!"
+              else
+                echo "Failed to configure Harbor webhook (HTTP ${HTTP_CODE})"
+                exit 1
+              fi
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
