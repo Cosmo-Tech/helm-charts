@@ -35,10 +35,10 @@ spec:
           persistentVolumeClaim:
             {{- /* If existingClaim is provided, use it. Otherwise, use the chart's generated name. */}}
             claimName: {{ .Values.persistence.existingClaim | default (printf "%s-data" (include "cosmotech-asset-investment-planning-api.fullname" .)) }}
-        {{- else}}
+        {{- else }}
           {{- /* Use temporary storage if persistence is disabled */}}
           emptyDir: {}
-        {{- end}}
+        {{- end }}
         - name: config
           configMap:
             name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-config
@@ -50,9 +50,9 @@ spec:
               - key: postgres-password
                 path: postgres-password
         {{- end }}
-      serviceAccountName: {{ include "cosmotech-asset-investment-planning-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      automountServiceAccountToken: false
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
