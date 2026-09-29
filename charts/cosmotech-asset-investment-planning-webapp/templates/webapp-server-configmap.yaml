@@ -20,4 +20,7 @@ data:
       "COSMOTECH_API_SCOPE": {{ required "A valid scope is required" .Values.api.scope | quote }},
       "PUBLIC_URL": {{ required "A valid public URL is required" .Values.webapp.publicUrl | quote }},
       "API_BASE_URL": {{ required "A valid API base URL is required" .Values.api.baseUrl | quote }}
-    }
+    }{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
