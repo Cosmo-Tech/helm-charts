@@ -1,0 +1,72 @@
+{{- if .Values.webhookRestart.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-webhook
+  labels:
+    {{- include "cosmotech-asset-investment-planning-api.labels" . | nindent 4 }}
+data:
+  hooks.json: |
+    [
+      {
+        "id": "restart",
+        "execute-command": "/scripts/restart-on-push.sh",
+        "command-working-directory": "/",
+        "response-message": "Restart triggered",
+        "pass-arguments-to-command": [
+          {
+            "source": "entire-payload"
+          }
+        ],
+        "trigger-rule": {
+          "match": {
+            "type": "value",
+            "value": {{ .Values.webhookRestart.authToken | quote }},
+            "parameter": {
+              "source": "header",
+              "name": "Authorization"
+            }
+          }
+        }
+      }
+    ]
+  restart-on-push.sh: |
+    #!/bin/bash
+    set -euo pipefail
+
+    PAYLOAD="${1:-}"
+    if [ -z "${PAYLOAD}" ]; then
+      echo "ERROR: No payload received"
+      exit 1
+    fi
+
+    # Expected image repository and tag from Helm values
+    EXPECTED_REPO={{ .Values.image.repository | quote }}
+    EXPECTED_TAG={{ .Values.image.tag | default .Chart.AppVersion | quote }}
+
+    # Extract the resource URL from Harbor webhook payload
+    # Harbor sends: {"event_data":{"resources":[{"resource_url":"harbor.example.com/project/image:tag"}]}}
+    RESOURCE_URL=$(echo "${PAYLOAD}" | grep -o '"resource_url":"[^"]*"' | head -1 | sed 's/"resource_url":"//;s/"$//')
+
+    if [ -z "${RESOURCE_URL}" ]; then
+      echo "WARNING: Could not extract resource_url from payload, skipping"
+      exit 0
+    fi
+
+    echo "Received push event for: ${RESOURCE_URL}"
+    echo "Expected image: ${EXPECTED_REPO}:${EXPECTED_TAG}"
+
+    # Check if the pushed image matches our expected repository and tag
+    # resource_url format: registry.example.com/project/image:tag
+    if echo "${RESOURCE_URL}" | grep -q "${EXPECTED_REPO}:${EXPECTED_TAG}$" || \
+       echo "${RESOURCE_URL}" | grep -qF "${EXPECTED_REPO}:${EXPECTED_TAG}"; then
+      echo "Image match! Triggering restart..."
+      JOB_NAME="{{ include "cosmotech-asset-investment-planning-api.fullname" . }}-restart-$(date +%s)"
+      kubectl create job "${JOB_NAME}" \
+        --from=cronjob/{{ include "cosmotech-asset-investment-planning-api.fullname" . }}-restart \
+        -n {{ .Release.Namespace }}
+      echo "Job ${JOB_NAME} created successfully"
+    else
+      echo "Image does not match expected ${EXPECTED_REPO}:${EXPECTED_TAG}, ignoring."
+    fi
+{{- end }}

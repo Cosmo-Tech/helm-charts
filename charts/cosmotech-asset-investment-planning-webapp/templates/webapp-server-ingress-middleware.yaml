@@ -1,0 +1,12 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "asset-investment-planning-webapp.server-name" . }}-strip-prefix
+  namespace: {{ .Release.Namespace }}
+spec:
+  stripPrefix:
+    prefixes:
+      - {{ .Values.webapp.publicUrl }}
+    forceSlash: true
+{{- end }}
