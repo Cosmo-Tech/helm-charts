@@ -91,8 +91,11 @@ config:
           identity:
             clientId: "gateway-client-id"
             tenantId: "my-tenant-id"
-          scopes:
-            - "openid"
+        # OpenAPI documents are normalized centrally before Swagger UI consumes them.
+        openApiAggregation:
+          enabled: true
+          # Map each /openapi/... document path to its public Gateway API server URL.
+          serverUrls: {}
         # See https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway-server-webflux/glossary.html
         configuration:
           # Option to fail on route definition errors, defaults to true. Otherwise, a warning is logged.
@@ -112,6 +115,29 @@ config:
                 - Path=/changeme/**
               filters:
                 - RewritePath=/changeme/(?<segment>.*),/$\{segment}
+        # Swagger UI aggregating the OpenAPI descriptions of the services exposed by the gateway.
+        # See https://springdoc.org/#swagger-ui-properties
+        swagger-ui:
+          # Path of the Swagger UI HTML page.
+          path: /swagger-ui.html
+          # Serves the Swagger UI from the gateway root path.
+          useRootPath: true
+          # Reuses the OAuth authorization across aggregated services and page reloads.
+          persistAuthorization: true
+          # Name of the definition selected when the Swagger UI loads.
+          urlsPrimaryName: cosmotech-gateway
+          # One entry per aggregated service. "url" is the gateway path exposing the OpenAPI
+          # description, not the downstream service address.
+          urls:
+            - name: cosmotech-gateway
+              url: /v3/api-docs
+          oauth:
+            # OIDC scopes requested by the Swagger UI, as a comma-separated list.
+            scopes: "openid,email,profile"
+            # Swagger UI runs in the browser, so the Keycloak client must stay public and use PKCE.
+            # clientId defaults to csm.platform.gateway.identityProvider.identity.clientId.
+            useBasicAuthenticationWithAccessCodeGrant: false
+            usePkceWithAuthorizationCodeGrant: true
 
 ingress:
   enabled: false
