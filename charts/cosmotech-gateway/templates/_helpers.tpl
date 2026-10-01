@@ -94,13 +94,18 @@ management:
 {{- end }}
 
 {{/*
-Translate the chart's Spring-agnostic values (csm.platform.gateway.configuration)
-into the Spring Cloud Gateway config format actually read by the deployed app.
+Translate the chart's Spring-agnostic values (csm.platform.gateway.configuration and
+csm.platform.gateway.swagger-ui) into the Spring Cloud Gateway and springdoc config formats
+actually read by the deployed app.
 */}}
 {{- define "cosmotech-gateway.translatedConfig" -}}
-{{- $config := deepCopy .Values.config -}}
-{{- $webflux := dig "csm" "platform" "gateway" "configuration" dict $config -}}
-{{- $_ := unset $config.csm.platform.gateway "configuration" -}}
+{{- $config := deepCopy (.Values.config | default dict) -}}
+{{- $gateway := dig "csm" "platform" "gateway" dict $config -}}
+{{- $webflux := dig "configuration" dict $gateway -}}
+{{- $swaggerUi := dig "swagger-ui" dict $gateway -}}
+{{- $_ := unset $gateway "configuration" -}}
+{{- $_ = unset $gateway "swagger-ui" -}}
 {{- $_ = set $config "spring" (dict "cloud" (dict "gateway" (dict "server" (dict "webflux" $webflux)))) -}}
+{{- $_ = set $config "springdoc" (dict "swagger-ui" $swaggerUi) -}}
 {{- toYaml $config -}}
 {{- end }}
