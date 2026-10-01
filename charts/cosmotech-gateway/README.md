@@ -20,9 +20,19 @@ Cosmo Tech Gateway
 | config.csm.platform.gateway.contextPath | string | `"/"` |  |
 | config.csm.platform.gateway.identityProvider.identity.clientId | string | `"gateway-client-id"` |  |
 | config.csm.platform.gateway.identityProvider.identity.tenantId | string | `"my-tenant-id"` |  |
-| config.csm.platform.gateway.identityProvider.scopes[0] | string | `"openid"` |  |
 | config.csm.platform.gateway.identityProvider.serverBaseUrl | string | `"http://changeme"` |  |
+| config.csm.platform.gateway.openApiAggregation.enabled | bool | `true` |  |
+| config.csm.platform.gateway.openApiAggregation.serverUrls | object | `{}` |  |
 | config.csm.platform.gateway.port | int | `8060` |  |
+| config.csm.platform.gateway.swagger-ui.oauth.scopes | string | `"openid,email,profile"` |  |
+| config.csm.platform.gateway.swagger-ui.oauth.useBasicAuthenticationWithAccessCodeGrant | bool | `false` |  |
+| config.csm.platform.gateway.swagger-ui.oauth.usePkceWithAuthorizationCodeGrant | bool | `true` |  |
+| config.csm.platform.gateway.swagger-ui.path | string | `"/swagger-ui.html"` |  |
+| config.csm.platform.gateway.swagger-ui.persistAuthorization | bool | `true` |  |
+| config.csm.platform.gateway.swagger-ui.urlsPrimaryName | string | `"cosmotech-gateway"` |  |
+| config.csm.platform.gateway.swagger-ui.urls[0].name | string | `"cosmotech-gateway"` |  |
+| config.csm.platform.gateway.swagger-ui.urls[0].url | string | `"/v3/api-docs"` |  |
+| config.csm.platform.gateway.swagger-ui.useRootPath | bool | `true` |  |
 | deploymentStrategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":"50%"},"type":"RollingUpdate"}` | Deployment strategy |
 | deploymentStrategy.rollingUpdate.maxSurge | int | `1` | maximum number of Pods that can be created over the desired number of Pods |
 | deploymentStrategy.rollingUpdate.maxUnavailable | string | `"50%"` | maximum number of Pods that can be unavailable during the update process |

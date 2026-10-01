@@ -161,6 +161,8 @@ config:
       authorization:
         allowed-tenants: []
       api:
+        # -- Relative public server URL in OpenAPI (e.g. /tenant/gateway-api); empty keeps automatic detection.
+        openApiServerUrl: ""
         mcp:
           dashboard-enabled: false
           enabled: false
