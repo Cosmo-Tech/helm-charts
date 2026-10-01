@@ -47,7 +47,7 @@ jobs:
           helm uninstall
           --namespace ${{ vars.CLUSTER_NAMESPACE }}
           --ignore-not-found
-          cosmotech-api-tenant-api-ci
+          cosmotech-run-api-tenant-api-ci
 
       - name: Helm package
         run: >
