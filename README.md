@@ -9,6 +9,9 @@ This repository contains the Cosmo Tech helm charts for deploying various compon
 ## Charts
 
 - [Cosmo Tech API](charts/cosmotech-api)
+- [Cosmo Tech Asset Data Layer API](charts/cosmotech-asset-data-layer-api)
+- [Cosmo Tech Asset Investment Planning API](charts/cosmotech-asset-investment-planning-api)
+- [Cosmo Tech Asset Investment Planning Webapp](charts/cosmotech-asset-investment-planning-webapp)
 - [Cosmo Tech Business Webapp](charts/cosmotech-business-webapp)
 - [Cosmo Tech Copilot API](charts/cosmotech-copilot-api)
 - [Cosmo Tech Modeling API](charts/cosmotech-modeling-api)

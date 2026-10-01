@@ -1,0 +1,19 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+{{- if .Values.webhookRestart.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}-webhook
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.webhookRestart.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Values.name }}-webhook
+{{- end }}

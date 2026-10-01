@@ -1,0 +1,81 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
+
+#
+# Default values for asset-investment-planning-webapp.
+#
+
+# -- prefix of the deployments, ingress and services that will be created
+name: asset-investment-planning-webapp
+
+api:
+  sourceUrl: ""
+  baseUrl: ""
+  scope: ""
+
+keycloak:
+  clientId: ""
+  rolesClaim: ""
+  realm: ""
+
+webapp:
+  # -- domain name to use to host the webapp server (e.g. mytenant.cosmotech.com)
+  domainName: ""
+  # -- URL path to use as root of the webapp (e.g. /cosmotech-webapp/aip)
+  publicUrl: ""
+  server:
+    # -- node selector for webapp server deployment
+    nodeSelector: {}
+    # -- tolerations for webapp server deployment
+    tolerations: []
+    image:
+      # -- name of the secret containing registry credentials to pull private images (e.g. asset-investment-planning-webapp-registry)
+      pullSecret: ""
+      # -- container image to use as webapp server (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-server)
+      repository: ""
+      # -- container image tag
+      tag: latest
+      # -- [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image
+      pullPolicy: Always
+
+ingress:
+  # -- whether to deploy the ingress for the webapp server
+  enabled: true
+
+# -- resources limits for the webapp server pod
+resources:
+  limits:
+    cpu: 1000m
+    memory: 256Mi
+    ephemeral-storage: 2Gi
+  requests:
+    cpu: 200m
+    memory: 128Mi
+    ephemeral-storage: 50Mi
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# Webhook-based restart on image push (Harbor integration)
+webhookRestart:
+  # Enable the webhook receiver that triggers a pod restart when a new image is pushed
+  enabled: false
+  # Secret token that Harbor will send in the Authorization header for authentication
+  # SECURITY WARNING: Pass this via --set at install time, do not commit real tokens
+  authToken: ""
+  # Port for the webhook listener
+  port: 9000
+  harbor:
+    # Harbor API URL (e.g. https://harbor.mycompany.com)
+    url: ""
+    # Harbor project name where the image is stored
+    project: ""
+    # Harbor credentials (user:password base64 encoded, or robot account token)
+    # SECURITY WARNING: Pass this via --set at install time, do not commit real credentials
+    credentials: ""

@@ -1,0 +1,269 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
+# Default values for cosmotech-asset-data-layer-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Number of pod replicas to run
+replicaCount: 1
+
+# Container image configuration
+image:
+  # Container image repository
+  repository: registry.cosmotech.com/product/cosmotech-asset-data-layer-api
+  # Image pull policy (Always, IfNotPresent, Never)
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+# Secrets for pulling images from private registries
+imagePullSecrets: []
+# Override the chart name
+nameOverride: ""
+# Override the full release name
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# Annotations to add to the pod
+podAnnotations: {}
+
+# Security context for the pod
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# Security context for the container
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Kubernetes service configuration
+service:
+  # Service type (ClusterIP, NodePort, LoadBalancer)
+  type: ClusterIP
+  # Service port
+  port: 8080
+
+# Ingress configuration for external access
+ingress:
+  # Enable ingress resource creation
+  enabled: false
+  # Ingress class name (e.g., nginx, traefik)
+  className: ""
+  # Path type for routing
+  pathType: ImplementationSpecific
+  # NOTE:
+  # This chart uses `pathType: ImplementationSpecific` by default.
+  # The exact path matching behavior depends on the Ingress controller
+  # (e.g. nginx, traefik). This allows flexible routing and regex support
+  # but may behave differently across controllers.
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+        # Path on which the application will be exposed.
+        # WARNING:
+        # When using "/", make sure no other Ingress in the cluster is already using
+        # the same host and root path combination.
+        # Ingress controllers (e.g. nginx) will reject the deployment if the host/path
+        # pair is already defined by another Ingress resource.
+        # Example error:
+        # admission webhook "validate.nginx.ingress.kubernetes.io" denied the request:
+        # host "chart-example.local" and path "/" is already defined in another Ingress.
+        #
+        # If a conflict exists, consider using a sub-path such as "/api".
+  # Annotations for the ingress resource
+  annotations:
+    kubernetes.io/ingress.class: traefik
+  # TLS/SSL configuration
+  tls:
+    # Enable TLS for ingress
+    enabled: false
+    # Name of the secret containing TLS certificate
+    secretName: ""
+    # Hosts covered by the TLS certificate
+    hosts:
+      - chart-example.local
+
+# Resources requests and limits for the container
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+    ephemeral-storage: 2Gi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+    ephemeral-storage: 50Mi
+
+
+  # Core application settings (Required)
+apiConfig:
+  # The base URL for the application.
+  rootUri: "/"
+  # Filesystem path used by the application to store data
+  # NOTE:
+  # The path "/data" is mounted by default as a volume by this chart.
+  # It is strongly recommended to keep DATA_DIR set to "/data!!!"
+  dataDir: "/data"
+  # CORS configuration for the API, list all origins that should be allowed
+  corsOrigin: []
+
+extraEnvVars: []
+  # Additional custom environment variables (Optional)
+  # extraEnvVars:
+  #   - name: LOG_LEVEL
+  #     value: "debug"
+
+# Horizontal Pod Autoscaler configuration
+autoscaling:
+  # Enable autoscaling
+  enabled: false
+  # Minimum number of replicas
+  minReplicas: 1
+  # Maximum number of replicas
+  maxReplicas: 100
+  # Target CPU utilization percentage
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Node selector for pod assignment
+nodeSelector: {}
+
+# Tolerations for pod assignment
+tolerations: []
+
+# Affinity rules for pod assignment
+affinity: {}
+
+# Persistent volume configuration
+persistence:
+  # Enable persistent volume
+  enabled: true
+  # Size of the persistent volume
+  size: 4Gi
+  # Storage class name (leave empty for default)
+  storageClass: ""
+  # Use an existing persistent volume claim
+  existingClaim: ""
+# PostgreSQL database configuration
+postgres:
+  # Enable or disable PostgreSQL connection
+  enabled: false
+  # PostgreSQL host URL
+  host: "postgresql.host.url"
+  # PostgreSQL port
+  port: 5432
+  # Database name
+  database: "mydatabase"
+  # Database schema
+  schema: "public"
+  # Database username
+  username: "psql"
+  # Database password
+  # SECURITY WARNING:
+  # - Do NOT store real passwords directly in this values.yaml file if it is committed to version control.
+  # - Instead, prefer one of the following secure approaches:
+  #     1. Pass the password via --set or --set-string at helm install/upgrade time, e.g.:
+  #        helm install my-release . --set postgres.password="$POSTGRES_PASSWORD"
+  #     2. Use a separate values file (e.g. secrets.yaml) that is .gitignore'd, and provide it with -f secrets.yaml.
+  #     3. Use an external secret management solution (as described in POSTGRESQL_CONFIG.md) and map the secret into the pod.
+  #     4. Use Helm secrets plugins (such as helm-secrets) to encrypt sensitive values.
+  # The password value will be stored in a Kubernetes Secret and mounted in the container
+  # at /app/secrets/postgres-password; this field should be treated as sensitive input.
+  password: "CHANGEME"
+
+# Keycloak authentication configuration
+keycloak:
+  # Keycloak realm URL used for authentication
+  realm: "http://keycloak.host.url/realms/myrealm"
+  # Keycloak client id used by the API
+  clientId: "asset-data-layer"
+
+# Cosmo Tech generic API configuration (Required)
+# The API authenticates against the Cosmo Tech generic API using a dedicated
+# confidential client (client credentials flow).
+csmApi:
+  # Base URL of the Cosmo Tech generic API
+  url: "http://cosmotech-api.host.url:8080"
+  # OAuth2 scope requested when authenticating against the Cosmo Tech API
+  scope: "http://dev.api.cosmotech.com/.default"
+  # Client id of the dedicated confidential client used by the API
+  clientId: "asset-data-layer-api"
+  # Client secret of the dedicated confidential client
+  # SECURITY WARNING:
+  # - Do NOT store real secrets directly in this values.yaml file if it is committed to version control.
+  # - Prefer passing it via --set/--set-string at install time or an external secret management solution.
+  # The client secret is stored in a Kubernetes Secret and mounted in the container
+  # at /app/secrets/csm-api-client-secret; this field should be treated as sensitive input.
+  clientSecret: "CHANGEME"
+
+# SeaweedFS / S3-compatible object storage configuration
+seaweedfs:
+  # Enable or disable SeaweedFS/S3 object storage
+  enabled: false
+  # S3 endpoint URL
+  endpointUrl: "http://seaweedfs.host.url:8333"
+  # S3 access key (not sensitive, rendered in the ConfigMap)
+  accessKey: "S3_ACCESS_KEY"
+  # S3 secret key
+  # SECURITY WARNING:
+  # - Do NOT store real secret keys directly in this values.yaml file if it is committed to version control.
+  # - Prefer passing it via --set/--set-string at install time or an external secret management solution.
+  # The secret key is stored in a Kubernetes Secret and mounted in the container
+  # at /app/secrets/seaweedfs-secret-key; this field should be treated as sensitive input.
+  secretKey: "CHANGEME"
+  # S3 bucket name
+  bucket: "asset-data-layer"
+  # S3 region
+  region: "us-east-1"
+
+# Usage tracking configuration
+usage:
+  # Enable or disable usage tracking
+  enabled: true
+
+# Local storage configuration
+localStorage:
+  # Filesystem path used for local storage
+  path: "/data/local_storage"
+
+# Database management settings
+database:
+  # Reset database on startup (use with caution)
+  reset: false
+
+# Alembic database migration settings
+alembic:
+  # Location of Alembic migration scripts
+  script_location: "cosmotech/asset_data_layer/migrations"
+
+# Webhook-based restart on image push (Harbor integration)
+webhookRestart:
+  # Enable the webhook receiver that triggers a pod restart when a new image is pushed
+  enabled: false
+  # Secret token that Harbor will send in the Authorization header for authentication
+  # SECURITY WARNING: Pass this via --set at install time, do not commit real tokens
+  authToken: ""
+  # Port for the webhook listener
+  port: 9000
+  harbor:
+    # Harbor API URL (e.g. https://harbor.mycompany.com)
+    url: ""
+    # Harbor project name where the image is stored
+    project: ""
+    # Harbor credentials (user:password base64 encoded, or robot account token)
+    # SECURITY WARNING: Pass this via --set at install time, do not commit real credentials
+    credentials: ""

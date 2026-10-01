@@ -1,0 +1,23 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+{{- if .Values.webhookRestart.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cosmotech-asset-data-layer-api.fullname" . }}-webhook
+  labels:
+    app.kubernetes.io/name: {{ include "cosmotech-asset-data-layer-api.fullname" . }}-webhook
+    app.kubernetes.io/component: webhook
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.webhookRestart.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "cosmotech-asset-data-layer-api.fullname" . }}-webhook
+    app.kubernetes.io/component: webhook
+{{- end }}

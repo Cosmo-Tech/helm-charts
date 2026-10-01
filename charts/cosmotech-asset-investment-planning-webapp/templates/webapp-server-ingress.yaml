@@ -1,0 +1,34 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    email: platform@cosmotech.com
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ include "asset-investment-planning-webapp.server-name" . }}-strip-prefix@kubernetescrd
+  name: {{ include "asset-investment-planning-webapp.server-name" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: {{ .Values.webapp.domainName }}
+    http:
+      paths:
+      - path: {{ .Values.webapp.publicUrl }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "asset-investment-planning-webapp.server-name" . }}
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - {{ .Values.webapp.domainName }}
+    secretName: letsencrypt-prod
+{{- end }}

@@ -1,0 +1,29 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "cosmotech-asset-data-layer-api.fullname" . }}-test-connection"
+  labels:
+    {{- include "cosmotech-asset-data-layer-api.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  automountServiceAccountToken: false
+  containers:
+    - name: wget
+      image: busybox:1.38
+      command: ['wget']
+      args: ['{{ include "cosmotech-asset-data-layer-api.fullname" . }}:{{ .Values.service.port }}']
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 20Mi
+          ephemeral-storage: 100Mi
+        requests:
+          cpu: 100m
+          memory: 10Mi
+          ephemeral-storage: 50Mi
+  restartPolicy: Never

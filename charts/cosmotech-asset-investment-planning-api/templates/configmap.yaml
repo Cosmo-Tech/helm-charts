@@ -1,0 +1,29 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-config
+  labels:
+    {{- include "cosmotech-asset-investment-planning-api.labels" . | nindent 4 }}
+data:
+  config.toml: |
+    [postgres]
+    enabled = {{ .Values.postgres.enabled | toString | lower | quote }}
+    host = {{ .Values.postgres.host | quote }}
+    port = {{ .Values.postgres.port }}
+    database = {{ .Values.postgres.database | quote }}
+    schema = {{ .Values.postgres.schema | quote }}
+    username = {{ .Values.postgres.username | quote }}
+    # Note: The Postgres password is intentionally not rendered in this ConfigMap.
+    # It is provided via a Kubernetes Secret and mounted as a file at runtime.
+    [database]
+    reset = {{ .Values.database.reset | toString | lower | quote }}
+
+    [alembic]
+    script_location = {{ .Values.alembic.script_location | quote }}
+
+    [cors]
+    origins = ["{{ .Values.apiConfig.corsOrigin | join "\", \"" }}"]

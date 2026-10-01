@@ -1,0 +1,19 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cosmotech-asset-data-layer-api.fullname" . }}
+  labels:
+    {{- include "cosmotech-asset-data-layer-api.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "cosmotech-asset-data-layer-api.selectorLabels" . | nindent 4 }}

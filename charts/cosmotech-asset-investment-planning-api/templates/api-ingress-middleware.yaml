@@ -1,0 +1,20 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+{{- if .Values.ingress.enabled -}}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-strip-prefix
+  namespace: {{ .Release.Namespace }}
+spec:
+  stripPrefix:
+    prefixes:
+    {{- range .Values.ingress.hosts }}
+      {{- range .paths }}
+        - {{ .path }}
+      {{- end }}
+    {{- end }}
+    forceSlash: true
+{{- end }}

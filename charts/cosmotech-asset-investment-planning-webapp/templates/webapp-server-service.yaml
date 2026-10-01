@@ -1,0 +1,17 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "asset-investment-planning-webapp.server-name" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    cosmotech.com/service: {{ include "asset-investment-planning-webapp.server-name" . }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 3000

@@ -1,0 +1,17 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cosmotech-asset-investment-planning-api.fullname" . }}-restart
+  labels:
+    {{- include "cosmotech-asset-investment-planning-api.labels" . | nindent 4 }}
+data:
+  restart.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    trap 'echo "Error restarting!"' ERR
+    kubectl rollout restart deployment {{ .Release.Name }} -n {{ .Release.Namespace }}
+    kubectl rollout status deployment {{ .Release.Name }} -n {{ .Release.Namespace }}
