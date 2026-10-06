@@ -159,9 +159,6 @@ api:
 server:
   servlet:
     context-path: {{ include "cosmotech-api.contextPath" . }}
-  undertow:
-    accesslog:
-      enabled: false
 
 management:
   endpoint:
