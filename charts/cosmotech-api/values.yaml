@@ -93,6 +93,11 @@ api:
     fileName: ""
     type: "pem"
     jksPassword: ""
+  # https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/reference/html/howto-embedded-web-servers.html#how-to-enable-http-response-compression
+  compression:
+    enabled: true
+    minResponseSize: 1MB
+    mimeTypes: "application/octet-stream,text/csv,text/plain,application/json"
 
 ingress:
   enabled: false

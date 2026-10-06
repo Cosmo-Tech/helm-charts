@@ -159,6 +159,10 @@ api:
 server:
   servlet:
     context-path: {{ include "cosmotech-api.contextPath" . }}
+  compression:
+    enabled: {{ .Values.api.compression.enabled }}
+    min-response-size: {{ .Values.api.compression.minResponseSize }}
+    mime-types: {{ .Values.api.compression.mimeTypes }}
 
 management:
   endpoint:
