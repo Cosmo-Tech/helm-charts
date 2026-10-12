@@ -1,0 +1,65 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "kubernetes-workload-scaler.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "kubernetes-workload-scaler.fullname" . }}
+rules:
+  - apiGroups: [""]
+    resources:
+      - "pods"
+    verbs: ["get", "list", "watch", "delete"]
+
+  - apiGroups: [""]
+    resources:
+      - "namespaces"
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: [""]
+    resources:
+      - "configmaps"
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+
+  - apiGroups: ["apps"]
+    resources:
+      - "statefulsets"
+      - "statefulsets/scale"
+      - "deployments"
+      - "deployments/scale"
+    verbs: ["get", "list", "watch", "patch", "update"]
+
+  - apiGroups: ["postgresql.cnpg.io"]
+    resources:
+      - "clusters"
+    verbs: ["get", "list", "watch"]
+
+  - apiGroups: ["batch"]
+    resources:
+      - "jobs"
+      - "jobs/status"
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "kubernetes-workload-scaler.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kubernetes-workload-scaler.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "kubernetes-workload-scaler.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
