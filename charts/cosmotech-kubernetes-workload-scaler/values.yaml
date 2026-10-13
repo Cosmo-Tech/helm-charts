@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
+
+# Override the chart name
+nameOverride: ""
+fullnameOverride: ""
+
+# Customize workload
+workload:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+      ephemeral-storage: 50Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+      ephemeral-storage: 2Gi
+  image:
+    repository: registry.cosmotech.com/product/cosmotech-kubernetes-workload-scaler
+    pullPolicy: IfNotPresent
+    tag: ""
+    pullSecrets: []
+
+# Configure cronjob behaviors
+config:
+  cronjob:
+    scaleDown: "0 21 * * 1-5"
+    scaleUp: "0 07 * * 1-5"
+    successfulJobsHistoryLimit: 10
+    failedJobsHistoryLimit: 10
+  cache:
+    configmapNamespace: "default"
+    configmapName: "kws-cache"

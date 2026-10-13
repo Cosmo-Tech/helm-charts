@@ -1,0 +1,54 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}-up
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: "{{ required "config.cronjob.scaleUp" .Values.config.cronjob.scaleUp }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ .Values.config.cronjob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.config.cronjob.failedJobsHistoryLimit }}
+  startingDeadlineSeconds: 60
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}
+          restartPolicy: Never
+          containers:
+            - name: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}
+              image: "{{ .Values.workload.image.repository }}:{{ .Values.workload.image.tag }}"
+              imagePullPolicy: {{ .Values.workload.image.pullPolicy }}
+              env:
+                - name: KWS_CONFIGMAP_NAMESPACE
+                  value: {{ .Values.config.cache.configmapNamespace }}
+                - name: KWS_CONFIGMAP_NAME
+                  value: {{ .Values.config.cache.configmapName }}
+              resources:
+                {{- toYaml .Values.workload.resources | nindent 16 }}
+              command: ["/app/kws", "--up"]
+
+          {{- with .Values.workload.image.pullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.workload.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.workload.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.workload.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
