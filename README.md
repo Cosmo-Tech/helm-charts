@@ -14,6 +14,7 @@ This repository contains the Cosmo Tech helm charts for deploying various compon
 - [Cosmo Tech Asset Investment Planning Webapp](charts/cosmotech-asset-investment-planning-webapp)
 - [Cosmo Tech Business Webapp](charts/cosmotech-business-webapp)
 - [Cosmo Tech Copilot API](charts/cosmotech-copilot-api)
+- [Cosmo Tech Kubernetes workload scaler](charts/cosmotech-kubernetes-workload-scaler)
 - [Cosmo Tech Modeling API](charts/cosmotech-modeling-api)
 
 ## Installation

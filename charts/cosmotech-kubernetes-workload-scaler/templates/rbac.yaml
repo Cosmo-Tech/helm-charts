@@ -6,14 +6,14 @@ SPDX-License-Identifier: MIT
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "kubernetes-workload-scaler.fullname" . }}
+  name: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}
   namespace: {{ .Release.Namespace }}
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "kubernetes-workload-scaler.fullname" . }}
+  name: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}
 rules:
   - apiGroups: [""]
     resources:
@@ -54,12 +54,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "kubernetes-workload-scaler.fullname" . }}
+  name: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "kubernetes-workload-scaler.fullname" . }}
+    name: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ include "kubernetes-workload-scaler.fullname" . }}
+  name: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}
   apiGroup: rbac.authorization.k8s.io

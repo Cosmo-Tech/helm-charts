@@ -1,8 +1,8 @@
-# kubernetes-workload-scaler
+# cosmotech-kubernetes-workload-scaler
 
-![Version: 0.0.0](https://img.shields.io/badge/Version-0.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.6](https://img.shields.io/badge/AppVersion-0.0.6-informational?style=flat-square)
+![Version: 0.0.0](https://img.shields.io/badge/Version-0.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.7](https://img.shields.io/badge/AppVersion-0.0.7-informational?style=flat-square)
 
-A Helm chart for Kubernetes workload scaler
+A Helm chart for Cosmo Tech Kubernetes workload scaler
 
 ## Values
 
@@ -19,8 +19,8 @@ A Helm chart for Kubernetes workload scaler
 | workload.affinity | object | `{}` |  |
 | workload.image.pullPolicy | string | `"IfNotPresent"` |  |
 | workload.image.pullSecrets | list | `[]` |  |
-| workload.image.repository | string | `"registry.cosmotech.com/product/kubernetes-workload-scaler"` |  |
-| workload.image.tag | string | `"latest"` |  |
+| workload.image.repository | string | `"registry.cosmotech.com/product/cosmotech-kubernetes-workload-scaler"` |  |
+| workload.image.tag | string | `""` |  |
 | workload.nodeSelector | object | `{}` |  |
 | workload.resources.limits.cpu | string | `"100m"` |  |
 | workload.resources.limits.ephemeral-storage | string | `"2Gi"` |  |

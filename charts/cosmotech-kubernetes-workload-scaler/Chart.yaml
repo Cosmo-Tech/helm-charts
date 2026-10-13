@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 apiVersion: v2
-name: kubernetes-workload-scaler
-description: A Helm chart for Kubernetes workload scaler
+name: cosmotech-kubernetes-workload-scaler
+description: A Helm chart for Cosmo Tech Kubernetes workload scaler
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -24,4 +24,4 @@ version: 0.0.0
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "0.0.6"
+appVersion: "0.0.7"

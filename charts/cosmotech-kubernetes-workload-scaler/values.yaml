@@ -20,9 +20,9 @@ workload:
       memory: 128Mi
       ephemeral-storage: 2Gi
   image:
-    repository: registry.cosmotech.com/product/kubernetes-workload-scaler
+    repository: registry.cosmotech.com/product/cosmotech-kubernetes-workload-scaler
     pullPolicy: IfNotPresent
-    tag: "latest"
+    tag: ""
     pullSecrets: []
 
 # Configure cronjob behaviors

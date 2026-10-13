@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "kubernetes-workload-scaler.fullname" . }}-scale-down
+  name: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}-down
   namespace: {{ .Release.Namespace }}
 spec:
   schedule: "{{ required "config.cronjob.scaleDown" .Values.config.cronjob.scaleDown }}"
@@ -18,10 +18,10 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: {{ include "kubernetes-workload-scaler.fullname" . }}
+          serviceAccountName: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}
           restartPolicy: Never
           containers:
-            - name: {{ include "kubernetes-workload-scaler.fullname" . }}
+            - name: {{ include "cosmotech-kubernetes-workload-scaler.fullname" . }}
               image: "{{ .Values.workload.image.repository }}:{{ .Values.workload.image.tag }}"
               imagePullPolicy: {{ .Values.workload.image.pullPolicy }}
               env:
