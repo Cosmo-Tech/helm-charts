@@ -167,9 +167,14 @@ config:
         allowed-tenants: []
       api:
         mcp:
+          # Enable /mcp-ui dashboards
           dashboard-enabled: false
+          # Enable MCP endpoints generation
           enabled: false
+          # Exclude specific paths to MCP endpoints generation
           paths-to-exclude: "/path-to-exclude-1,/path-to-exclude-2,/path-to-exclude-3"
+          # Enable "Human in the loop" mechanism for mutating mcp endpoints
+          required-approval: true
       identityProvider:
         authorizationUrl: "changeme"
         tokenUrl: "changeme"
