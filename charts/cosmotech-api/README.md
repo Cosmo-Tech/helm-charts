@@ -772,6 +772,7 @@ This markdown guide provides a comprehensive walkthrough for deploying the Cosmo
 | api.probes.readiness.timeoutSeconds | int | `10` |  |
 | api.probes.startup.failureThreshold | int | `50` |  |
 | api.probes.startup.initialDelaySeconds | int | `60` |  |
+| api.security.debug | bool | `false` |  |
 | api.serviceMonitor.additionalLabels | object | `{}` |  |
 | api.serviceMonitor.enabled | bool | `true` |  |
 | api.serviceMonitor.namespace | string | `""` |  |
