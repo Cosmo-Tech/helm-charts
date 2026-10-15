@@ -62,6 +62,9 @@ networkPolicy:
   enabled: true
 
 api:
+  security:
+    # Enable Spring security debugging mode
+    debug: false
   # A Cosmo Tech Helm Release (e.g., latest, vX) is linked to an API Version;
   # so it must define its own path rules here.
   # This corresponds to the path under which this service is exposed, if behind a reverse proxy or

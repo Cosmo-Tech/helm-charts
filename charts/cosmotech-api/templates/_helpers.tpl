@@ -119,6 +119,8 @@ Location of the persistence data
 
 {{- define "cosmotech-api.baseConfig" -}}
 spring:
+  security:
+    debug: {{ default false .Values.api.security.debug }}
   application:
     name: {{ include "cosmotech-api.fullname" . }}
   output:
