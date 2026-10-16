@@ -24,6 +24,5 @@ spec:
   selector:
     matchLabels:
       owner: csm-platform
-      app.kubernetes.io/name: cosmotech-api
-      app.kubernetes.io/instance: {{ include "cosmotech-api.fullname" . }}
+      {{- include "cosmotech-api.selectorLabels" . | nindent 6 }}
 {{- end }}
