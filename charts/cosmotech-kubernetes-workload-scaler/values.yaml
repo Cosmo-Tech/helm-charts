@@ -32,6 +32,7 @@ config:
     scaleUp: "0 07 * * 1-5"
     successfulJobsHistoryLimit: 10
     failedJobsHistoryLimit: 10
+    timeZone: "Europe/Paris"
   cache:
     configmapNamespace: "default"
     configmapName: "kws-cache"
