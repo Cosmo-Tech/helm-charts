@@ -9,7 +9,7 @@ image:
   # -- Image repository
   repository: registry.cosmotech.com/product/cosmotech-modeling-api
   # -- Image tag
-  tag: "12.3.0"
+  tag: "12.4.0"
   # -- Image pull policy
   pullPolicy: Always
   credentials:
