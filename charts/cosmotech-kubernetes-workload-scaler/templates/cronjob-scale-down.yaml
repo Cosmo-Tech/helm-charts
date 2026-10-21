@@ -14,6 +14,7 @@ spec:
   successfulJobsHistoryLimit: {{ .Values.config.cronjob.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.config.cronjob.failedJobsHistoryLimit }}
   startingDeadlineSeconds: 60
+  timeZone: {{ .Values.config.cronjob.timeZone }}
   jobTemplate:
     spec:
       template:
