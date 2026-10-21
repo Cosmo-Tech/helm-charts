@@ -463,6 +463,16 @@ entries:
   cosmotech-kubernetes-workload-scaler:
   - apiVersion: v2
     appVersion: 0.0.7
+    created: "2026-10-21T09:48:24.913148249Z"
+    description: A Helm chart for Cosmo Tech Kubernetes workload scaler
+    digest: 1afe2bf0c0b312e63698401ce7d8b8aabf360f004a88f9a629c3d2fd84d483c9
+    name: cosmotech-kubernetes-workload-scaler
+    type: application
+    urls:
+    - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-kubernetes-workload-scaler-0.0.1/cosmotech-kubernetes-workload-scaler-0.0.1.tgz
+    version: 0.0.1
+  - apiVersion: v2
+    appVersion: 0.0.7
     created: "2026-10-13T09:43:39.975393142Z"
     description: A Helm chart for Cosmo Tech Kubernetes workload scaler
     digest: 727393c2ca2d4b76cafd88e09557a3a8d8383ccebe41fdd4106a5452d47f5e63
@@ -544,4 +554,4 @@ entries:
     urls:
     - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-modeling-api-0.1.0/cosmotech-modeling-api-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-19T13:50:58.564048374Z"
+generated: "2026-10-21T09:48:24.913417036Z"
