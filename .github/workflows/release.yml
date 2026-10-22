@@ -18,6 +18,7 @@ on:
           - cosmotech-copilot-api
           - cosmotech-kubernetes-workload-scaler
           - cosmotech-modeling-api
+          - cosmotech-kubernetes-backup
 
 jobs:
   release:
