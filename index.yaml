@@ -408,6 +408,18 @@ entries:
     version: 0.0.1
   cosmotech-business-webapp:
   - apiVersion: v2
+    created: "2026-10-28T10:57:38.106961876Z"
+    description: Cosmo Tech Business Web Application
+    digest: bb251548a4705c30fcab99b95ace90f086cdee0ba4964fd670be90d0d175be00
+    home: https://cosmotech.com
+    name: cosmotech-business-webapp
+    sources:
+    - https://github.com/Cosmo-Tech/azure-sample-webapp
+    type: application
+    urls:
+    - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-business-webapp-0.4.0/cosmotech-business-webapp-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
     created: "2026-06-05T07:49:50.778431133Z"
     description: Cosmo Tech Business Web Application
     digest: b97c334ddbe8c545a4aaf470058eb18849399d7b76d82888ddcf1573354ff92e
@@ -564,4 +576,4 @@ entries:
     urls:
     - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-modeling-api-0.1.0/cosmotech-modeling-api-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-21T12:15:02.605809472Z"
+generated: "2026-10-28T10:57:38.107346706Z"
