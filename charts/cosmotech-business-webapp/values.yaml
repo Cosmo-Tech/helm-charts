@@ -13,6 +13,31 @@ webapp:
   domainName: ""
   # -- URL path to use as root of the webapp (e.g. /cosmotech-webapp/brewery)
   publicUrl: ""
+  # -- Configuration environment variables of the webapp
+  # e.g:
+  # globalConfiguration:
+  #   APP_REGISTRATION_CLIENT_ID: ""
+  #   AUTH_KEYCLOAK_CLIENT_ID: cosmotech-client-webapp
+  #   AUTH_KEYCLOAK_REALM: https://mytenantplatform.platform.cosmotech.com/keycloak/realms/mytenant
+  #   AUTH_KEYCLOAK_ROLES_JWT_CLAIM: userRoles
+  #   AZURE_TENANT_ID: ""
+  #   COSMOTECH_API_SCOPE: https://mytenantplatform.platform.cosmotech.com/platform
+  #   DEFAULT_BASE_PATH: https://mytenantplatform.platform.cosmotech.com/mytenant/api
+  #   RUN_API_URL: https://mytenantplatform/mytenant/api
+  #   ADL_API_URL: https://mytenantplatform/mytenant/asset
+  #   ORGANIZATION_ID: o-xxxxxxxxxxx
+  #   PUBLIC_URL: /mytenant/webapp
+  #   WORKSPACES_IDS_FILTER: null
+  globalConfiguration: {}
+  # -- CSP to set on the webapp
+  # e.g:
+  # contentSecurityPolicy:
+  #   connect-src:
+  #     - '*.mytenantplatform.platform.cosmotech.com'
+  #     - https://mytenantplatform.platform.cosmotech.com
+  #   frame-src:
+  #     - https://superset-mytenantplatform.platform.cosmotech.com
+  contentSecurityPolicy: {}
   server:
     # -- node selector for webapp server deployment
     nodeSelector: {}

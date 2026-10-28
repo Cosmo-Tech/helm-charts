@@ -1,0 +1,22 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cosmotech-business-webapp.server-name" . }}-configmap-config
+  namespace: {{ .Release.Namespace }}
+data:
+  AssetCopyMapping.json: |-
+    [
+        { "src": "favicon.ico", "dst": "favicon.ico" },
+        { "src": "cosmotech_dark_logo.png", "dst": "theme/cosmotech_dark_logo.png" },
+        { "src": "cosmotech_light_logo.png", "dst": "theme/cosmotech_light_logo.png" },
+        { "src": "authDark.png", "dst": "theme/authDark.png" },
+        { "src": "authLight.png", "dst": "theme/authLight.png" }
+    ]
+  ContentSecurityPolicy.json: |-
+{{- .Values.webapp.contentSecurityPolicy | toPrettyJson | nindent 4 }}
+  GlobalConfiguration.json: |-
+{{- .Values.webapp.globalConfiguration | toPrettyJson | nindent 4 }}

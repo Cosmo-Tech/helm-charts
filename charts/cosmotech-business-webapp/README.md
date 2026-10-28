@@ -1,6 +1,6 @@
 # cosmotech-business-webapp
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 Cosmo Tech Business Web Application
 
@@ -39,6 +39,7 @@ Cosmo Tech Business Web Application
 | superset.apiUrl | string | `""` | URL of the Superset instance API. This is required to fetch guest tokens, when Superset dashboards are embedded in the webapp. (e.g. http://superset-web.mytenant.svc.cluster.local/api/v1) |
 | superset.superuser.password | string | `""` | Superset user password to use as credentials when calling superset /login endpoint, in order to generate guest tokens for Superset |
 | superset.superuser.username | string | `""` | Superset user name to use as credentials when calling superset /login endpoint, in order to generate guest tokens for Superset |
+| webapp.contentSecurityPolicy | object | `{}` | CSP to set on the webapp e.g: contentSecurityPolicy:   connect-src:     - '*.mytenantplatform.platform.cosmotech.com'     - https://mytenantplatform.platform.cosmotech.com   frame-src:     - https://superset-mytenantplatform.platform.cosmotech.com |
 | webapp.domainName | string | `""` | domain name to use to host the webapp server (e.g. mytenant.cosmotech.com) |
 | webapp.functions.image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image |
 | webapp.functions.image.pullSecret | string | `""` | name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry) |
@@ -46,6 +47,7 @@ Cosmo Tech Business Web Application
 | webapp.functions.image.tag | string | `""` | container image tag |
 | webapp.functions.nodeSelector | object | `{}` | node selector for webapp functions deployment |
 | webapp.functions.tolerations | list | `[]` | tolerations for webapp functions deployment |
+| webapp.globalConfiguration | object | `{}` | Configuration environment variables of the webapp e.g: globalConfiguration:   APP_REGISTRATION_CLIENT_ID: ""   AUTH_KEYCLOAK_CLIENT_ID: cosmotech-client-webapp   AUTH_KEYCLOAK_REALM: https://mytenantplatform.platform.cosmotech.com/keycloak/realms/mytenant   AUTH_KEYCLOAK_ROLES_JWT_CLAIM: userRoles   AZURE_TENANT_ID: ""   COSMOTECH_API_SCOPE: https://mytenantplatform.platform.cosmotech.com/platform   DEFAULT_BASE_PATH: https://mytenantplatform.platform.cosmotech.com/mytenant/api   ORGANIZATION_ID: o-xxxxxxxxxxx   PUBLIC_URL: /mytenant/webapp   WORKSPACES_IDS_FILTER: null |
 | webapp.publicUrl | string | `""` | URL path to use as root of the webapp (e.g. /cosmotech-webapp/brewery) |
 | webapp.server.image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image |
 | webapp.server.image.pullSecret | string | `""` | name of the secret containing registry credentials to pull private images (e.g. cosmotech-business-webapp-brewery-registry) |
