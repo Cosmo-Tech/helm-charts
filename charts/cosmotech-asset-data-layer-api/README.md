@@ -26,7 +26,7 @@ A Helm chart for the Cosmo Tech Asset Data Layer API
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"registry.cosmotech.com/product/cosmotech-asset-data-layer-api"` |  |
-| image.tag | string | `"latest"` |  |
+| image.tag | string | `"0.2.0-rc1"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations."kubernetes.io/ingress.class" | string | `"traefik"` |  |
 | ingress.className | string | `""` |  |

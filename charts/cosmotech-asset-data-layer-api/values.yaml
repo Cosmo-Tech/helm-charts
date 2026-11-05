@@ -14,7 +14,7 @@ image:
   # Image pull policy (Always, IfNotPresent, Never)
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
+  tag: 0.2.0-rc1
 
 # Secrets for pulling images from private registries
 imagePullSecrets: []

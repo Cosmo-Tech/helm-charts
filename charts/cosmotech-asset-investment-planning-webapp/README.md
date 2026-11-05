@@ -1,7 +1,7 @@
 
 # asset-investment-planning-webapp
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.0-dev](https://img.shields.io/badge/AppVersion-0.2.0--dev-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.1](https://img.shields.io/badge/AppVersion-1.0.1-informational?style=flat-square)
 
 Cosmo Tech Asset Investment Planning Web Application
 
@@ -32,8 +32,8 @@ Cosmo Tech Asset Investment Planning Web Application
 | webapp.publicUrl | string | `""` | URL path to use as root of the webapp (e.g. /cosmotech-webapp/aip) |
 | webapp.server.image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) to pull the image |
 | webapp.server.image.pullSecret | string | `""` | name of the secret containing registry credentials to pull private images (e.g. asset-investment-planning-webapp-registry) |
-| webapp.server.image.repository | string | `""` | container image to use as webapp server (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-server) |
-| webapp.server.image.tag | string | `"latest"` | container image tag |
+| webapp.server.image.repository | string | `"registry.cosmotech.com/product/cosmotech-asset-investment-planning-webapp"` | container image to use as webapp server (e.g. ghcr.io/cosmo-tech/azure-sample-webapp/webapp-server) |
+| webapp.server.image.tag | string | `"1.0.1"` | container image tag |
 | webapp.server.nodeSelector | object | `{}` | node selector for webapp server deployment |
 | webapp.server.tolerations | list | `[]` | tolerations for webapp server deployment |
 | webhookRestart.authToken | string | `""` |  |
