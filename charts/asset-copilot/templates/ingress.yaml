@@ -1,0 +1,40 @@
+{{- /*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/ -}}
+{{- if .Values.ingress.enabled }}
+{{- $host := required "ingress.host is required when ingress is enabled" .Values.ingress.host }}
+{{- $path := trimSuffix "/" .Values.ingress.path }}
+{{- if ne (trimSuffix "/" .Values.config.CHAT_PUBLIC_URL) (printf "https://%s%s" $host $path) }}
+{{- fail "CHAT_PUBLIC_URL must match https://ingress.host plus ingress.path" }}
+{{- end }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "asset-copilot.fullname" . }}
+  labels:
+    {{- include "asset-copilot.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.ingress.className }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
+  tls:
+    - hosts:
+        - {{ $host | quote }}
+      secretName: {{ required "ingress.tlsSecretName is required when ingress is enabled" .Values.ingress.tlsSecretName | quote }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path | quote }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "asset-copilot.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+{{- end }}
