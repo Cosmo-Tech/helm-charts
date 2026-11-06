@@ -8,6 +8,7 @@ This repository contains the Cosmo Tech helm charts for deploying various compon
 
 ## Charts
 
+- [Asset AI Copilot](charts/asset-copilot)
 - [Cosmo Tech API](charts/cosmotech-api)
 - [Cosmo Tech Asset Data Layer API](charts/cosmotech-asset-data-layer-api)
 - [Cosmo Tech Asset Investment Planning API](charts/cosmotech-asset-investment-planning-api)
