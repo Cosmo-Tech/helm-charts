@@ -1,0 +1,170 @@
+{{- /*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/ -}}
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+Edit this README's source in `README.md.gotmpl`, then regenerate from the
+repository root with `helm-docs --chart-search-root charts/ --skip-version-footer`.
+
+Single-instance pilot of the existing AgentOS backend. This does not deploy the
+frontend, Keycloak, model services or either MCP server. It does not implement
+the PostgreSQL/shared-session architecture or the US0 business audit trail.
+
+## Values and prerequisites
+
+The defaults in [values.yaml](values.yaml) are placeholders, not a configured
+production environment. Set environment-specific overrides before installing:
+
+| Value | Purpose |
+| --- | --- |
+| `image.repository`, `image.tag` | A published image accessible to the cluster; no `latest` tag. |
+| `imagePullSecrets` | Existing registry pull Secrets, as a list of `{name: ...}` objects. |
+| `config` | Non-sensitive application environment variables; every value must be a string. |
+| `secrets.existingSecret` | Existing Secret in the release namespace. The chart never creates or reads its contents. |
+| `secrets.azureOpenaiApiKeyKey` | Required API-key entry in that Secret. |
+| `secrets.keycloakClientSecretKey` | Optional client-secret entry; leave empty for a public OIDC client. |
+| `persistence.size` | Size of the chart-managed ReadWriteOnce PVC, initially 10Gi. |
+| `persistence.storageClass` | `null` uses the default StorageClass; `""` explicitly disables dynamic class selection. |
+| `persistence.existingClaim` | Use a dedicated existing PVC instead of creating one. |
+| `ingress` | Optional HTTPS ingress; class, host, path (default `/`), TLS Secret name and controller-specific annotations. |
+| `resources` | Initial requests/limits to tune against measured workload and index size. |
+
+Do not put API keys or client secrets in `config`, a values file or Helm command
+arguments. Provision the referenced Secret using your approved secret-management
+process. TLS and image-pull Secrets must also exist in the release namespace.
+
+Set the real model deployments, both MCP URLs, Keycloak issuer/client/audience,
+public chatbot URL, trusted frontend URL and exact JSON-array CORS origins
+under `config`. Optional settings such as `AZURE_OPENAI_REASONING_EFFORT` can be
+added there as strings. Keep native agent debug disabled in production because
+it can include prompts and tool arguments.
+
+The public chatbot URL must be HTTPS. With ingress enabled, it must match
+`https://<ingress.host>` plus `ingress.path` (omit `/` for a root deployment);
+a TLS Secret name is required. Use a same-site hostname so SameSite=Lax login
+cookies work. Register `<CHAT_PUBLIC_URL>/auth/callback` in the approved Keycloak
+client. Set the frontend runtime `ASSET_COPILOT_RUN_URL` to
+`<CHAT_PUBLIC_URL>/agents/asset-copilot/runs` and allow that origin in its CSP.
+
+For a shared hostname, choose a unique `ingress.path` for each release
+and include that same prefix in `CHAT_PUBLIC_URL`. The backend uses native
+FastAPI `root_path`; auth endpoints and cookies are scoped under the prefix.
+Use backend and frontend builds containing this support, not the original
+`v0.1.0` release. Existing root deployments remain supported.
+
+The ingress routes the configured path without rewriting or StripPrefix middleware.
+Reuse an existing TLS Secret when sharing the platform hostname; do not add
+cert-manager annotations to manage a certificate already owned elsewhere.
+Configure your actual
+controller for SSE: disable response buffering and allow sufficiently long
+read/write idle timeouts. For ingress-nginx, typical annotations are
+`nginx.ingress.kubernetes.io/proxy-buffering: "off"` and
+`nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"`, plus the matching
+`proxy-send-timeout`. Those annotations are not portable to other controllers;
+none are silently applied by this chart.
+
+Pods carry `networking/traffic-allowed: "yes"`, matching the Data Layer and
+namespaces configured with an allow-whitelisted NetworkPolicy. Where such a
+policy is enforced, omitting this label can block ingress traffic even while
+kubelet health probes pass. DevOps must verify the target namespace's policies;
+this label alone does not create a policy or guarantee connectivity. Application
+authentication remains required. This chart does not create NetworkPolicies.
+
+## Validate and install
+
+From the repository root, with Helm 3.20.0 and Bash:
+
+```bash
+helm lint --strict charts/asset-copilot
+helm template copilot charts/asset-copilot
+```
+
+After replacing the placeholder configuration, publishing the chosen image,
+and provisioning Secrets/storage, an installation uses:
+
+```bash
+helm upgrade --install copilot charts/asset-copilot \
+  --namespace "$NAMESPACE" --create-namespace \
+  --values "$ENVIRONMENT_VALUES" --wait --timeout 10m
+```
+
+`NAMESPACE` is the target namespace and `ENVIRONMENT_VALUES` is your non-secret
+environment overrides file. Rendering is not proof that referenced resources,
+endpoints, permissions, a default StorageClass or a compatible ingress controller
+exist. This repository's `Checks` workflow lints and packages charts, verifies
+generated documentation and checks license metadata; it does not connect to a
+cluster or validate rendered manifests against Kubernetes schemas.
+
+## Persistent storage
+
+This chart is tenant-independent. Keep environment-specific values, external
+storage manifests and deployment notes outside the chart. DevOps selects the
+release namespace and supplies non-secret environment overrides at installation.
+
+By default, [templates/pvc.yaml](templates/pvc.yaml) creates a dedicated
+ReadWriteOnce PVC for each release in its namespace. Configure
+`persistence.size` and `persistence.storageClass` for the target cluster; no
+tenant-specific PVC manifest is needed.
+
+Alternatively, set `persistence.existingClaim` to a dedicated PVC already
+provisioned in the release namespace. The chart then does not create a PVC and
+ignores `persistence.storageClass` and `persistence.size`; the external PVC
+controls those settings. Never share the disk with the Data Layer, another
+database or another running release.
+
+Choose storage compatible with SQLite and LanceDB, including LanceDB's atomic
+safe-commit operations and the pod's fsGroup permissions. Azure Files has failed
+these LanceDB operations; validate the selected driver rather than assuming any
+ReadWriteOnce volume is compatible. With `WaitForFirstConsumer`, a PVC may remain
+Pending until the Deployment mounts it; do not wait for it to bind before
+running Helm.
+
+When switching to a new PVC, migrate any required SQLite/index data with the
+application stopped, or explicitly rebuild the index afterward. No data copying
+or indexing is automatic.
+
+## PDF knowledge upload
+
+A rebuilt image exposes an authenticated PDF upload into the existing
+`/data/knowledge` store, using the same Keycloak client as the chat; no extra
+PVC, Job or configuration is needed. See the
+[upload instructions](https://github.com/Cosmo-Tech/asset-agentic-app#upload-a-pdf-to-a-deployed-tenant).
+
+## Runtime and data lifecycle
+
+One replica and the image's one-worker command are intentional. The chart uses
+`Recreate`, not a rolling update, and has no HPA. Restarts/upgrades interrupt
+active chats and require login again because OAuth/session/approval guards are
+process-local. A ConfigMap checksum triggers rollout after configuration changes;
+after rotating an external Secret, explicitly restart the Deployment to load it.
+
+The pod runs as UID/GID 10001 without service-account token mounting, elevated
+capabilities or a writable root filesystem. `/tmp` is a bounded 128Mi memory
+volume. SQLite and LanceDB share persistent `/data`; their paths are fixed to
+avoid accidental ephemeral storage. The storage driver must support the pod's
+fsGroup permissions. Internal pod probes use `/health`, including with a public
+prefix configured, without requiring model/MCP
+availability. Startup has up to five minutes; termination allows 45 seconds
+for the image's 30-second Uvicorn shutdown.
+
+The chart-managed PVC has `helm.sh/resource-policy: keep`: uninstall retains
+conversation/index data and storage charges. Its lifecycle and backups remain
+the operator's responsibility. Reusing retained data on another release requires
+an explicit `persistence.existingClaim`; do not share a SQLite/index volume with
+another running release. Do not shrink a PVC; expansion depends on StorageClass
+support. Back up SQLite consistently, accounting for WAL files, and include
+the knowledge index. Index approved documents explicitly using the image's
+existing `/app/scripts/index_pdf_knowledge.py` command in a maintenance workload
+with access to the same data and approved documents; indexing is not automatic.
+
+{{ template "chart.valuesSection" . }}
+
+{{- if not .SkipVersionFooter }}
+{{ template "helm-docs.versionFooter" . }}
+{{- end }}
