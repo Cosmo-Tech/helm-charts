@@ -9,6 +9,8 @@ Cosmo Tech Gateway
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| config.csm.platform.gateway.authorization.cookie-name | string | `"SESSION"` |  |
+| config.csm.platform.gateway.authorization.principal | string | `"preferred_username"` |  |
 | config.csm.platform.gateway.configuration.defaultFilters[0] | string | `"TokenRelay="` |  |
 | config.csm.platform.gateway.configuration.failOnRouteDefinitionError | bool | `true` |  |
 | config.csm.platform.gateway.configuration.routeFilterCacheEnabled | bool | `false` |  |
@@ -18,17 +20,30 @@ Cosmo Tech Gateway
 | config.csm.platform.gateway.configuration.routes[0].uri | string | `"http://localhost:8080"` |  |
 | config.csm.platform.gateway.configuration.trustedProxies | string | `""` |  |
 | config.csm.platform.gateway.contextPath | string | `"/"` |  |
+| config.csm.platform.gateway.cors.allow-credentials | bool | `true` |  |
+| config.csm.platform.gateway.cors.allowed-headers[0] | string | `"*"` |  |
+| config.csm.platform.gateway.cors.allowed-methods[0] | string | `"GET"` |  |
+| config.csm.platform.gateway.cors.allowed-methods[1] | string | `"HEAD"` |  |
+| config.csm.platform.gateway.cors.allowed-methods[2] | string | `"POST"` |  |
+| config.csm.platform.gateway.cors.allowed-methods[3] | string | `"PUT"` |  |
+| config.csm.platform.gateway.cors.allowed-methods[4] | string | `"PATCH"` |  |
+| config.csm.platform.gateway.cors.allowed-methods[5] | string | `"DELETE"` |  |
+| config.csm.platform.gateway.cors.allowed-methods[6] | string | `"OPTIONS"` |  |
+| config.csm.platform.gateway.cors.allowed-origins[0] | string | `"http://localhost:3000"` |  |
+| config.csm.platform.gateway.cors.allowed-origins[1] | string | `"http://localhost:8080"` |  |
+| config.csm.platform.gateway.cors.exposed-headers[0] | string | `"Location"` |  |
+| config.csm.platform.gateway.cors.exposed-headers[1] | string | `"WWW-Authenticate"` |  |
+| config.csm.platform.gateway.cors.max-age | int | `3600` |  |
 | config.csm.platform.gateway.identityProvider.identity.clientId | string | `"gateway-client-id"` |  |
 | config.csm.platform.gateway.identityProvider.identity.tenantId | string | `"my-tenant-id"` |  |
 | config.csm.platform.gateway.identityProvider.serverBaseUrl | string | `"http://changeme"` |  |
 | config.csm.platform.gateway.openApiAggregation.enabled | bool | `true` |  |
 | config.csm.platform.gateway.openApiAggregation.serverUrls | object | `{}` |  |
-| config.csm.platform.gateway.port | int | `8060` |  |
 | config.csm.platform.gateway.swagger-ui.oauth.scopes | string | `"openid,email,profile"` |  |
 | config.csm.platform.gateway.swagger-ui.oauth.useBasicAuthenticationWithAccessCodeGrant | bool | `false` |  |
 | config.csm.platform.gateway.swagger-ui.oauth.usePkceWithAuthorizationCodeGrant | bool | `true` |  |
 | config.csm.platform.gateway.swagger-ui.path | string | `"/swagger-ui.html"` |  |
-| config.csm.platform.gateway.swagger-ui.persistAuthorization | bool | `true` |  |
+| config.csm.platform.gateway.swagger-ui.persistAuthorization | bool | `false` |  |
 | config.csm.platform.gateway.swagger-ui.urlsPrimaryName | string | `"cosmotech-gateway"` |  |
 | config.csm.platform.gateway.swagger-ui.urls[0].name | string | `"cosmotech-gateway"` |  |
 | config.csm.platform.gateway.swagger-ui.urls[0].url | string | `"/v3/api-docs"` |  |
@@ -38,11 +53,12 @@ Cosmo Tech Gateway
 | deploymentStrategy.rollingUpdate.maxUnavailable | string | `"50%"` | maximum number of Pods that can be unavailable during the update process |
 | fullnameOverride | string | `""` | value overriding the full name of the Chart. If not set, the value is computed from `nameOverride`. Truncated at 63 chars because some Kubernetes name fields are limited to this. |
 | image.pullPolicy | string | `"Always"` | [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) for pulling the image |
-| image.repository | string | `"ghcr.io/cosmo-tech/cosmotech-gateway"` | container image to use for deployment |
+| image.repository | string | `"registry.cosmotech.com/product/cosmotech-gateway"` | container image to use for deployment |
 | image.tag | string | `""` | container image tag. Defaults to the Chart `appVersion` if empty or missing |
 | imageCredentials.password | string | `""` | password for registry to use for pulling the Deployment image. Useful if you are using a private registry |
 | imageCredentials.registry | string | `""` | container registry to use for pulling the Deployment image. Useful if you are using a private registry |
 | imageCredentials.username | string | `""` | username for the container registry to use for pulling the Deployment image. Useful if you are using a private registry |
+| imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `""` |  |
 | ingress.enabled | bool | `false` |  |

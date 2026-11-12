@@ -12,6 +12,7 @@ metadata:
   annotations:
     email: "platform@cosmotech.com"
 spec:
+  replicas: {{ .Values.replicaCount }}
   strategy:
   {{- with .Values.deploymentStrategy }}
     {{- toYaml . | nindent 4 }}
@@ -29,14 +30,17 @@ spec:
         {{- include "cosmotech-gateway.defaultNetworkPolicy" . | nindent 8 }}
         {{- include "cosmotech-gateway.selectorLabels" . | nindent 8 }}
     spec:
-      {{- if .Values.imageCredentials.registry }}
       imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- if .Values.imageCredentials.registry }}
         - name: {{ include "cosmotech-gateway.fullname" . }}-registry
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       automountServiceAccountToken: false
       volumes:
+        - name: tmp-dir
+          emptyDir: {}
         - name: helm-config
           configMap:
             name: {{ include "cosmotech-gateway.fullname" . }}
@@ -56,7 +60,13 @@ spec:
               # The properties file for the 'helm' profile is mounted as a Volume in the Container,
               # using a configured Kubernetes Secret containing all the 'config.*' properties
               value: "helm"
+            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+              # Add optional config folder to Spring boot configuration
+              # using Chainguard base image made it require to declare it
+              value: "optional:file:/config/"
           volumeMounts:
+            - mountPath: /tmp
+              name: tmp-dir
             - mountPath: /config
               name: helm-config
               readOnly: true
