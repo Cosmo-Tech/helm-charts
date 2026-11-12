@@ -75,6 +75,10 @@ Create Docker secrets for pulling images from a private container registry.
 Define cosmotech-gateway base configuration that'll be merged with values.
 */}}
 {{- define "cosmotech-gateway.baseConfig" -}}
+csm:
+  platform:
+    gateway:
+      port: {{ .Values.service.port }}
 spring:
   application:
     name: {{ include "cosmotech-gateway.fullname" . }}
@@ -82,6 +86,8 @@ spring:
     ansi:
       enabled: never
 management:
+  server:
+    port: {{ .Values.service.managementPort }}
   endpoint:
     health:
       show-details: always
@@ -105,7 +111,9 @@ actually read by the deployed app.
 {{- $swaggerUi := dig "swagger-ui" dict $gateway -}}
 {{- $_ := unset $gateway "configuration" -}}
 {{- $_ = unset $gateway "swagger-ui" -}}
-{{- $_ = set $config "spring" (dict "cloud" (dict "gateway" (dict "server" (dict "webflux" $webflux)))) -}}
-{{- $_ = set $config "springdoc" (dict "swagger-ui" $swaggerUi) -}}
+{{- $spring := dig "spring" dict $config -}}
+{{- $_ = set $config "spring" (mustMergeOverwrite $spring (dict "cloud" (dict "gateway" (dict "server" (dict "webflux" $webflux))))) -}}
+{{- $springdoc := dig "springdoc" dict $config -}}
+{{- $_ = set $config "springdoc" (mustMergeOverwrite $springdoc (dict "swagger-ui" $swaggerUi)) -}}
 {{- toYaml $config -}}
 {{- end }}

@@ -9,7 +9,7 @@ replicaCount: 1
 
 image:
   # -- container image to use for deployment
-  repository: ghcr.io/cosmo-tech/cosmotech-gateway
+  repository: registry.cosmotech.com/product/cosmotech-gateway
   # -- [policy](https://kubernetes.io/docs/concepts/containers/images/#updating-images) for pulling the image
   pullPolicy: Always
   # -- container image tag. Defaults to the Chart `appVersion` if empty or missing
@@ -23,6 +23,8 @@ imageCredentials:
   username: ""
   # -- password for registry to use for pulling the Deployment image. Useful if you are using a private registry
   password: ""
+
+imagePullSecrets: []
 
 # -- value overriding the name of the Chart. Defaults to the Chart name.
 # Truncated at 63 chars because some Kubernetes name fields are limited to this.
@@ -79,18 +81,41 @@ probes:
   readiness:
     timeoutSeconds: 10
     failureThreshold: 5
+
+# csm.platform.gateway.port and management.server.port are derived from service.port and service.managementPort.
 config:
+  # logging:
+  #   level:
+  #     org.springframework.cloud.gateway: INFO
+  #     org.springframework.security: INFO
+  #     com.cosmotech: INFO
   csm:
     platform:
       gateway:
         # This corresponds to the path under which this service is exposed
         contextPath: /
-        port: 8060
         identityProvider:
           serverBaseUrl: "http://changeme"
           identity:
             clientId: "gateway-client-id"
             tenantId: "my-tenant-id"
+        authorization:
+          # Token claim used as principal name.
+          principal: preferred_username
+          # Name of the session cookie.
+          cookie-name: SESSION
+        # CORS configuration applied to every route.
+        cors:
+          # Origins allowed to make credentialed cross-origin requests (no wildcard).
+          allowed-origins:
+            - "http://localhost:3000"
+            - "http://localhost:8080"
+          allowed-methods: [GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS]
+          allowed-headers: ["*"]
+          exposed-headers: [Location, WWW-Authenticate]
+          allow-credentials: true
+          # Preflight response cache duration, in seconds.
+          max-age: 3600
         # OpenAPI documents are normalized centrally before Swagger UI consumes them.
         openApiAggregation:
           enabled: true
@@ -123,7 +148,7 @@ config:
           # Serves the Swagger UI from the gateway root path.
           useRootPath: true
           # Reuses the OAuth authorization across aggregated services and page reloads.
-          persistAuthorization: true
+          persistAuthorization: false
           # Name of the definition selected when the Swagger UI loads.
           urlsPrimaryName: cosmotech-gateway
           # One entry per aggregated service. "url" is the gateway path exposing the OpenAPI
