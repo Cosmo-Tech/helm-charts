@@ -82,6 +82,10 @@ spec:
               # Add optional config folder to Spring boot configuration
               # using Chainguard base image made it require to declare it
               value : "optional:file:/config/"
+            - name : JDK_JAVA_OPTIONS
+              # Java4shell mitigation November 2026
+              # https://adoptium.net/news/2026/11/temurin-november-2026-cspu-java4shell
+              value : "-XX:-UseBASE64Intrinsics"
           volumeMounts:
             - mountPath: /tmp
               name: tmp-dir
