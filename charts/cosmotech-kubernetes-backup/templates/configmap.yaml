@@ -1,0 +1,35 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: bkup
+data:
+  BKUP_IMAGE_REPOSITORY: {{ .Values.workload.image.repository }}
+  BKUP_IMAGE_TAG: {{ .Values.workload.image.tag }}
+  BKUP_IMAGE_PULL_POLICY: {{ .Values.workload.image.pullPolicy | quote }}
+  BKUP_IMAGE_PULL_SECRETS: {{ .Values.workload.image.pullSecrets | toJson | quote }}
+
+  BKUP_POD_SECURITY_CONTEXT: {{ .Values.workload.podSecurityContext | toJson | quote }}
+  BKUP_SECURITY_CONTEXT: {{ .Values.workload.securityContext | toJson | quote }}
+
+  BKUP_ORCHESTRATOR_NAMESPACE: {{ .Release.Namespace }}
+
+  # Destination storage
+  BKUP_STORAGE_PROTOCOL: {{ .Values.backup.destination.protocol | quote }}
+  BKUP_STORAGE_ENDPOINT: {{ .Values.backup.destination.endpoint | quote }}
+  BKUP_STORAGE_ROOT: {{ .Values.backup.destination.root | quote }}
+  BKUP_STORAGE_USERNAME: {{ .Values.backup.destination.username | quote }}
+  BKUP_STORAGE_PASSWORD_SECRET_NAME: {{ .Values.backup.destination.passwordSecret.name | quote }}
+  BKUP_STORAGE_PASSWORD_SECRET_KEY: {{ .Values.backup.destination.passwordSecret.key | quote }}
+
+  # Backup targets
+  BKUP_VOLUMES_NAMESPACES: {{ .Values.backup.volume.namespaces | toJson | quote }}
+  BKUP_POSTGRESQL_VALUES: |
+    {{- toYaml .Values.backup.postgresql | nindent 4 }}
