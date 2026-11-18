@@ -492,6 +492,17 @@ entries:
     urls:
     - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-copilot-api-0.1.0/cosmotech-copilot-api-0.1.0.tgz
     version: 0.1.0
+  cosmotech-kubernetes-backup:
+  - apiVersion: v2
+    appVersion: 0.1.1
+    created: "2026-11-18T10:16:47.177584107Z"
+    description: Cosmo Tech Kubernetes backup (bkup)
+    digest: fa3ca27d3efba02b22c9a280e042482aaa1b88dc68058b8b71b205f4a5a7e996
+    name: cosmotech-kubernetes-backup
+    type: application
+    urls:
+    - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-kubernetes-backup-0.0.0/cosmotech-kubernetes-backup-0.0.0.tgz
+    version: 0.0.0
   cosmotech-kubernetes-workload-scaler:
   - apiVersion: v2
     appVersion: 0.0.7
@@ -586,4 +597,4 @@ entries:
     urls:
     - https://github.com/Cosmo-Tech/helm-charts/releases/download/cosmotech-modeling-api-0.1.0/cosmotech-modeling-api-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-29T15:31:48.47979955Z"
+generated: "2026-11-18T10:16:47.177710685Z"
