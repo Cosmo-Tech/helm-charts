@@ -1,0 +1,156 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
+
+# Override the chart name
+nameOverride: ""
+fullnameOverride: ""
+
+# Customize workload
+# e.g:
+# workload:
+#   nodeSelector: {}
+#   tolerations: []
+#   affinity: {}
+#   podSecurityContext:
+#     runAsNonRoot: true
+#     runAsUser: 65532
+#     runAsGroup: 65532
+#     fsGroup: 65532
+#   securityContext:
+#     runAsNonRoot: true
+#     runAsUser: 65532
+#     runAsGroup: 65532
+#     allowPrivilegeEscalation: false
+#     readOnlyRootFilesystem: true
+#     capabilities:
+#       drop:
+#         - ALL
+#   resources:
+#     requests:
+#       cpu: 100m
+#       memory: 128Mi
+#       ephemeral-storage: 50Mi
+#     limits:
+#       cpu: 100m
+#       memory: 128Mi
+#       ephemeral-storage: 2Gi
+#   image:
+#     repository: ghcr.io/cosmo-tech/bkup
+#     tag: "latest"
+#     pullSecrets:
+#       - name: mysecret
+#     pullPolicy: IfNotPresent
+workload:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    fsGroup: 65532
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+      ephemeral-storage: 50Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+      ephemeral-storage: 2Gi
+  image:
+    repository: ghcr.io/cosmo-tech/bkup
+    tag: "latest"
+    pullSecrets: []
+    pullPolicy: ""
+
+# Backup jobs behaviors
+backup:
+  # Cron expression to specify when to run the jobs
+  # e.g:
+  # cron: 00 23 * * 1-5   # => monday-friday at 23pm
+  cron: ""
+  # Cron timeZone
+  # e.g:
+  # timeZone: "Europe/Paris"
+  timeZone: "Europe/Paris"
+  # Number of successful jobs to keep in history
+  successfulJobsHistoryLimit: 10
+  # Number of failed jobs to keep in history
+  failedJobsHistoryLimit: 10
+
+  # Remote destination where to send backups
+  # e.g:
+  # destination:
+  #   protocol: "s3"
+  #   endpoint: "mys3.example.com"
+  #   root: "mycontainer"
+  #   username: myuser
+  #   passwordSecret:
+  #       name: mysecret
+  #       key: password
+  destination:
+    # Fsspec known protocols: s3, abfs (azure), gcs, sftp, webdav, file, etc... (https://filesystem-spec.readthedocs.io/en/latest/api.html#fsspec.available_protocols)
+    protocol: ""
+    # Optional FQDN or IP in case of self-hosted s3
+    endpoint: ""
+    # Root path of the remote storage (container)
+    root: ""
+    username: ""
+    passwordSecret:
+      name: ""
+      key: ""
+
+  # Configure the job backup type for PostgreSQL
+  # e.g:
+  # - address: postgresql.namespace.svc.cluster.local
+  #   port: 5432
+  #   database: postgres
+  #   username: postgres
+  #   passwordSecret:
+  #       name: mysecret
+  #       key: postgres-password
+  #   image:
+  #     repository: myregistry/postgresql
+  #     pullPolicy: IfNotPresent
+  #     tag: "latest"
+  #     pullSecrets:
+  #       - name: mysecret
+  #   namespace: default
+  postgresql:
+    - address: ""
+      port: 5432
+      database: ""
+      username: ""
+      # Secret where to find the password to connect to PostgreSQL (clear password is not allowed in this values file)
+      passwordSecret:
+        name: ""
+        key: ""
+      # Image to use as PostgreSQL client
+      image:
+        repository: ""
+        tag: ""
+        pullSecrets: []
+        pullPolicy: ""
+      # Namespace where to run the Kubernetes job
+      namespace: ""
+
+  # Configure the job backup type for volumes
+  # e.g:
+  # volume:
+  #   namespaces:
+  #     - namespace1
+  #     - namespace2
+  #     - namespace3
+  volume:
+    # Target specific namespaces to backup (if empty, all namespaces will be targetted)
+    namespaces: []

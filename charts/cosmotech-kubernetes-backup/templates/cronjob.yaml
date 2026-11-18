@@ -1,0 +1,73 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: "{{ required "backup.cron" .Values.backup.cron }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ .Values.backup.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.backup.failedJobsHistoryLimit }}
+  startingDeadlineSeconds: 60
+  timeZone: {{ .Values.backup.timeZone }}
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 86400
+      ttlSecondsAfterFinished: 3600
+      template:
+        spec:
+          serviceAccountName: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+          restartPolicy: Never
+
+          {{- with .Values.workload.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          containers:
+            - name: cronjob-orchestrator
+              image: "{{ .Values.workload.image.repository }}:{{ .Values.workload.image.tag }}"
+              imagePullPolicy: {{ .Values.workload.image.pullPolicy }}
+
+              {{- with .Values.workload.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+
+              resources:
+                {{- toYaml .Values.workload.resources | nindent 16 }}
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+              envFrom:
+                - configMapRef:
+                    name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
+              env:
+                - name: BKUP_ORCHESTRATOR_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+          volumes:
+            - name: tmp
+              emptyDir: {}
+
+          {{- with .Values.workload.image.pullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.workload.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          {{- with .Values.workload.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
