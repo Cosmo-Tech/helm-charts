@@ -16,9 +16,9 @@ on:
           - cosmotech-asset-investment-planning-webapp
           - cosmotech-business-webapp
           - cosmotech-copilot-api
+          - cosmotech-kubernetes-backup
           - cosmotech-kubernetes-workload-scaler
           - cosmotech-modeling-api
-          - cosmotech-kubernetes-backup
 
 jobs:
   release:
