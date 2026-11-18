@@ -10,6 +10,7 @@ on:
         required: true
         type: choice
         options:
+          - asset-copilot
           - cosmotech-api
           - cosmotech-asset-data-layer-api
           - cosmotech-asset-investment-planning-api

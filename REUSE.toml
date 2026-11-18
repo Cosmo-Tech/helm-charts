@@ -3,6 +3,7 @@ version = 1
 [[annotations]]
 path = [
   "charts/*/README.md",
+  "charts/asset-copilot/values.schema.json",
   "charts/cosmotech-api/media/schema.png",
 ]
 SPDX-FileCopyrightText = "Copyright (C) 2022-2026 Cosmo Tech"

@@ -1,0 +1,72 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
+replicaCount: 1
+
+image:
+  repository: asset-copilot
+  tag: "0.1.3"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+
+service:
+  port: 7777
+
+config:
+  # LLM and embeddings
+  AZURE_OPENAI_ENDPOINT: "https://replace-me.openai.azure.com"
+  AZURE_OPENAI_DEPLOYMENT: "replace-me"
+  AZURE_OPENAI_API_VERSION: "2025-04-01-preview"
+  AZURE_EMBEDDING_DEPLOYMENT: "text-embedding-3-large"
+  AZURE_EMBEDDING_API_VERSION: "2024-10-21"
+
+  # MCP servers
+  MCP_URL: "https://platform.example.invalid/api/mcp"
+  ASSET_DATA_LAYER_MCP_URL: "https://platform.example.invalid/adl/agentic/mcp/"
+
+  # Keycloak authentication
+  KEYCLOAK_ISSUER: "https://sso.example.invalid/realms/asset"
+  KEYCLOAK_CLIENT_ID: "replace-me"
+  KEYCLOAK_SCOPE: "openid mcp"
+  KEYCLOAK_MCP_AUDIENCE: "account"
+
+  # Chat URLs and browser security
+  CHAT_PUBLIC_URL: "https://copilot.example.invalid"
+  CHAT_FRONTEND_URL: "https://asset.example.invalid"
+  CHAT_COOKIE_SECURE: "true"
+  CORS_ALLOWED_ORIGINS: '["https://asset.example.invalid"]'
+
+  # Session limits
+  CHAT_SESSION_TTL_SECONDS: "28800"
+  CHAT_SESSION_IDLE_TTL_SECONDS: "1800"
+  CHAT_TRANSACTION_TTL_SECONDS: "300"
+  CHAT_MAX_SESSIONS: "1000"
+  CHAT_MAX_TRANSACTIONS: "1000"
+
+  # Debug logging
+  AGENT_DEBUG: "false"
+
+secrets:
+  existingSecret: asset-copilot-secrets
+  azureOpenaiApiKeyKey: AZURE_OPENAI_API_KEY
+  keycloakClientSecretKey: ""
+
+persistence:
+  existingClaim: ""
+  size: 10Gi
+  storageClass: null
+
+ingress:
+  enabled: false
+  className: ""
+  host: ""
+  path: /
+  tlsSecretName: ""
+  annotations: {}
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi

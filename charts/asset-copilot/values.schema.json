@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["replicaCount", "image", "config", "secrets", "persistence"],
+  "properties": {
+    "replicaCount": {"type": "integer", "enum": [1]},
+    "image": {
+      "type": "object",
+      "required": ["repository", "tag", "pullPolicy"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "tag": {"type": "string", "minLength": 1, "not": {"enum": ["latest"]}},
+        "pullPolicy": {"enum": ["Always", "IfNotPresent", "Never"]}
+      }
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": {"type": "string"},
+      "required": ["CHAT_PUBLIC_URL", "CHAT_FRONTEND_URL", "CHAT_COOKIE_SECURE", "CORS_ALLOWED_ORIGINS"],
+      "properties": {
+        "CHAT_COOKIE_SECURE": {"const": "true"},
+        "CHAT_PUBLIC_URL": {"type": "string", "pattern": "^https://[^/?#@:]+(:[0-9]+)?(/[A-Za-z0-9_-][A-Za-z0-9._~-]*)*/?$"},
+        "AZURE_OPENAI_API_KEY": false,
+        "KEYCLOAK_CLIENT_SECRET": false,
+        "DB_FILE": false,
+        "KNOWLEDGE_DB_DIR": false
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "required": ["existingSecret", "azureOpenaiApiKeyKey"],
+      "properties": {
+        "existingSecret": {"type": "string", "minLength": 1},
+        "azureOpenaiApiKeyKey": {"type": "string", "minLength": 1},
+        "keycloakClientSecretKey": {"type": "string"}
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "path": {"type": "string", "pattern": "^(/|(/[A-Za-z0-9_-][A-Za-z0-9._~-]*)+)$"}
+      }
+    },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "existingClaim": {"type": "string"},
+        "size": {"type": "string", "minLength": 1},
+        "storageClass": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
