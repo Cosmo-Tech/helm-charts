@@ -33,3 +33,10 @@ data:
   BKUP_VOLUMES_NAMESPACES: {{ .Values.backup.volume.namespaces | toJson | quote }}
   BKUP_POSTGRESQL_VALUES: |
     {{- toYaml .Values.backup.postgresql | nindent 4 }}
+
+  # Hooks
+  {{- if .Values.backup.hooks.enabled }}
+  BKUP_HOOKS: |
+    {{- toYaml .Values.backup.hooks.runtime | nindent 4 }}
+  BKUP_HOOKS_SERVICE_ACCOUNT_NAME: {{ printf "%s-hooks" (include "cosmotech-kubernetes-backup.fullname" .) | quote }}
+  {{- end }}

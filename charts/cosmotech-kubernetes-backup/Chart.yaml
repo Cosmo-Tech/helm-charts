@@ -4,5 +4,5 @@ apiVersion: v2
 name: cosmotech-kubernetes-backup
 description: Cosmo Tech Kubernetes backup (bkup)
 type: application
-version: 0.0.0
-appVersion: "0.1.1"
+version: 0.1.0
+appVersion: "0.2.0"

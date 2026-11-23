@@ -1,0 +1,39 @@
+{{/*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/}}
+
+{{- if .Values.backup.hooks.enabled }}
+{{- $hooksName := printf "%s-hooks" (include "cosmotech-kubernetes-backup.fullname" .) }}
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $hooksName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: bkup-hooks
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $hooksName }}
+rules:
+  {{- toYaml .Values.backup.hooks.rbac.rules | nindent 2 }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ $hooksName }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ $hooksName }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ $hooksName }}
+  apiGroup: rbac.authorization.k8s.io
+
+{{- end }}
