@@ -60,14 +60,14 @@ spec:
             - name: AZURE_OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.existingSecret }}
-                  key: {{ .Values.secrets.azureOpenaiApiKeyKey }}
+                  name: {{ .Values.secrets.existingSecret | quote }}
+                  key: {{ .Values.secrets.azureOpenaiApiKeyKey | quote }}
             {{- if .Values.secrets.keycloakClientSecretKey }}
             - name: KEYCLOAK_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.existingSecret }}
-                  key: {{ .Values.secrets.keycloakClientSecretKey }}
+                  name: {{ .Values.secrets.existingSecret | quote }}
+                  key: {{ .Values.secrets.keycloakClientSecretKey | quote }}
             {{- end }}
           startupProbe:
             httpGet:
@@ -98,7 +98,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "cosmotech-asset-agentic-app.fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "cosmotech-asset-agentic-app.fullname" .) | quote }}
         - name: tmp
           emptyDir:
             medium: Memory

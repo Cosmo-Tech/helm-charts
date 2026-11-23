@@ -184,7 +184,7 @@ with access to the same data and approved documents; indexing is not automatic.
 | config.KEYCLOAK_SCOPE | string | `"openid mcp"` |  |
 | config.MCP_URL | string | `"https://platform.example.invalid/api/mcp"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.repository | string | `"asset-copilot"` |  |
+| image.repository | string | `"registry.cosmotech.com/product/cosmotech-asset-agentic-app"` |  |
 | image.tag | string | `"0.1.3"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
@@ -198,8 +198,10 @@ with access to the same data and approved documents; indexing is not automatic.
 | persistence.storageClass | string | `nil` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"2"` |  |
+| resources.limits.ephemeral-storage | string | `"2Gi"` |  |
 | resources.limits.memory | string | `"2Gi"` |  |
 | resources.requests.cpu | string | `"250m"` |  |
+| resources.requests.ephemeral-storage | string | `"50Mi"` |  |
 | resources.requests.memory | string | `"512Mi"` |  |
 | secrets.azureOpenaiApiKeyKey | string | `"AZURE_OPENAI_API_KEY"` |  |
 | secrets.existingSecret | string | `"asset-copilot-secrets"` |  |
