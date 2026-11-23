@@ -11,9 +11,9 @@ SPDX-License-Identifier: MIT
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "asset-copilot.fullname" . }}
+  name: {{ include "cosmotech-asset-agentic-app.fullname" . }}
   labels:
-    {{- include "asset-copilot.labels" . | nindent 4 }}
+    {{- include "cosmotech-asset-agentic-app.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -34,7 +34,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "asset-copilot.fullname" . }}
+                name: {{ include "cosmotech-asset-agentic-app.fullname" . }}
                 port:
                   number: {{ .Values.service.port }}
 {{- end }}

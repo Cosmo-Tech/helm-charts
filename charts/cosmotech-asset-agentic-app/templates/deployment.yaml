@@ -5,21 +5,21 @@ SPDX-License-Identifier: MIT
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "asset-copilot.fullname" . }}
+  name: {{ include "cosmotech-asset-agentic-app.fullname" . }}
   labels:
-    {{- include "asset-copilot.labels" . | nindent 4 }}
+    {{- include "cosmotech-asset-agentic-app.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "asset-copilot.selectorLabels" . | nindent 6 }}
+      {{- include "cosmotech-asset-agentic-app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         networking/traffic-allowed: "yes"
-        {{- include "asset-copilot.selectorLabels" . | nindent 8 }}
+        {{- include "cosmotech-asset-agentic-app.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
@@ -51,7 +51,7 @@ spec:
               containerPort: 7777
           envFrom:
             - configMapRef:
-                name: {{ include "asset-copilot.fullname" . }}
+                name: {{ include "cosmotech-asset-agentic-app.fullname" . }}
           env:
             - name: DB_FILE
               value: /data/asset_copilot.db
@@ -98,7 +98,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "asset-copilot.fullname" .) }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "cosmotech-asset-agentic-app.fullname" .) }}
         - name: tmp
           emptyDir:
             medium: Memory

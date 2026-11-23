@@ -1,13 +1,8 @@
-{{- /*
-SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
-SPDX-License-Identifier: MIT
-*/ -}}
-{{ template "chart.header" . }}
-{{ template "chart.deprecationWarning" . }}
+# cosmotech-asset-agentic-app
 
-{{ template "chart.badgesSection" . }}
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.3](https://img.shields.io/badge/AppVersion-0.1.3-informational?style=flat-square)
 
-{{ template "chart.description" . }}
+Single-instance Asset AI Copilot runtime
 
 Edit this README's source in `README.md.gotmpl`, then regenerate from the
 repository root with `helm-docs --chart-search-root charts/ --skip-version-footer`.
@@ -81,15 +76,15 @@ authentication remains required. This chart does not create NetworkPolicies.
 From the repository root, with Helm 3.20.0 and Bash:
 
 ```bash
-helm lint --strict charts/asset-copilot
-helm template copilot charts/asset-copilot
+helm lint --strict charts/cosmotech-asset-agentic-app
+helm template copilot charts/cosmotech-asset-agentic-app
 ```
 
 After replacing the placeholder configuration, publishing the chosen image,
 and provisioning Secrets/storage, an installation uses:
 
 ```bash
-helm upgrade --install copilot charts/asset-copilot \
+helm upgrade --install copilot charts/cosmotech-asset-agentic-app \
   --namespace "$NAMESPACE" --create-namespace \
   --values "$ENVIRONMENT_VALUES" --wait --timeout 10m
 ```
@@ -163,8 +158,50 @@ the knowledge index. Index approved documents explicitly using the image's
 existing `/app/scripts/index_pdf_knowledge.py` command in a maintenance workload
 with access to the same data and approved documents; indexing is not automatic.
 
-{{ template "chart.valuesSection" . }}
+## Values
 
-{{- if not .SkipVersionFooter }}
-{{ template "helm-docs.versionFooter" . }}
-{{- end }}
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| config.AGENT_DEBUG | string | `"false"` |  |
+| config.ASSET_DATA_LAYER_MCP_URL | string | `"https://platform.example.invalid/adl/agentic/mcp/"` |  |
+| config.AZURE_EMBEDDING_API_VERSION | string | `"2024-10-21"` |  |
+| config.AZURE_EMBEDDING_DEPLOYMENT | string | `"text-embedding-3-large"` |  |
+| config.AZURE_OPENAI_API_VERSION | string | `"2025-04-01-preview"` |  |
+| config.AZURE_OPENAI_DEPLOYMENT | string | `"replace-me"` |  |
+| config.AZURE_OPENAI_ENDPOINT | string | `"https://replace-me.openai.azure.com"` |  |
+| config.CHAT_COOKIE_SECURE | string | `"true"` |  |
+| config.CHAT_FRONTEND_URL | string | `"https://asset.example.invalid"` |  |
+| config.CHAT_MAX_SESSIONS | string | `"1000"` |  |
+| config.CHAT_MAX_TRANSACTIONS | string | `"1000"` |  |
+| config.CHAT_PUBLIC_URL | string | `"https://copilot.example.invalid"` |  |
+| config.CHAT_SESSION_IDLE_TTL_SECONDS | string | `"1800"` |  |
+| config.CHAT_SESSION_TTL_SECONDS | string | `"28800"` |  |
+| config.CHAT_TRANSACTION_TTL_SECONDS | string | `"300"` |  |
+| config.CORS_ALLOWED_ORIGINS | string | `"[\"https://asset.example.invalid\"]"` |  |
+| config.KEYCLOAK_CLIENT_ID | string | `"replace-me"` |  |
+| config.KEYCLOAK_ISSUER | string | `"https://sso.example.invalid/realms/asset"` |  |
+| config.KEYCLOAK_MCP_AUDIENCE | string | `"account"` |  |
+| config.KEYCLOAK_SCOPE | string | `"openid mcp"` |  |
+| config.MCP_URL | string | `"https://platform.example.invalid/api/mcp"` |  |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image.repository | string | `"asset-copilot"` |  |
+| image.tag | string | `"0.1.3"` |  |
+| imagePullSecrets | list | `[]` |  |
+| ingress.annotations | object | `{}` |  |
+| ingress.className | string | `""` |  |
+| ingress.enabled | bool | `false` |  |
+| ingress.host | string | `""` |  |
+| ingress.path | string | `"/"` |  |
+| ingress.tlsSecretName | string | `""` |  |
+| persistence.existingClaim | string | `""` |  |
+| persistence.size | string | `"10Gi"` |  |
+| persistence.storageClass | string | `nil` |  |
+| replicaCount | int | `1` |  |
+| resources.limits.cpu | string | `"2"` |  |
+| resources.limits.memory | string | `"2Gi"` |  |
+| resources.requests.cpu | string | `"250m"` |  |
+| resources.requests.memory | string | `"512Mi"` |  |
+| secrets.azureOpenaiApiKeyKey | string | `"AZURE_OPENAI_API_KEY"` |  |
+| secrets.existingSecret | string | `"asset-copilot-secrets"` |  |
+| secrets.keycloakClientSecretKey | string | `""` |  |
+| service.port | int | `7777` |  |
