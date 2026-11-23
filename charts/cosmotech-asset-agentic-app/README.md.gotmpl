@@ -28,7 +28,6 @@ production environment. Set environment-specific overrides before installing:
 | `config` | Non-sensitive application environment variables; every value must be a string. |
 | `secrets.existingSecret` | Existing Secret in the release namespace. The chart never creates or reads its contents. |
 | `secrets.azureOpenaiApiKeyKey` | Required API-key entry in that Secret. |
-| `secrets.keycloakClientSecretKey` | Optional client-secret entry; leave empty for a public OIDC client. |
 | `persistence.size` | Size of the chart-managed ReadWriteOnce PVC, initially 10Gi. |
 | `persistence.storageClass` | `null` uses the default StorageClass; `""` explicitly disables dynamic class selection. |
 | `persistence.existingClaim` | Use a dedicated existing PVC instead of creating one. |
@@ -40,23 +39,30 @@ arguments. Provision the referenced Secret using your approved secret-management
 process. TLS and image-pull Secrets must also exist in the release namespace.
 
 Set the real model deployments, both MCP URLs, Keycloak issuer/client/audience,
-public chatbot URL, trusted frontend URL and exact JSON-array CORS origins
+public chatbot URL and exact JSON-array frontend CORS origins
 under `config`. Optional settings such as `AZURE_OPENAI_REASONING_EFFORT` can be
 added there as strings. Keep native agent debug disabled in production because
 it can include prompts and tool arguments.
 
 The public chatbot URL must be HTTPS. With ingress enabled, it must match
 `https://<ingress.host>` plus `ingress.path` (omit `/` for a root deployment);
-a TLS Secret name is required. Use a same-site hostname so SameSite=Lax login
-cookies work. Register `<CHAT_PUBLIC_URL>/auth/callback` in the approved Keycloak
-client. Set the frontend runtime `ASSET_COPILOT_RUN_URL` to
+a TLS Secret name is required. Chat validates the webapp JWT and forwards it to
+both MCPs; no backend OAuth callback, chat cookie or client secret is needed.
+Verify both MCPs accept the token and enforce user permissions.
+`KEYCLOAK_CLIENT_ID` restricts knowledge-upload tokens, not chat tokens.
+Set the frontend runtime `ASSET_COPILOT_RUN_URL` to
 `<CHAT_PUBLIC_URL>/agents/asset-copilot/runs` and allow that origin in its CSP.
 
 For a shared hostname, choose a unique `ingress.path` for each release
 and include that same prefix in `CHAT_PUBLIC_URL`. The backend uses native
-FastAPI `root_path`; auth endpoints and cookies are scoped under the prefix.
+FastAPI `root_path`; run, continuation and upload endpoints use the prefix.
 Use backend and frontend builds containing this support, not the original
 `v0.1.0` release. Existing root deployments remain supported.
+
+Remove `CHAT_FRONTEND_URL`, `CHAT_COOKIE_SECURE`, all `CHAT_SESSION_*`,
+`CHAT_TRANSACTION_*` and `CHAT_MAX_*` settings, and
+`secrets.keycloakClientSecretKey` from old override files; the backend no longer
+uses them.
 
 The ingress routes the configured path without rewriting or StripPrefix middleware.
 Reuse an existing TLS Secret when sharing the platform hostname; do not add
@@ -131,17 +137,21 @@ or indexing is automatic.
 
 ## PDF knowledge upload
 
-A rebuilt image exposes an authenticated PDF upload into the existing
-`/data/knowledge` store, using the same Keycloak client as the chat; no extra
-PVC, Job or configuration is needed. See the
-[upload instructions](https://github.com/Cosmo-Tech/asset-agentic-app#upload-a-pdf-to-a-deployed-tenant).
+The backend exposes authenticated `/admin/knowledge/documents` endpoints to list,
+upload and delete PDF documents in the existing `/data/knowledge` store.
+Access requires a valid token whose `azp` matches `KEYCLOAK_CLIENT_ID` and
+carries the `Platform.Admin` role in `userRoles` (or a service-account token).
+Administrators can manage documents directly from Swagger UI (`/docs`) using
+OAuth2 Authorization Code + PKCE; no extra PVC, Job or backend client secret is
+needed. See the
+[exposed endpoints](https://github.com/Cosmo-Tech/asset-agentic-app#exposed-endpoints).
 
 ## Runtime and data lifecycle
 
 One replica and the image's one-worker command are intentional. The chart uses
 `Recreate`, not a rolling update, and has no HPA. Restarts/upgrades interrupt
-active chats and require login again because OAuth/session/approval guards are
-process-local. A ConfigMap checksum triggers rollout after configuration changes;
+active streams because in-flight continuation guards are process-local;
+they do not log users out of the webapp. A ConfigMap checksum triggers rollout after configuration changes;
 after rotating an external Secret, explicitly restart the Deployment to load it.
 
 The pod runs as UID/GID 10001 without service-account token mounting, elevated
@@ -159,9 +169,9 @@ the operator's responsibility. Reusing retained data on another release requires
 an explicit `persistence.existingClaim`; do not share a SQLite/index volume with
 another running release. Do not shrink a PVC; expansion depends on StorageClass
 support. Back up SQLite consistently, accounting for WAL files, and include
-the knowledge index. Index approved documents explicitly using the image's
-existing `/app/scripts/index_pdf_knowledge.py` command in a maintenance workload
-with access to the same data and approved documents; indexing is not automatic.
+the knowledge index. Upload approved PDF documents explicitly through
+`/admin/knowledge/documents` (or Swagger UI `/docs`); indexing is not automatic
+on deployment.
 
 {{ template "chart.valuesSection" . }}
 

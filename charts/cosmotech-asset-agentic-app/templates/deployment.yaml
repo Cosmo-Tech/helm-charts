@@ -62,13 +62,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.existingSecret | quote }}
                   key: {{ .Values.secrets.azureOpenaiApiKeyKey | quote }}
-            {{- if .Values.secrets.keycloakClientSecretKey }}
-            - name: KEYCLOAK_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secrets.existingSecret | quote }}
-                  key: {{ .Values.secrets.keycloakClientSecretKey | quote }}
-            {{- end }}
           startupProbe:
             httpGet:
               path: /health

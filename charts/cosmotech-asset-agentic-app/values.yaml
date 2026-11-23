@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: registry.cosmotech.com/product/cosmotech-asset-agentic-app
-  tag: "0.1.3"
+  tag: "0.2.0"
   pullPolicy: IfNotPresent
 imagePullSecrets: []
 
@@ -19,28 +19,20 @@ config:
   AZURE_EMBEDDING_DEPLOYMENT: "text-embedding-3-large"
   AZURE_EMBEDDING_API_VERSION: "2024-10-21"
 
-  # MCP servers
+  # Both MCP servers receive the webapp user's JWT; no service-account fallback.
+  # Verify issuer/audience/mcp scope and user permissions on both servers.
   MCP_URL: "https://platform.example.invalid/api/mcp"
   ASSET_DATA_LAYER_MCP_URL: "https://platform.example.invalid/adl/agentic/mcp/"
 
-  # Keycloak authentication
+  # JWT validation uses public JWKS. CLIENT_ID restricts knowledge-upload azp only.
   KEYCLOAK_ISSUER: "https://sso.example.invalid/realms/asset"
   KEYCLOAK_CLIENT_ID: "replace-me"
   KEYCLOAK_SCOPE: "openid mcp"
   KEYCLOAK_MCP_AUDIENCE: "account"
 
-  # Chat URLs and browser security
+  # Backend URL and exact frontend CORS origins.
   CHAT_PUBLIC_URL: "https://copilot.example.invalid"
-  CHAT_FRONTEND_URL: "https://asset.example.invalid"
-  CHAT_COOKIE_SECURE: "true"
   CORS_ALLOWED_ORIGINS: '["https://asset.example.invalid"]'
-
-  # Session limits
-  CHAT_SESSION_TTL_SECONDS: "28800"
-  CHAT_SESSION_IDLE_TTL_SECONDS: "1800"
-  CHAT_TRANSACTION_TTL_SECONDS: "300"
-  CHAT_MAX_SESSIONS: "1000"
-  CHAT_MAX_TRANSACTIONS: "1000"
 
   # Debug logging
   AGENT_DEBUG: "false"
@@ -48,7 +40,6 @@ config:
 secrets:
   existingSecret: asset-copilot-secrets
   azureOpenaiApiKeyKey: AZURE_OPENAI_API_KEY
-  keycloakClientSecretKey: ""
 
 persistence:
   existingClaim: ""

@@ -4,5 +4,5 @@ apiVersion: v2
 name: cosmotech-asset-agentic-app
 description: Single-instance Asset AI Copilot runtime
 type: application
-version: 0.1.3
-appVersion: "0.1.3"
+version: 0.2.0
+appVersion: "0.2.0"
