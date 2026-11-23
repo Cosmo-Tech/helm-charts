@@ -1,0 +1,14 @@
+{{- /*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/ -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cosmotech-asset-agentic-app.fullname" . }}
+  labels:
+    {{- include "cosmotech-asset-agentic-app.labels" . | nindent 4 }}
+data:
+  {{- range $name, $value := .Values.config }}
+  {{ $name }}: {{ $value | quote }}
+  {{- end }}

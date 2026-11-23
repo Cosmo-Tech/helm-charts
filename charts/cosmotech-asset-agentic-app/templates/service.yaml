@@ -1,0 +1,19 @@
+{{- /*
+SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+SPDX-License-Identifier: MIT
+*/ -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cosmotech-asset-agentic-app.fullname" . }}
+  labels:
+    {{- include "cosmotech-asset-agentic-app.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "cosmotech-asset-agentic-app.selectorLabels" . | nindent 4 }}

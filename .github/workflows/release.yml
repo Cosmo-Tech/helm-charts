@@ -11,6 +11,7 @@ on:
         type: choice
         options:
           - cosmotech-api
+          - cosmotech-asset-agentic-app
           - cosmotech-asset-data-layer-api
           - cosmotech-asset-investment-planning-api
           - cosmotech-asset-investment-planning-webapp

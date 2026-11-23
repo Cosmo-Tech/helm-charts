@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
+apiVersion: v2
+name: cosmotech-asset-agentic-app
+description: Single-instance Asset AI Copilot runtime
+type: application
+version: 0.2.0
+appVersion: "0.2.0"

@@ -1,0 +1,65 @@
+# SPDX-FileCopyrightText: Copyright (C) 2022-2026 Cosmo Tech
+# SPDX-License-Identifier: MIT
+replicaCount: 1
+
+image:
+  repository: registry.cosmotech.com/product/cosmotech-asset-agentic-app
+  tag: "0.2.0"
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+
+service:
+  port: 7777
+
+config:
+  # LLM and embeddings
+  AZURE_OPENAI_ENDPOINT: "https://replace-me.openai.azure.com"
+  AZURE_OPENAI_DEPLOYMENT: "replace-me"
+  AZURE_OPENAI_API_VERSION: "2025-04-01-preview"
+  AZURE_EMBEDDING_DEPLOYMENT: "text-embedding-3-large"
+  AZURE_EMBEDDING_API_VERSION: "2024-10-21"
+
+  # Both MCP servers receive the webapp user's JWT; no service-account fallback.
+  # Verify issuer/audience/mcp scope and user permissions on both servers.
+  MCP_URL: "https://platform.example.invalid/api/mcp"
+  ASSET_DATA_LAYER_MCP_URL: "https://platform.example.invalid/adl/agentic/mcp/"
+
+  # JWT validation uses public JWKS. CLIENT_ID restricts knowledge-upload azp only.
+  KEYCLOAK_ISSUER: "https://sso.example.invalid/realms/asset"
+  KEYCLOAK_CLIENT_ID: "replace-me"
+  KEYCLOAK_SCOPE: "openid mcp"
+  KEYCLOAK_MCP_AUDIENCE: "account"
+
+  # Backend URL and exact frontend CORS origins.
+  CHAT_PUBLIC_URL: "https://copilot.example.invalid"
+  CORS_ALLOWED_ORIGINS: '["https://asset.example.invalid"]'
+
+  # Debug logging
+  AGENT_DEBUG: "false"
+
+secrets:
+  existingSecret: asset-copilot-secrets
+  azureOpenaiApiKeyKey: AZURE_OPENAI_API_KEY
+
+persistence:
+  existingClaim: ""
+  size: 10Gi
+  storageClass: null
+
+ingress:
+  enabled: false
+  className: ""
+  host: ""
+  path: /
+  tlsSecretName: ""
+  annotations: {}
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+    ephemeral-storage: 50Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+    ephemeral-storage: 2Gi
