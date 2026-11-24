@@ -89,7 +89,7 @@ backup:
   failedJobsHistoryLimit: 10
 
   # Remote destination where to send backups
-  # e.g:  
+  # e.g:
   # destination:
   #   protocol: "s3"
   #   endpoint: "mys3.example.com"
