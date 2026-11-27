@@ -48,11 +48,7 @@ spec:
               envFrom:
                 - configMapRef:
                     name: {{ include "cosmotech-kubernetes-backup.fullname" . }}
-              env:
-                - name: BKUP_ORCHESTRATOR_NAMESPACE
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.namespace
+
           volumes:
             - name: tmp
               emptyDir: {}

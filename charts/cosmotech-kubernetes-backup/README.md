@@ -1,6 +1,6 @@
 # cosmotech-kubernetes-backup
 
-![Version: 0.0.0](https://img.shields.io/badge/Version-0.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.1](https://img.shields.io/badge/AppVersion-0.1.1-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.0](https://img.shields.io/badge/AppVersion-0.3.0-informational?style=flat-square)
 
 Cosmo Tech Kubernetes backup (bkup)
 
@@ -8,6 +8,8 @@ Cosmo Tech Kubernetes backup (bkup)
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| backup.blockSizeMiB | int | `16` |  |
+| backup.compressLevel | int | `1` |  |
 | backup.cron | string | `""` |  |
 | backup.destination.endpoint | string | `""` |  |
 | backup.destination.passwordSecret.key | string | `""` |  |
@@ -16,6 +18,22 @@ Cosmo Tech Kubernetes backup (bkup)
 | backup.destination.root | string | `""` |  |
 | backup.destination.username | string | `""` |  |
 | backup.failedJobsHistoryLimit | int | `10` |  |
+| backup.hooks.enabled | bool | `true` |  |
+| backup.hooks.rbac.rules | list | `[]` |  |
+| backup.hooks.runtime.post.args | list | `[]` |  |
+| backup.hooks.runtime.post.command | list | `[]` |  |
+| backup.hooks.runtime.post.enabled | bool | `false` |  |
+| backup.hooks.runtime.post.image.pullPolicy | string | `"IfNotPresent"` |  |
+| backup.hooks.runtime.post.image.pullSecrets | list | `[]` |  |
+| backup.hooks.runtime.post.image.repository | string | `""` |  |
+| backup.hooks.runtime.post.image.tag | string | `""` |  |
+| backup.hooks.runtime.pre.args | list | `[]` |  |
+| backup.hooks.runtime.pre.command | list | `[]` |  |
+| backup.hooks.runtime.pre.enabled | bool | `false` |  |
+| backup.hooks.runtime.pre.image.pullPolicy | string | `"IfNotPresent"` |  |
+| backup.hooks.runtime.pre.image.pullSecrets | list | `[]` |  |
+| backup.hooks.runtime.pre.image.repository | string | `""` |  |
+| backup.hooks.runtime.pre.image.tag | string | `""` |  |
 | backup.postgresql[0].address | string | `""` |  |
 | backup.postgresql[0].database | string | `""` |  |
 | backup.postgresql[0].image.pullPolicy | string | `""` |  |

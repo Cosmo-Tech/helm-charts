@@ -110,6 +110,15 @@ backup:
       name: ""
       key: ""
 
+  # Tuning for remote storage streams
+  # e.g:
+  #   blockSizeMiB: 16
+  #   compressionLevel: 1
+  # Size of stream buffer/block in Mebibytes
+  blockSizeMiB: 16
+  # gzip compression level of backup archives from 0 (none) to 9 (max), 1 is recommended for speed
+  compressLevel: 1
+
   # Configure the job backup type for PostgreSQL
   # e.g:
   # - address: postgresql.namespace.svc.cluster.local
@@ -154,3 +163,61 @@ backup:
   volume:
     # Target specific namespaces to backup (if empty, all namespaces will be targetted)
     namespaces: []
+
+  # Hooks allows to run custom jobs before/after backup jobs, with the exact images/commands you want
+  hooks:
+    # When enabled, a dedicated ServiceAccount is created with empty ClusterRole permissions
+    # RBAC below allows to set minimal permissions according to your needs
+    enabled: true
+    rbac:
+      # e.g:
+      # rules:
+      # - apiGroups: ["apps"]
+      #   resources: ["deployments", "deployments/scale"]
+      #   verbs: ["get", "patch"]
+      # - apiGroups: ["apps"]
+      #   resources: ["statefulsets", "statefulsets/scale"]
+      #   verbs: ["get", "patch"]
+      rules: []
+    runtime:
+      pre:
+        enabled: false
+        # e.g:
+        # image:
+        #   repository: "alpine/k8s"
+        #   tag: "latest"
+        #   pullPolicy: IfNotPresent
+        #   pullSecrets:
+        #     - name: example
+        # command: ["/bin/sh", "-c"]
+        # args:
+        #   - |
+        #     echo 'i am hook'
+        #     exit 0
+        image:
+          repository: ""
+          tag: ""
+          pullPolicy: IfNotPresent
+          pullSecrets: []
+        command: []
+        args: []
+      post:
+        enabled: false
+        # image:
+        #   repository: "alpine/k8s"
+        #   tag: "latest"
+        #   pullPolicy: IfNotPresent
+        #   pullSecrets:
+        #     - name: example
+        # command: ["/bin/sh", "-c"]
+        # args:
+        #   - |
+        #     echo 'i am hook'
+        #     exit 0
+        image:
+          repository: ""
+          tag: ""
+          pullPolicy: IfNotPresent
+          pullSecrets: []
+        command: []
+        args: []
