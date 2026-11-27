@@ -110,6 +110,15 @@ backup:
       name: ""
       key: ""
 
+  # Tuning for remote storage streams
+  # e.g:
+  #   blockSizeMiB: 16
+  #   compressionLevel: 1
+  # Size of stream buffer/block in Mebibytes
+  blockSizeMiB: 16
+  # gzip compression level of backup archives from 0 (none) to 9 (max), 1 is recommended for speed
+  compressLevel: 1
+
   # Configure the job backup type for PostgreSQL
   # e.g:
   # - address: postgresql.namespace.svc.cluster.local

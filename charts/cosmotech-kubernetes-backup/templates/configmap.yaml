@@ -29,6 +29,10 @@ data:
   BKUP_STORAGE_PASSWORD_SECRET_NAME: {{ .Values.backup.destination.passwordSecret.name | quote }}
   BKUP_STORAGE_PASSWORD_SECRET_KEY: {{ .Values.backup.destination.passwordSecret.key | quote }}
 
+  # Files & streams
+  BKUP_BLOCK_SIZE_MIB: {{ .Values.backup.blockSizeMiB | quote }}
+  BKUP_COMPRESS_LEVEL: {{ .Values.backup.compressLevel | quote }}
+
   # Backup targets
   BKUP_VOLUMES_NAMESPACES: {{ .Values.backup.volume.namespaces | toJson | quote }}
   BKUP_POSTGRESQL_VALUES: |
